@@ -1,65 +1,84 @@
-import Image from "next/image";
+'use client';
+
+import { SupplementCard } from "@/components/SupplementCard";
+import { StackSummary } from "@/components/StackSummary";
+import { SmartAlerts } from "@/components/SmartAlerts";
+import { CategoryFilters } from "@/components/CategoryFilters";
+import { useStackBuilder } from "@/hooks/useStackBuilder";
+import { generateIHerbLink, getBestValueId } from "@/utils/stackLogic"; // Объединил импорты
+import { SelectedStack } from "@/components/SelectedStack";
 
 export default function Home() {
+  // 1. Добавляем 'cart' и 'updateQuantity', убираем старый 'toggleSupplement'
+  const {
+    cart,
+    selectedIds,
+    activeCategory,
+    setActiveCategory,
+    categories,
+    updateQuantity,
+    filteredSupplements,
+    totalPrice,
+    allSupplements,
+  } = useStackBuilder();
+
+  // Фильтруем все добавки для верхней панели
+  const selectedItems = allSupplements.filter(item => selectedIds.includes(item.id));
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-white pb-32">
+      {/* 1. Секция заголовка и фильтров (центрирована для удобства чтения) */}
+      <div className="max-w-7xl mx-auto px-6 pt-8 text-center">
+        <h1 className="text-4xl font-black text-slate-900 mb-2 tracking-tight">
+          Bio<span className="text-green-600">Stack</span> Builder
+        </h1>
+        <p className="text-slate-500 mb-8 font-medium">Build your perfect supplement routine.</p>
+
+        <SelectedStack
+          selectedItems={selectedItems}
+          cart={cart}
+          onRemove={(id) => updateQuantity(id, -1000)}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+
+        <div className="my-6">
+          <CategoryFilters
+            categories={categories}
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <SmartAlerts selectedIds={selectedIds} />
+      </div>
+
+      {/* 2. СЕТКА ТОВАРОВ: Теперь она во всю ширину экрана */}
+      <div className="w-full px-4 md:px-8 2xl:px-12 mt-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 3xl:grid-cols-10 gap-4">
+          {filteredSupplements.map((item, index) => {
+            const cartItem = cart.find(c => c.id === item.id);
+            const currentCount = cartItem ? cartItem.count : 0;
+            const bestValueId = getBestValueId(allSupplements, item.subType);
+
+            return (
+              <SupplementCard
+                key={item.id}
+                item={item}
+                index={index}
+                isSelected={selectedIds.includes(item.id)}
+                isBestValue={item.id === bestValueId}
+                count={currentCount}
+                onUpdateQuantity={updateQuantity}
+              />
+            );
+          })}
         </div>
-      </main>
-    </div>
+      </div>
+
+      <StackSummary
+        totalPrice={totalPrice}
+        selectedCount={selectedIds.length}
+        generateLink={() => generateIHerbLink(cart)}
+      />
+    </main>
   );
 }
