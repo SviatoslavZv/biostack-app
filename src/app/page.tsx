@@ -1,76 +1,82 @@
 'use client';
-
+import React, { useState } from "react";
 import { SupplementCard } from "@/components/SupplementCard";
 import { StackSummary } from "@/components/StackSummary";
 import { SmartAlerts } from "@/components/SmartAlerts";
-import { CategoryFilters } from "@/components/CategoryFilters";
+import { Header } from "@/components/Header";
 import { useStackBuilder } from "@/hooks/useStackBuilder";
-import { generateIHerbLink, getBestValueId } from "@/utils/stackLogic"; // Объединил импорты
-import { SelectedStack } from "@/components/SelectedStack";
+import { generateIHerbLink, getBestValueId } from "@/utils/stackLogic";
+import { SidebarStack } from "@/components/SidebarStack";
+
 
 export default function Home() {
-  // 1. Добавляем 'cart' и 'updateQuantity', убираем старый 'toggleSupplement'
+  // Достаем всё необходимое из хука
   const {
     cart,
     selectedIds,
-    activeCategory,
-    setActiveCategory,
-    categories,
+    activeCategory,    // Используем это вместо category
+    setActiveCategory, // Используем это вместо setCategory
     updateQuantity,
-    filteredSupplements,
+    filteredSupplements, // Это уже отфильтрованный список товаров
     totalPrice,
     allSupplements,
   } = useStackBuilder();
 
-  // Фильтруем все добавки для верхней панели
+  const [sidebarMode, setSidebarMode] = useState<'custom' | 'editors'>('custom');
+
+  // Находим объекты выбранных товаров для сайдбара
   const selectedItems = allSupplements.filter(item => selectedIds.includes(item.id));
 
   return (
-    <main className="min-h-screen bg-white pb-32">
-      {/* 1. Секция заголовка и фильтров (центрирована для удобства чтения) */}
-      <div className="max-w-7xl mx-auto px-6 pt-8 text-center">
-        <h1 className="text-4xl font-black text-slate-900 mb-2 tracking-tight">
-          Bio<span className="text-green-600">Stack</span> Builder
-        </h1>
-        <p className="text-slate-500 mb-8 font-medium">Build your perfect supplement routine.</p>
+    <main className="min-h-screen bg-white">
+      {/* 1. ПЕРЕДАЕМ ПРАВИЛЬНЫЕ ПРОПСЫ В HEADER */}
+      <Header 
+        selectedCount={cart.length} 
+        activeCategory={activeCategory} 
+        onCategoryChange={setActiveCategory} 
+      />
 
-        <SelectedStack
-          selectedItems={selectedItems}
-          cart={cart}
-          onRemove={(id) => updateQuantity(id, -1000)}
-        />
+      <div className="pt-32 md:pt-40 px-4 md:px-8 2xl:px-12 max-w-[1920px] mx-auto">
+        <div className="flex gap-8">
 
-        <div className="my-6">
-          <CategoryFilters
-            categories={categories}
-            activeCategory={activeCategory}
-            onCategoryChange={setActiveCategory}
+          {/* ЛЕВАЯ ЧАСТЬ: Сетка товаров */}
+          <div className="flex-1">
+            <div className="mb-8">
+              <SmartAlerts selectedIds={selectedIds} />
+            </div>
+
+            {/* 2. ИСПОЛЬЗУЕМ filteredSupplements НАПРЯМУЮ */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4">
+              {filteredSupplements.map((item, index) => {
+                const cartItem = cart.find(c => c.id === item.id);
+                const currentCount = cartItem ? cartItem.count : 0;
+                const bestValueId = getBestValueId(allSupplements, item.subType);
+
+                return (
+                  <SupplementCard
+                    key={item.id}
+                    item={item}
+                    index={index}
+                    isSelected={selectedIds.includes(item.id)}
+                    isBestValue={item.id === bestValueId}
+                    count={currentCount}
+                    onUpdateQuantity={updateQuantity}
+                  />
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ПРАВАЯ ЧАСТЬ: Сайдбар */}
+          <SidebarStack
+            mode={sidebarMode}
+            setMode={setSidebarMode}
+            selectedItems={selectedItems}
+            cart={cart}
+            onUpdateQuantity={updateQuantity}
+            totalPrice={totalPrice}
+            generateLink={() => window.open(generateIHerbLink(cart), '_blank')}
           />
-        </div>
-
-        <SmartAlerts selectedIds={selectedIds} />
-      </div>
-
-      {/* 2. СЕТКА ТОВАРОВ: Теперь она во всю ширину экрана */}
-      <div className="w-full px-4 md:px-8 2xl:px-12 mt-10">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-8 gap-5">
-          {filteredSupplements.map((item, index) => {
-            const cartItem = cart.find(c => c.id === item.id);
-            const currentCount = cartItem ? cartItem.count : 0;
-            const bestValueId = getBestValueId(allSupplements, item.subType);
-
-            return (
-              <SupplementCard
-                key={item.id}
-                item={item}
-                index={index}
-                isSelected={selectedIds.includes(item.id)}
-                isBestValue={item.id === bestValueId}
-                count={currentCount}
-                onUpdateQuantity={updateQuantity}
-              />
-            );
-          })}
         </div>
       </div>
 
