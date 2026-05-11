@@ -1,70 +1,85 @@
-import { useState } from 'react';
-import { SUPPLEMENTS } from "@/constants/supplements";
+import { useState, useEffect } from 'react';
+import { SUPPLEMENTS, Supplement } from "@/constants/supplements";
+import { PresetItem } from "@/constants/presets";
 
-// 1. Описываем, как выглядит один элемент в корзине
-interface CartItem {
+export interface CartItem {
     id: string;
     count: number;
 }
 
-export const useStackBuilder = () => {
-    // 2. Меняем состояние со списка строк на список объектов
-    const [cart, setCart] = useState<CartItem[]>([]);
-    const [activeCategory, setActiveCategory] = useState('All');
+// Описываем что именно возвращает наш хук
+export interface StackBuilderHook {
+    cart: CartItem[];
+    selectedIds: string[];
+    activeCategory: string;
+    setActiveCategory: (category: string) => void;
+    updateQuantity: (id: string, delta: number) => void;
+    setStackPreset: (presetItems: PresetItem[]) => void;
+    filteredSupplements: Supplement[];
+    totalPrice: number;
+    allSupplements: Supplement[];
+    categories: string[];
+}
 
-    const categories = ['All', 'Focus', 'Sleep', 'Energy', 'Longevity'];
+export const useStackBuilder = (): StackBuilderHook => {
+    const [cart, setCart] = useState<CartItem[]>(() => {
+        if (typeof window === 'undefined') return [];
+        const saved = localStorage.getItem('biostack-cart');
+        try {
+            return saved ? JSON.parse(saved) : [];
+        } catch (e) { return []; }
+    });
 
-    // 3. Новая функция управления количеством
+    const [activeCategory, setActiveCategory] = useState<string>('All');
+
+    useEffect(() => {
+    // Сохраняем ТОЛЬКО если мы в браузере и корзина изменилась
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('biostack-cart', JSON.stringify(cart));
+    }
+}, [cart]);
+
     const updateQuantity = (id: string, delta: number) => {
         setCart(prev => {
             const existing = prev.find(item => item.id === id);
-
-            if (!existing && delta > 100) return prev; // Защита для удаления
-            
-            if (!existing && delta > 0) {
-                return [...prev, { id, count: 1 }];
-            }
-
+            if (!existing && delta > 0) return [...prev, { id, count: 1 }];
             if (existing) {
                 const newCount = existing.count + delta;
-                // Если количество 0 или меньше (или мы передали -1000 для удаления) — убираем из корзины
-                if (newCount <= 0) {
-                    return prev.filter(item => item.id !== id);
-                }
-                // Иначе обновляем число
-                return prev.map(item => item.id === id ? { ...item, count: newCount } : item);
+                return newCount <= 0 
+                    ? prev.filter(item => item.id !== id) 
+                    : prev.map(item => item.id === id ? { ...item, count: newCount } : item);
             }
-
             return prev;
         });
     };
 
-    // 4. Вспомогательные данные для страницы
+    const setStackPreset = (presetItems: PresetItem[]) => {
+        setCart(presetItems.map(item => ({ id: item.id, count: item.count })));
+    };
+
     const selectedIds = cart.map(item => item.id);
+    
+    const filteredSupplements = SUPPLEMENTS.filter(item => 
+        (activeCategory === 'All' || item.category === activeCategory) && item.isAvailable
+    );
 
-    const filteredSupplements = SUPPLEMENTS.filter(item => {
-        const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
-        return matchesCategory && item.isAvailable;
-    });
-
-    // 5. Считаем общую сумму с учетом количества банок
     const totalPrice = SUPPLEMENTS
         .filter(item => selectedIds.includes(item.id))
         .reduce((sum, item) => {
-            const cartItem = cart.find(c => c.id === item.id);
-            const count = cartItem ? cartItem.count : 0;
+            const count = cart.find(c => c.id === item.id)?.count || 0;
             return sum + (item.price * count);
         }, 0);
 
     return {
-        cart,               // Теперь возвращаем саму корзину
-        selectedIds,        // Список ID для фильтров и алертов
+        cart,
+        selectedIds,
         activeCategory,
         setActiveCategory,
-        categories,
-        updateQuantity,     // Заменили toggleSupplement на это
+        updateQuantity,
+        setStackPreset,
         filteredSupplements,
         totalPrice,
         allSupplements: SUPPLEMENTS,
+        categories: ['All', 'Focus', 'Sleep', 'Energy', 'Longevity']
     };
 };

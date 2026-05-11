@@ -10,16 +10,23 @@ interface Props {
   index: number;
   isBestValue?: boolean;
   onUpdateQuantity: (id: string, delta: number) => void;
+  onOpenModal: () => void;
 }
 
-export const SupplementCard = ({ item, isSelected, count, index, isBestValue, onUpdateQuantity }: Props) => {
+export const SupplementCard = ({ item, isSelected, count, index, isBestValue, onUpdateQuantity, onOpenModal }: Props) => {
   const isPriority = index < 8;
 
   return (
-    <div className={`relative flex flex-col p-4 rounded-[2rem] border-2 transition-all duration-500 h-full overflow-hidden group/main-card ${isSelected
-      ? 'border-green-500 shadow-lg shadow-green-100/50 bg-gradient-to-b from-green-50/30 to-white'
-      : 'border-gray-50 hover:border-green-200 hover:shadow-xl hover:-translate-y-1 bg-white'
-      }`}>
+    <div
+      style={{
+        animationDelay: `${index * 0.05}s`,
+        opacity: 0 // Начальное состояние до старта анимации
+      }}
+      className={`animate-fade-in-up relative flex flex-col p-4 rounded-[2rem] border-2 transition-all duration-500 h-full overflow-hidden group/main-card ${isSelected
+        ? 'border-green-500 shadow-lg shadow-green-100/50 bg-gradient-to-b from-green-50/30 to-white'
+        : 'border-gray-50 hover:border-green-200 hover:shadow-xl hover:-translate-y-1 bg-white'
+        }`}
+    >
 
       {/* 1. Изображение с эффектом всплытия банки */}
       <div className="relative w-full h-40 mb-2.5 rounded-[1.5rem] bg-gray-50/50 group/img overflow-hidden border border-transparent transition-colors group-hover/main-card:border-green-100/30 group/card">
@@ -79,7 +86,11 @@ export const SupplementCard = ({ item, isSelected, count, index, isBestValue, on
           {item.brand}
         </span>
 
-        <h3 className="text-[14px] font-bold text-slate-900 leading-tight line-clamp-2 min-h-[2.5rem] mt-1.5 mb-2 px-1 group-hover/main-card:text-green-700 transition-colors mx-auto">
+        <h3
+          onClick={onOpenModal} // Вызываем модалку
+          className="text-[14px] font-bold text-slate-900 leading-tight line-clamp-2 min-h-[2.5rem] mt-1.5 mb-2 px-1 
+                     cursor-pointer hover:text-green-600 transition-colors mx-auto decoration-green-500/30 hover:underline underline-offset-4"
+        >
           {item.name}
         </h3>
 
