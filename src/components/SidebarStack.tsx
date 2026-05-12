@@ -26,7 +26,7 @@ interface Props {
 }
 
 export const SidebarStack = ({
-  mode, setMode, setStackPreset, selectedItems, cart, onUpdateQuantity, totalPrice, generateLink, activeCategory, setActiveCategory
+  mode, setMode, setStackPreset, selectedItems, cart, onUpdateQuantity, totalPrice, analytics, generateLink, activeCategory, setActiveCategory
 }: Props) => {
   // Фильтруем пресеты на основе выбранной категории
   const filteredPresets = STACK_PRESETS.filter(preset =>
@@ -184,6 +184,7 @@ export const SidebarStack = ({
       {/* 4. ПОДВАЛ С ИТОГОМ */}
       <StackSummary
         totalPrice={totalPrice}
+        analytics={analytics}
         selectedCount={selectedItems.length}
         generateLink={generateLink}
         isSidebar={true}

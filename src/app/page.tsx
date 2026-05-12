@@ -50,7 +50,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
   const {
     cart, selectedIds, activeCategory, setActiveCategory,
-    updateQuantity, filteredSupplements, totalPrice, allSupplements, setStackPreset
+    updateQuantity, filteredSupplements, totalPrice, allSupplements, setStackPreset, analytics
   } = builder;
 
   const displaySupplements = useMemo(() => {
@@ -140,6 +140,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
             generateLink={() => window.open(generateIHerbLink(cart), '_blank')}
             activeCategory={activeCategory}
             setActiveCategory={setActiveCategory}
+            analytics={analytics}
           />
         </div>
       </div>
@@ -148,6 +149,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
         totalPrice={totalPrice}
         selectedCount={selectedIds.length}
         generateLink={() => window.open(generateIHerbLink(cart), '_blank')}
+        analytics={builder.analytics} // Передаем аналитику сюда!
       />
 
       <Toast

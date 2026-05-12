@@ -1,10 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { SUPPLEMENTS, Supplement } from "@/constants/supplements";
 import { PresetItem } from "@/constants/presets";
 
 export interface CartItem {
     id: string;
     count: number;
+}
+
+export interface StackAnalytics {
+  dailyCost: number;
+  durationDays: number;
 }
 
 // Описываем что именно возвращает наш хук
@@ -16,9 +21,10 @@ export interface StackBuilderHook {
     updateQuantity: (id: string, delta: number) => void;
     setStackPreset: (presetItems: PresetItem[]) => void;
     filteredSupplements: Supplement[];
-    totalPrice: number;
     allSupplements: Supplement[];
     categories: string[];
+    totalPrice: number;
+    analytics: StackAnalytics;
 }
 
 export const useStackBuilder = (): StackBuilderHook => {
@@ -70,6 +76,37 @@ export const useStackBuilder = (): StackBuilderHook => {
             return sum + (item.price * count);
         }, 0);
 
+        const analytics = useMemo(() => {
+    const selectedSupps = SUPPLEMENTS.filter(s => selectedIds.includes(s.id));
+    
+    let totalDailyCost = 0;
+    let minDays = Infinity;
+
+    selectedSupps.forEach(supp => {
+      const cartItem = cart.find(c => c.id === supp.id);
+      if (cartItem && supp.servings && supp.suggestedDaily) {
+        // 1. Считаем стоимость дня для этого препарата
+        // (Цена / порции в банке) * порций в день
+        const costPerServing = supp.price / supp.servings;
+        const itemDailyCost = costPerServing * supp.suggestedDaily;
+        totalDailyCost += itemDailyCost;
+
+        // 2. Считаем на сколько дней хватит запаса этого препарата
+        // (Порции в банке * количество банок) / порций в день
+        const itemDuration = (supp.servings * cartItem.count) / supp.suggestedDaily;
+        
+        if (itemDuration < minDays) {
+          minDays = itemDuration;
+        }
+      }
+    });
+
+    return {
+      dailyCost: totalDailyCost,
+      durationDays: minDays === Infinity ? 0 : Math.floor(minDays)
+    };
+  }, [cart, selectedIds]);
+
     return {
         cart,
         selectedIds,
@@ -80,6 +117,7 @@ export const useStackBuilder = (): StackBuilderHook => {
         filteredSupplements,
         totalPrice,
         allSupplements: SUPPLEMENTS,
-        categories: ['All', 'Focus', 'Sleep', 'Energy', 'Longevity']
+        categories: ['All', 'Focus', 'Sleep', 'Energy', 'Longevity'],
+        analytics
     };
 };
