@@ -78,6 +78,11 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
     setTimeout(() => setToast({ isVisible: true, message }), 10);
   };
 
+  const handleGenerateLink = () => {
+    // Используем ту же логику, что у тебя уже написана для StackSummary
+    window.open(generateIHerbLink(cart), '_blank');
+  };
+
   return (
     <main className="min-h-screen bg-white">
       <Header
@@ -127,20 +132,8 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
           </div>
 
           <SidebarStack
-            mode={sidebarMode}
-            setMode={setSidebarMode}
-            setStackPreset={(items: PresetItem[], name: string) => {
-              setStackPreset(items);
-              showToast(`Preset "${name}" applied!`);
-            }}
-            selectedItems={selectedItems}
-            cart={cart}
-            onUpdateQuantity={updateQuantity}
-            totalPrice={totalPrice}
-            generateLink={() => window.open(generateIHerbLink(cart), '_blank')}
-            activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
-            analytics={analytics}
+            builder={builder} // Передаем ВЕСЬ объект builder целиком
+            generateLink={handleGenerateLink}
           />
         </div>
       </div>
@@ -148,7 +141,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
       <StackSummary
         totalPrice={totalPrice}
         selectedCount={selectedIds.length}
-        generateLink={() => window.open(generateIHerbLink(cart), '_blank')}
+        generateLink={handleGenerateLink}
         analytics={builder.analytics} // Передаем аналитику сюда!
       />
 

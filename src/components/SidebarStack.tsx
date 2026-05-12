@@ -1,194 +1,103 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
-import { Supplement } from "@/constants/supplements";
-import { Trash2, Plus, Minus, CheckCircle2, Sparkles } from "lucide-react";
-import { StackSummary } from "./StackSummary";
-import { STACK_PRESETS, PresetItem } from "@/constants/presets";
+import { Wallet, Clock, Trash2, Plus, Minus } from 'lucide-react';
+import { StackSummary } from './StackSummary';
+import { StackBuilderHook } from '@/hooks/useStackBuilder';
 
-interface CartItem {
-  id: string;
-  count: number;
-}
-
-interface Props {
-  mode: 'custom' | 'editors';
-  setMode: (mode: 'custom' | 'editors') => void;
-  setStackPreset: (items: PresetItem[], name: string) => void;
-  selectedItems: Supplement[];
-  cart: CartItem[];
-  onUpdateQuantity: (id: string, delta: number) => void;
-  totalPrice: number;
+interface SidebarStackProps {
+  builder: StackBuilderHook;
   generateLink: () => void;
-  activeCategory: string;
-  setActiveCategory: (category: string) => void;
 }
 
-export const SidebarStack = ({
-  mode, setMode, setStackPreset, selectedItems, cart, onUpdateQuantity, totalPrice, analytics, generateLink, activeCategory, setActiveCategory
-}: Props) => {
-  // Фильтруем пресеты на основе выбранной категории
-  const filteredPresets = STACK_PRESETS.filter(preset =>
-    activeCategory === 'All' || preset.category === activeCategory
-  );
+export const SidebarStack = ({ builder, generateLink }: SidebarStackProps) => {
+  // 1. Распаковываем всё нужное из билдера прямо здесь
+  // Проверка на случай, если builder все еще не пришел (защита от краша)
+  if (!builder) return null;
 
-  const progress = Math.min((selectedItems.length / 5) * 100, 100);
+  const {
+    cart,
+    allSupplements,
+    updateQuantity,
+    totalPrice,
+    analytics,
+    selectedIds
+  } = builder;
+
+  if (selectedIds.length === 0) {
+    return (
+      <aside className="w-96 border-l bg-white flex flex-col items-center justify-center p-6 text-center">
+        <div className="bg-slate-50 p-8 rounded-full mb-4">
+          <Clock size={40} className="text-slate-300" />
+        </div>
+        <p className="text-slate-400 font-medium">Your stack is empty</p>
+        <p className="text-xs text-slate-300 mt-2">Add some supplements to start analysis</p>
+      </aside>
+    );
+  }
 
   return (
-    <aside className="w-[380px] hidden xl:flex flex-col h-[calc(100vh-120px)] sticky top-[100px] bg-white rounded-[3rem] border border-gray-100 overflow-hidden shadow-sm transition-all duration-500">
-
-      {/* 1. ЕДИНАЯ ШАПКА: Прогресс и статус */}
-      <div className="p-6 pb-4 bg-white">
-        <div className="flex items-center justify-between mb-4 px-1">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-black text-slate-900">Stack</h2>
-            <span className="text-[10px] bg-green-600 text-white px-2 py-0.5 rounded-full font-black uppercase">
-              {mode === 'custom' ? selectedItems.length : 'PRO'}
-            </span>
-          </div>
-          <div className="text-right">
-            <span className="text-[10px] font-black text-green-600 uppercase tracking-widest">
-              {mode === 'custom' ? (progress === 100 ? 'Optimized' : 'Building') : 'Expert Choice'}
-            </span>
-          </div>
-        </div>
-
-        <div className="space-y-2 px-1">
-          <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-            <div
-              className={`h-full transition-all duration-700 ease-out ${mode === 'custom' ? 'bg-green-500' : 'bg-blue-500'}`}
-              style={{ width: `${mode === 'custom' ? progress : 100}%` }}
-            />
-          </div>
-        </div>
+    <aside className="w-96 border-l bg-white flex flex-col h-screen sticky top-0 shadow-xl">
+      <div className="p-6 border-b">
+        <h2 className="text-xl font-black text-slate-900 tracking-tight">Your Stack</h2>
       </div>
 
-      {/* 2. ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМОВ */}
-      <div className="px-6 mb-4">
-        <div className="bg-slate-100 p-1 rounded-[1.4rem] flex relative">
-          <button
-            onClick={() => setMode('custom')}
-            className={`flex-1 z-10 py-2.5 rounded-[1.1rem] text-[11px] font-black uppercase tracking-tighter transition-all ${mode === 'custom' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'
-              }`}
-          >
-            My Stack
-          </button>
-          <button
-            onClick={() => setMode('editors')}
-            className={`flex-1 z-10 py-2.5 rounded-[1.1rem] text-[11px] font-black uppercase tracking-tighter transition-all ${mode === 'editors' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-400 hover:text-slate-600'
-              }`}
-          >
-            Editor's Choice
-          </button>
-        </div>
-      </div>
+      {/* Список товаров */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        {cart.map((item) => {
+          const product = allSupplements.find((s) => s.id === item.id);
+          if (!product) return null;
 
-      {/* 3. ДИНАМИЧЕСКИЙ КОНТЕНТ */}
-      <div className="flex-1 overflow-y-auto px-4 space-y-3 no-scrollbar">
-        {mode === 'custom' ? (
-          /* РЕЖИМ: МОЙ СТЭК (Твой старый добрый код) */
-          selectedItems.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center p-8 opacity-40">
-              <Plus className="mb-2" size={24} />
-              <p className="text-xs font-bold uppercase tracking-widest">Stack is empty</p>
-            </div>
-          ) : (
-            selectedItems.map((item) => {
-              const count = cart.find(c => c.id === item.id)?.count || 0;
-              return (
-                <div key={item.id} className="bg-white p-3 rounded-2xl border border-slate-50 shadow-sm hover:border-green-100 transition-all">
-                  <div className="flex gap-3">
-                    <div className="relative w-12 h-12 flex-shrink-0 bg-slate-50 rounded-lg overflow-hidden border border-slate-50">
-                      <Image src={item.imageFront} alt={item.name} fill className="object-contain p-1" sizes="48px" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-[12px] font-black text-slate-900 truncate">{item.name}</h4>
-                      <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-0.5">
-                          <button onClick={() => onUpdateQuantity(item.id, -1)} className="w-5 h-5 flex items-center justify-center bg-white rounded shadow-xs hover:text-red-500 transition-colors">
-                            {count <= 1 ? <Trash2 size={10} /> : <Minus size={10} />}
-                          </button>
-                          <span className="text-[10px] font-black w-3 text-center">{count}</span>
-                          <button onClick={() => onUpdateQuantity(item.id, 1)} className="w-5 h-5 flex items-center justify-center bg-white rounded shadow-xs hover:text-green-500 transition-colors">
-                            <Plus size={10} />
-                          </button>
-                        </div>
-                        <span className="text-[12px] font-black text-slate-900">${(item.price * count).toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          )
-        ) : (
-          /* РЕЖИМ: ВЫБОР РЕДАКЦИИ (Новая магия здесь!) */
-          <div className="space-y-4 p-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center gap-2 mb-4 pl-2">
-              <Sparkles size={12} className="text-blue-500" />
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                Curated by BioStack
-              </p>
-            </div>
-
-            {filteredPresets.map((preset) => (
-              <div
-                key={preset.id}
-                className="group relative p-5 rounded-[2rem] bg-gradient-to-br from-slate-50 to-white border border-slate-100 hover:border-blue-200 transition-all shadow-sm"
-              >
-                <h4 className="text-[14px] font-black text-slate-900 mb-1">
-                  {preset.title}
-                </h4>
-                <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
-                  {preset.description}
-                </p>
-
-                <button
-                  onClick={() => {
-                    setStackPreset(preset.items, preset.title);
-                    setMode('custom');
-                  }}
-                  className="w-full py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-900 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all active:scale-95"
-                >
-                  Apply This Stack
-                </button>
+          return (
+            <div key={item.id} className="flex items-center gap-4 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
+              <img src={product.imageFront} alt={product.name} className="w-12 h-12 object-contain" />
+              <div className="flex-1">
+                <h4 className="text-xs font-bold text-slate-800 line-clamp-1">{product.name}</h4>
+                <p className="text-[10px] text-slate-400">{product.brand}</p>
               </div>
-            ))}
-
-            {/* Добавим проверку: если в этой категории нет пресетов */}
-            {filteredPresets.length === 0 && (
-              <div className="text-center py-12 px-6 animate-in fade-in zoom-in duration-300">
-                <div className="w-12 h-12 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sparkles size={20} />
-                </div>
-                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">
-                  No {activeCategory} stacks yet
-                </p>
-                <button
-                  onClick={() => {
-                    setActiveCategory('All'); // Сбрасываем фильтр на главном экране
-                    // Можно оставить пользователя в пресетах или вернуть в My Stack
-                  }}
-                  className="text-[10px] font-black text-blue-500 uppercase border-b border-blue-200 pb-0.5 hover:text-blue-600 transition-all"
-                >
-                  Show all presets
-                </button>
+              <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-1">
+                <button onClick={() => updateQuantity(item.id, -1)} className="p-1 hover:text-red-500"><Minus size={14} /></button>
+                <span className="text-xs font-bold w-4 text-center">{item.count}</span>
+                <button onClick={() => updateQuantity(item.id, 1)} className="p-1 hover:text-green-500"><Plus size={14} /></button>
               </div>
-            )}
-
-          </div>
-        )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* 4. ПОДВАЛ С ИТОГОМ */}
-      <StackSummary
-        totalPrice={totalPrice}
-        analytics={analytics}
-        selectedCount={selectedItems.length}
-        generateLink={generateLink}
-        isSidebar={true}
-      />
+      {/* Футер с аналитикой */}
+      <div className="p-6 bg-slate-50/50 border-t border-slate-100 space-y-4">
+
+        {/* Блок аналитики */}
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Wallet size={16} className="text-emerald-500" />
+              <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Daily Cost</span>
+            </div>
+            <span className="text-sm font-black text-slate-900">${analytics.dailyCost.toFixed(2)}</span>
+          </div>
+
+          <div className="h-px bg-slate-100 w-full" />
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Clock size={16} className="text-blue-500" />
+              <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Duration</span>
+            </div>
+            <span className="text-sm font-black text-slate-900">{analytics.durationDays} days</span>
+          </div>
+        </div>
+
+        {/* Финальная кнопка и цена */}
+        <StackSummary
+          totalPrice={totalPrice}
+          selectedCount={selectedIds.length}
+          generateLink={generateLink}
+          analytics={analytics}
+          isSidebar={true}
+        />
+      </div>
     </aside>
   );
 };
