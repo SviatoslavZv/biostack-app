@@ -12,45 +12,33 @@ import { Toast } from "@/components/Toast";
 import { ProductModal } from "@/components/ProductModal";
 import { EmptyState } from "@/components/EmptyState";
 import { SupplementSkeleton } from "@/components/SupplementSkeleton";
-import { PresetItem } from "@/constants/presets";
 
-
-
-// Функция-заглушка для проверки наличия окна
+// Оставляем логику для гидратации
 const subscribe = () => () => { };
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 
 export default function Home() {
-  // Этот хук вернет true только на клиенте и false на сервере. 
-  // Без всяких useEffect и лишних рендеров!
   const isClient = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-  if (!isClient) {
-    return <div className="min-h-screen bg-white" />;
-  }
-
-  // Теперь вызываем контент, внутри которого будет жить наш хук
+  if (!isClient) return <div className="min-h-screen bg-white" />;
   return <HomeSafeContent />;
 }
 
-// Создаем промежуточный компонент, который безопасно инициализирует хук
 function HomeSafeContent() {
-  const builder = useStackBuilder(); // Хук вызывается ТОЛЬКО когда мы уже на клиенте
+  const builder = useStackBuilder();
   return <HomeContent builder={builder} />;
 }
 
-// Теперь типизация пропсов максимально строгая
 function HomeContent({ builder }: { builder: StackBuilderHook }) {
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sidebarMode, setSidebarMode] = useState<'custom' | 'editors'>('custom');
   const [selectedProduct, setSelectedProduct] = useState<Supplement | null>(null);
   const [toast, setToast] = useState({ isVisible: false, message: '' });
+  const [sidebarMode, setSidebarMode] = useState<'custom' | 'editors'>('custom');
 
   const {
     cart, selectedIds, activeCategory, setActiveCategory,
-    updateQuantity, filteredSupplements, totalPrice, allSupplements, setStackPreset, analytics
+    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics
   } = builder;
 
   const displaySupplements = useMemo(() => {
@@ -61,11 +49,6 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
     );
   }, [filteredSupplements, searchQuery]);
 
-  const selectedItems = useMemo(() =>
-    allSupplements.filter((item) => selectedIds.includes(item.id)),
-    [allSupplements, selectedIds]
-  );
-
   const handleCategoryChange = (category: string) => {
     setIsLoading(true);
     setActiveCategory(category);
@@ -73,13 +56,8 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
     setTimeout(() => setIsLoading(false), 300);
   };
 
-  const showToast = (message: string) => {
-    setToast({ isVisible: false, message: '' });
-    setTimeout(() => setToast({ isVisible: true, message }), 10);
-  };
-
   const handleGenerateLink = () => {
-    // Используем ту же логику, что у тебя уже написана для StackSummary
+    // Используем актуальную корзину из builder
     window.open(generateIHerbLink(cart), '_blank');
   };
 
@@ -88,24 +66,24 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
       <Header
         onCategoryChange={handleCategoryChange}
         activeCategory={activeCategory}
-        selectedCount={cart.length}
+        selectedCount={selectedIds.length}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
 
       <div className="pt-32 md:pt-40 px-4 md:px-8 2xl:px-12 max-w-[1920px] mx-auto">
         <div className="flex gap-8">
-          <div className="flex-1">
+          <div className="flex-1 pb-32"> {/* Добавил отступ снизу для мобильной панели */}
             <div className="mb-8">
               <SmartAlerts selectedIds={selectedIds} />
             </div>
 
             {isLoading ? (
-              <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 {[...Array(8)].map((_, i) => <SupplementSkeleton key={i} />)}
               </div>
             ) : displaySupplements.length > 0 ? (
-              <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
                 {displaySupplements.map((item) => (
                   <SupplementCard
                     key={item.id}
@@ -131,26 +109,44 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
             )}
           </div>
 
+          {/* Сайдбар теперь получает всё необходимое через builder */}
           <SidebarStack
-            builder={builder} // Передаем ВЕСЬ объект builder целиком
+            builder={builder}
             generateLink={handleGenerateLink}
+            mode={sidebarMode} // Передаем текущий режим
+            setMode={setSidebarMode} // Передаем функцию изменения
           />
         </div>
       </div>
 
-      <StackSummary
+      {/* Плавающая панель снизу */}
+      {/* <StackSummary
         totalPrice={totalPrice}
         selectedCount={selectedIds.length}
         generateLink={handleGenerateLink}
-        analytics={builder.analytics} // Передаем аналитику сюда!
-      />
+        analytics={analytics}
+      /> */}
+
+      {/* Этот компонент покажется ТОЛЬКО на мобилках, так как в SidebarStack мы его скрыли через md:hidden */}
+      <div className="md:hidden">
+        <StackSummary
+          totalPrice={totalPrice}
+          selectedCount={selectedIds.length}
+          generateLink={handleGenerateLink}
+          analytics={analytics}
+        />
+      </div>
 
       <Toast
         message={toast.message}
         isVisible={toast.isVisible}
         onClose={() => setToast({ ...toast, isVisible: false })}
       />
-      <ProductModal item={selectedProduct} onClose={() => setSelectedProduct(null)} />
+
+      <ProductModal
+        item={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </main>
   );
 }
