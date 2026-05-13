@@ -38,7 +38,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
   const {
     cart, selectedIds, activeCategory, setActiveCategory,
-    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics
+    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics, clearStack
   } = builder;
 
   const displaySupplements = useMemo(() => {
@@ -60,6 +60,8 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
     // Используем актуальную корзину из builder
     window.open(generateIHerbLink(cart), '_blank');
   };
+
+
 
   return (
     <main className="min-h-screen bg-white">
@@ -84,16 +86,18 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
               </div>
             ) : displaySupplements.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
-                {displaySupplements.map((item) => (
+                {displaySupplements.map((item, index) => (
                   <SupplementCard
                     key={item.id}
                     item={item}
-                    index={0}
+                    index={index}
                     isSelected={selectedIds.includes(item.id)}
                     isBestValue={item.id === getBestValueId(allSupplements, item.subType)}
                     count={cart.find(c => c.id === item.id)?.count || 0}
                     onUpdateQuantity={updateQuantity}
                     onOpenModal={() => setSelectedProduct(item)}
+                    onAdd={() => builder.updateQuantity(item.id, 1)}
+
                   />
                 ))}
               </div>
@@ -119,13 +123,6 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
         </div>
       </div>
 
-      {/* Плавающая панель снизу */}
-      {/* <StackSummary
-        totalPrice={totalPrice}
-        selectedCount={selectedIds.length}
-        generateLink={handleGenerateLink}
-        analytics={analytics}
-      /> */}
 
       {/* Этот компонент покажется ТОЛЬКО на мобилках, так как в SidebarStack мы его скрыли через md:hidden */}
       <div className="md:hidden">

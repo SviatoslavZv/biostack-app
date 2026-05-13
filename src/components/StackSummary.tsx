@@ -31,6 +31,11 @@ export const StackSummary = ({
         <div className="flex flex-col gap-4">
           {/* Верхний ряд: Общая цена и Цена в день */}
           <div className="flex justify-between items-center bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+
+
+
+
+
             <div>
               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Total Amount</p>
               <span className="text-2xl font-black text-slate-900 leading-none">
