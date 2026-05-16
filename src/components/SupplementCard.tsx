@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import { Supplement } from "@/constants/supplements";
 import { formatPartnerLink } from "@/utils/links";
-import { ExternalLink, Plus } from "lucide-react";
+import { ExternalLink, Plus, Trash2 } from "lucide-react";
 
 interface Props {
   item: Supplement;
@@ -118,7 +118,11 @@ export const SupplementCard = ({
                 onClick={() => onUpdateQuantity(item.id, -1)}
                 className="w-8 h-8 flex items-center justify-center bg-white/20 rounded-lg text-white hover:bg-white/30 transition-all font-bold text-xs"
               >
-                −
+                {count === 1 ? (
+                  <Trash2 size={14} className="animate-in fade-in zoom-in duration-300" />
+                ) : (
+                  "-"
+                )}
               </button>
               <span className="text-xs font-black text-white px-2">{count}</span>
               <button

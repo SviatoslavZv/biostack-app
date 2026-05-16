@@ -92,7 +92,7 @@ export const useStackBuilder = (): StackBuilderHook => {
             if (cartItem && supp.servings && supp.suggestedDaily) {
                 // 1. Считаем стоимость дня для этого препарата
                 // (Цена / порции в банке) * порций в день
-                const costPerServing = supp.price / supp.servings;
+                const costPerServing = supp.servings > 0 ? supp.price / supp.servings : 0;
                 const itemDailyCost = costPerServing * supp.suggestedDaily;
                 totalDailyCost += itemDailyCost;
 

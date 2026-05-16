@@ -114,7 +114,8 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode }: SidebarSt
                       <p className="text-[9px] text-slate-400 font-bold">{product.brand}</p>
                     </div>
                     <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-1 border border-slate-100">
-                      <button onClick={() => updateQuantity(item.id, -1)} className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-red-500 font-bold">−</button>
+                      <button onClick={() => updateQuantity(item.id, -1)} className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-red-500 font-bold"> {item.count === 1 ? <Trash2 size={12} /> : "-"}
+                      </button>
                       <span className="text-[10px] font-black w-3 text-center text-slate-700">{item.count}</span>
                       <button onClick={() => updateQuantity(item.id, 1)} className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-green-500 font-bold">+</button>
                     </div>
