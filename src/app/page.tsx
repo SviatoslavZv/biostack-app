@@ -85,7 +85,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
                 {[...Array(8)].map((_, i) => <SupplementSkeleton key={i} />)}
               </div>
             ) : displaySupplements.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 transition-all duration-500 animate-in fade-in">
                 {displaySupplements.map((item, index) => (
                   <SupplementCard
                     key={item.id}

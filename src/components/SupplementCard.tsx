@@ -29,16 +29,13 @@ export const SupplementCard = ({
 
   return (
     <div
-      style={{
-        animationDelay: `${index * 0.05}s`,
-      }}
       className={`animate-fade-in-up relative flex flex-col p-4 rounded-[2rem] border-2 transition-all duration-500 h-full overflow-hidden group/main-card ${isSelected
         ? 'border-green-500 shadow-lg shadow-green-100/50 bg-gradient-to-b from-green-50/30 to-white'
         : 'border-gray-50 hover:border-green-200 hover:shadow-xl hover:-translate-y-1 bg-white'
         }`}
     >
       {/* 1. Изображение */}
-      <div className="relative w-full h-40 mb-2.5 rounded-[1.5rem] bg-gray-50/50 group/img overflow-hidden border border-transparent transition-colors group-hover/main-card:border-green-100/30 group/card">
+      <div className="relative w-full h-40 mb-2.5 rounded-[1.5rem] bg-gray-50/50 group/img  border border-transparent transition-colors group-hover/main-card:border-green-100/30 group/card">
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="relative w-full h-full p-2.5">
             {/* Передняя сторона */}
