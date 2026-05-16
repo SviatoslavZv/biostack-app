@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 import { SearchX, RefreshCcw } from "lucide-react";
 
 interface Props {
