@@ -4,6 +4,7 @@ import React from 'react';
 import { Search, X } from 'lucide-react';
 
 interface HeaderProps {
+  categories: string[];
   activeCategory: string;
   onCategoryChange: (category: string) => void;
   selectedCount: number;
@@ -12,6 +13,7 @@ interface HeaderProps {
 }
 
 export const Header = ({
+  categories = [],
   activeCategory,
   onCategoryChange,
   selectedCount,
@@ -19,7 +21,6 @@ export const Header = ({
   onSearchChange
 }: HeaderProps) => {
 
-  const categories = ['All', 'Focus', 'Sleep', 'Energy', 'Longevity'];
 
   return (
     <header className="fixed top-0 left-0 right-0 h-[80px] bg-white/80 backdrop-blur-md z-[100] border-b border-gray-100">

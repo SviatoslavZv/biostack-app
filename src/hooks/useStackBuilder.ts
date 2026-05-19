@@ -28,6 +28,8 @@ export interface StackBuilderHook {
     clearStack: () => void;
 }
 
+
+
 export const useStackBuilder = (): StackBuilderHook => {
     const [cart, setCart] = useState<CartItem[]>(() => {
         if (typeof window === 'undefined') return [];
@@ -45,6 +47,18 @@ export const useStackBuilder = (): StackBuilderHook => {
             localStorage.setItem('biostack-cart', JSON.stringify(cart));
         }
     }, [cart]);
+
+    // Скрупулёзный разбор динамического формирования категорий:
+const dynamicCategories = useMemo<string[]>(()=> {
+  // 1. Собираем все категории из реальных товаров
+  const categoriesInDb = SUPPLEMENTS.map(item => item.category);
+  
+  // 2. Оставляем только уникальные с помощью Set
+  const uniqueCategories = Array.from(new Set(categoriesInDb));
+  
+  // 3. Возвращаем итоговый массив, где 'All' всегда на первом месте
+  return ['All', ...uniqueCategories];
+}, []); // Массив зависимостей пустой, так как база SUPPLEMENTS статична
 
     const updateQuantity = (id: string, delta: number) => {
         setCart(prev => {
@@ -106,6 +120,8 @@ export const useStackBuilder = (): StackBuilderHook => {
             }
         });
 
+        
+
 
         return {
             dailyCost: totalDailyCost,
@@ -123,7 +139,7 @@ export const useStackBuilder = (): StackBuilderHook => {
         filteredSupplements,
         totalPrice,
         allSupplements: SUPPLEMENTS,
-        categories: ['All', 'Focus', 'Sleep', 'Energy', 'Longevity', 'Foundation', 'Immune'],
+        categories: dynamicCategories,
         analytics,
         clearStack,
     };

@@ -38,7 +38,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
   const {
     cart, selectedIds, activeCategory, setActiveCategory,
-    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics, clearStack
+    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics, clearStack, categories,
   } = builder;
 
   const displaySupplements = useMemo(() => {
@@ -66,6 +66,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
   return (
     <main className="min-h-screen bg-white">
       <Header
+        categories={categories}
         onCategoryChange={handleCategoryChange}
         activeCategory={activeCategory}
         selectedCount={selectedIds.length}
@@ -107,7 +108,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
                 description="Try another search or category"
                 onReset={() => {
                   setSearchQuery("");
-                  setActiveCategory("All");
+                  handleCategoryChange("All"); // <-- Теперь анимация загрузки сработает и при сбросе!
                 }}
               />
             )}
