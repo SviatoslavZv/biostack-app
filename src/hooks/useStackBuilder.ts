@@ -123,7 +123,7 @@ export const useStackBuilder = (): StackBuilderHook => {
         filteredSupplements,
         totalPrice,
         allSupplements: SUPPLEMENTS,
-        categories: ['All', 'Focus', 'Sleep', 'Energy', 'Longevity'],
+        categories: ['All', 'Focus', 'Sleep', 'Energy', 'Longevity', 'Foundation', 'Immune'],
         analytics,
         clearStack,
     };
