@@ -25,7 +25,7 @@ export const SupplementCard = ({
   onOpenModal,
   onAdd
 }: Props) => {
-  const isPriority = index < 8;
+  const isPriority = index < 13;
 
   return (
     <div
