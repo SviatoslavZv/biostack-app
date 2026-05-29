@@ -1321,7 +1321,7 @@ export const SUPPLEMENTS: Supplement[] = [
     servings: 240,
     dosagePerServing: "300mg",
     suggestedDaily: 1,
-    productUrl: "https://iherb.com/pr/nutricost-tart-cherry-extract-3-000-mg-180-capsules/132242",
+    productUrl: "https://iherb.com/pr/nutricost-tart-cherry-240-capsules-300-mg-per-capsule/124116",
     category: "Superfoods",
     subType: "tart-cherry",
     description: "Rich in natural anthocyanins and phytonutrients. Supports joint comfort, uric acid clearance, and muscle recovery post-exercise.",

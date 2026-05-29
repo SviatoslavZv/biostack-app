@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import Image from 'next/image'; // Добавили импорт Image
+import Image from 'next/image';
 import { Wallet, Clock, Zap, Layout, Star, ArrowRight, Trash2 } from 'lucide-react';
 import { StackSummary } from './StackSummary';
 import { StackBuilderHook } from '@/hooks/useStackBuilder';
@@ -11,9 +11,10 @@ interface SidebarStackProps {
   generateLink: () => void;
   mode: 'custom' | 'editors';
   setMode: (mode: 'custom' | 'editors') => void;
+  onOpenDisclaimer: () => void;
 }
 
-export const SidebarStack = ({ builder, generateLink, mode, setMode }: SidebarStackProps) => {
+export const SidebarStack = ({ builder, generateLink, mode, setMode, onOpenDisclaimer }: SidebarStackProps) => {
   if (!builder) return null;
 
   const {
@@ -28,24 +29,24 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode }: SidebarSt
   } = builder;
 
   return (
-    <aside className="hidden lg:flex w-96 border-l bg-white flex-col h-screen sticky top-0 shadow-xl z-20 md:flex md:w-72 lg:w-96">
+    // ИСПРАВЛЕНО: Изменили top-0 на top-16 (под твой хедер) и высоту calc(100vh-64px), чтобы сайдбар не заезжал под шапку сайта
+    <aside className="hidden md:flex flex-col w-72 lg:w-96 border-l bg-white sticky top-24 h-[calc(100vh-100px)] shadow-xl z-20">
 
-      {/* ШАПКА: Навигация и прогресс */}
-      <div className="p-6 border-b space-y-4">
+      {/* ШАПКА: Всегда жестко зафиксирована вверху сайдбара */}
+      <div className="p-6 border-b space-y-4 flex-shrink-0 bg-white">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-black text-slate-900 italic tracking-tight">Your Stack</h2>
 
           {/* КНОПКА СБРОСА */}
           {selectedIds.length > 0 && (
             <button
-              onClick={() => builder.clearStack()} // Вызываем метод из билдера
+              onClick={() => builder.clearStack()}
               className="p-2 text-slate-400 hover:text-red-500 transition-colors group"
               title="Clear all"
             >
               <Trash2 size={18} className="group-hover:scale-110 transition-transform" />
             </button>
           )}
-
 
           <div className="bg-slate-100 p-1 rounded-xl flex gap-1">
             <button
@@ -81,9 +82,8 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode }: SidebarSt
         )}
       </div>
 
-      {/* ОСНОВНОЙ КОНТЕНТ */}
-      <div className="flex-1 overflow-y-auto p-6">
-
+      {/* ОСНОВНОЙ КОНТЕНТ: Только эта область будет прокручиваться */}
+      <div className="flex-1 overflow-y-auto p-6 min-h-0 custom-scrollbar">
         {/* --- РЕЖИМ CUSTOM --- */}
         {mode === 'custom' && (
           <div className="space-y-4">
@@ -114,7 +114,8 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode }: SidebarSt
                       <p className="text-[9px] text-slate-400 font-bold">{product.brand}</p>
                     </div>
                     <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-1 border border-slate-100">
-                      <button onClick={() => updateQuantity(item.id, -1)} className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-red-500 font-bold"> {item.count === 1 ? <Trash2 size={12} /> : "-"}
+                      <button onClick={() => updateQuantity(item.id, -1)} className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-red-500 font-bold">
+                        {item.count === 1 ? <Trash2 size={12} /> : "-"}
                       </button>
                       <span className="text-[10px] font-black w-3 text-center text-slate-700">{item.count}</span>
                       <button onClick={() => updateQuantity(item.id, 1)} className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-green-500 font-bold">+</button>
@@ -169,8 +170,8 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode }: SidebarSt
         )}
       </div>
 
-      {/* ФУТЕР С АНАЛИТИКОЙ */}
-      <div className="p-6 bg-slate-50/80 border-t border-slate-100 space-y-4">
+      {/* ФУТЕР С АНАЛИТИКОЙ: Жестко зафиксирован внизу сайдбара */}
+      <div className="p-6 bg-slate-50/90 border-t border-slate-100 space-y-4 flex-shrink-0">
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
             <div className="flex items-center gap-2 mb-1">
@@ -199,7 +200,17 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode }: SidebarSt
           analytics={analytics}
           isSidebar={true}
         />
+        {/* НАШ НОВЫЙ ЛИПКИЙ МИКРО-ДИСКЛЕЙМЕР */}
+        <div className="text-center -mt-1">
+          <button
+            onClick={onOpenDisclaimer} // Вызываем переданную функцию при клике
+            className="text-[11px] text-slate-400 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline"
+          >
+            Medical Disclaimer
+          </button>
+        </div>
+
       </div>
-    </aside >
+    </aside>
   );
 };

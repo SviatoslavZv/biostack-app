@@ -19,20 +19,24 @@ export const calculateTotal = (cart: CartItem[], supplements: Supplement[]): num
 
 /**
  * Генерирует "умную" партнерскую ссылку iHerb (Shared Cart).
- * Теперь она передает не просто код, а конкретные товары и их количество.
+ * Собирает все товары из корзины в единый параметр pidlist, понятный iHerb.
  */
 export const generateIHerbLink = (cart: CartItem[]): string => {
   const baseUrl = "https://www.iherb.com/tr/cb";
   const rcode = PARTNER_CONFIG.rewardsCode;
 
+  // Если корзина пуста, просто отправляем на главную iHerb с реферальным кодом
   if (cart.length === 0) return `https://www.iherb.com/?rcode=${rcode}`;
 
-  // Формируем параметры товаров: pcode-ID=COUNT
-  const itemsParams = cart
-    .map(item => `pcode-${item.id}=${item.count}`)
-    .join('&');
+  // 1. Превращаем каждый элемент [ {id: "NOW-123", count: 2} ] в строку формата "NOW-123-2"
+  const formattedItems = cart.map(item => `${item.id}-${item.count}`);
 
-  return `${baseUrl}?${itemsParams}&rcode=${rcode}`;
+  // 2. Объединяем полученный массив строк через восклицательный знак "!"
+  // Получится строка: "NOW-123-2!SOL-567-1"
+  const pidlist = formattedItems.join('!');
+
+  // 3. Собираем финальный URL, передавая pidlist и твой реферальный код rcode
+  return `${baseUrl}?pidlist=${pidlist}&rcode=${rcode}`;
 };
 
 

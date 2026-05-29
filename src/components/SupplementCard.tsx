@@ -34,8 +34,15 @@ export const SupplementCard = ({
         : 'border-gray-50 hover:border-green-200 hover:shadow-xl hover:-translate-y-1 bg-white'
         }`}
     >
-      {/* 1. Изображение */}
-      <div className="relative w-full h-40 mb-2.5 rounded-[1.5rem] bg-gray-50/50 group/img  border border-transparent transition-colors group-hover/main-card:border-green-100/30 group/card">
+      {/* 1. Изображение (ИСПРАВЛЕНО: добавили onClick, cursor-pointer и роли для доступности) */}
+      <div
+        onClick={onOpenModal}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenModal(); } }}
+        className="relative w-full h-40 mb-2.5 rounded-[1.5rem] bg-gray-50/50 group/img border border-transparent transition-colors group-hover/main-card:border-green-100/30 group/card cursor-pointer focus-visible:outline-2 focus-visible:outline-green-500"
+      >
+        {/* Контейнер картинок */}
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="relative w-full h-full p-2.5">
             {/* Передняя сторона */}
@@ -49,7 +56,7 @@ export const SupplementCard = ({
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
               />
             </div>
-            {/* Задняя сторона - ТУТ ИСПРАВИЛИ SIZES */}
+            {/* Задняя сторона */}
             <div className="absolute inset-0 p-2.5 transition-all duration-700 opacity-0 group-hover/card:opacity-100 group-hover/card:scale-[2.8] origin-center">
               <Image
                 src={item.imageBack}
@@ -68,6 +75,7 @@ export const SupplementCard = ({
           </div>
         )}
 
+        {/* Кнопка перехода на iHerb (ИСПРАВЛЕНО: e.stopPropagation не дает клику провалиться в открытие модалки) */}
         <a
           href={formatPartnerLink(item.productUrl)}
           target="_blank"
@@ -89,7 +97,7 @@ export const SupplementCard = ({
           {item.brand}
         </span>
 
-        {/* ТУТ ДОБАВИЛИ min-h-[3rem] ДЛЯ ВЫРАВНИВАНИЯ */}
+        {/* Название товара (Клик также сохранен для удобства) */}
         <h3
           onClick={onOpenModal}
           className="text-[14px] font-bold text-slate-900 leading-tight line-clamp-2 min-h-[3rem] mt-1.5 mb-2 px-1 
