@@ -7,13 +7,13 @@ export interface Supplement {
   dosagePerServing: string; // например, "500mg"
   suggestedDaily: number;   // порций в день (обычно 1 или 2)
   productUrl: string; // Прямая ссылка на товар
-  category: "Focus" | "Sleep" | "Energy" | "Longevity" | "Foundation" | "Immune" | "Antioxidants" | "Superfoods" |"Joint Health"| "Collagen" | "Men's Health";
-  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha'| 'resveratrol' | 'nac'| 'astaxanthin'| 'iron'| 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine'| 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm'| 'prostate-support'| 'testo-boosters'| 'saw-palmetto';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
+  category: "Focus" | "Sleep" | "Energy" | "Longevity" | "Foundation" | "Immune" | "Antioxidants" | "Superfoods" | "Joint Health" | "Collagen" | "Men's Health";
+  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'nmn' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
   description: string;
   isAvailable: boolean;
   imageFront: string; // Фас
   imageBack: string;  // Состав
-  
+
 }
 
 export const SUPPLEMENTS: Supplement[] = [
@@ -112,6 +112,166 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01287/g/8.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01287/l/10.jpg"
+  },
+  {
+    id: "NOW-02390",
+    name: "Magtein®, 90 Veg Capsules",
+    brand: "NOW Foods",
+    price: 40.30,
+    servings: 30,
+    dosagePerServing: "144mg",
+    suggestedDaily: 3,
+    productUrl: "https://iherb.com/pr/now-foods-magtein-90-veg-capsules/57577",
+    category: "Focus",
+    subType: "magnesium-threonate",
+    description: "The only form of magnesium clinically shown to cross the blood-brain barrier. Supports cognitive function, memory, and neural plasticity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now02390/g/50.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now02390/l/55.jpg"
+  },
+  {
+    id: "NOW-02394",
+    name: "Magtein®, Magnesium L-Threonate, 180 Veg Capsules",
+    brand: "NOW Foods",
+    price: 73.90,
+    servings: 60,
+    dosagePerServing: "144mg",
+    suggestedDaily: 3,
+    productUrl: "https://iherb.com/pr/now-foods-magtein-magnesium-l-threonate-180-veg-capsules/129590",
+    category: "Focus",
+    subType: "magnesium-threonate",
+    description: "The only form of magnesium clinically shown to cross the blood-brain barrier. Supports cognitive function, memory, and neural plasticity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now02394/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now02394/l/14.jpg"
+  },
+  {
+    id: "NCS-57431",
+    name: "Magnesium L-Threonate, 90 Capsules (666 mg per Capsule)",
+    brand: "Nutricost",
+    price: 44.35,
+    servings: 30,
+    dosagePerServing: "144mg",
+    suggestedDaily: 3,
+    productUrl: "https://iherb.com/pr/nutricost-magtein-magnesium-l-threonate-90-capsules-666-mg-per-capsule/147392",
+    category: "Focus",
+    subType: "magnesium-threonate",
+    description: "The only form of magnesium clinically shown to cross the blood-brain barrier. Supports cognitive function, memory, and neural plasticity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs57431/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs57431/l/13.jpg"
+  },
+  {
+    id: "NCS-67393",
+    name: "Magnesium L-Threonate, 120 Capsules (666 mg per Capsule)",
+    brand: "Nutricost",
+    price: 44.35,
+    servings: 40,
+    dosagePerServing: "144mg",
+    suggestedDaily: 3,
+    productUrl: "https://iherb.com/pr/nutricost-magtein-magnesium-l-threonate-120-capsules-666-mg-per-capsule/129069",
+    category: "Focus",
+    subType: "magnesium-threonate",
+    description: "The only form of magnesium clinically shown to cross the blood-brain barrier. Supports cognitive function, memory, and neural plasticity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67393/v/24.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67393/l/29.jpg"
+  },
+  {
+    id: "DRB-00283",
+    name: "Brain Magnesium with Magtein®, 90 Veggie Caps (50 mg per Capsule)",
+    brand: "Doctor's Best",
+    price: 42.66,
+    servings: 30,
+    dosagePerServing: "150mg",
+    suggestedDaily: 3,
+    productUrl: "https://iherb.com/pr/doctor-s-best-brain-magnesium-with-magtein-90-veggie-caps-50-mg-per-capsule/46875",
+    category: "Focus",
+    subType: "magnesium-threonate",
+    description: "The only form of magnesium clinically shown to cross the blood-brain barrier. Supports cognitive function, memory, and neural plasticity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00283/g/124.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00283/l/129.jpg"
+  },
+  {
+    id: "NOW-00365",
+    name: "Vitamin D-3, High Potency, 1,000 IU, 180 Softgels",
+    brand: "NOW Foods",
+    price: 6.03,
+    servings: 180,
+    dosagePerServing: "25mcg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-vitamin-d-3-high-potency-1-000-iu-180-softgels/543",
+    category: "Foundation",
+    subType: "vitamin-d3",
+    description: "Essential fat-soluble vitamin supporting immune function, bone density, mood regulation, and hormonal balance.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00365/g/61.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00365/l/66.jpg"
+  },
+  {
+    id: "NOW-00367",
+    name: "Vitamin D3, 2,000 IU, 120 Softgels",
+    brand: "NOW Foods",
+    price: 5.16,
+    servings: 120,
+    dosagePerServing: "50mcg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-vitamin-d3-2-000-iu-120-softgels/8229",
+    category: "Foundation",
+    subType: "vitamin-d3",
+    description: "Essential fat-soluble vitamin supporting immune function, bone density, mood regulation, and hormonal balance.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00367/g/73.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00367/l/78.jpg"
+  },
+  {
+    id: "NOW-00372",
+    name: "Vitamin D-3, High Potency, 125 mcg (5,000 IU), 120 Softgels",
+    brand: "NOW Foods",
+    price: 7.47,
+    servings: 120,
+    dosagePerServing: "125mcg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-vitamin-d-3-high-potency-125-mcg-5-000-iu-120-softgels/10421",
+    category: "Foundation",
+    subType: "vitamin-d3",
+    description: "Essential fat-soluble vitamin supporting immune function, bone density, mood regulation, and hormonal balance.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00372/g/88.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00372/l/93.jpg"
+  },
+  {
+    id: "NOW-00373",
+    name: "Vitamin D-3, High Potency, 5,000 IU, 240 Softgels",
+    brand: "NOW Foods",
+    price: 13.23,
+    servings: 240,
+    dosagePerServing: "125mcg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-vitamin-d-3-high-potency-5-000-iu-240-softgels/22335",
+    category: "Foundation",
+    subType: "vitamin-d3",
+    description: "Essential fat-soluble vitamin supporting immune function, bone density, mood regulation, and hormonal balance.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00373/g/106.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00373/l/109.jpg"
+  },
+  {
+    id: "NOW-00374",
+    name: "Vitamin D-3, High Potency, 5,000 IU, 30 Softgels",
+    brand: "NOW Foods",
+    price: 4.01,
+    servings: 30,
+    dosagePerServing: "125mcg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-vitamin-d-3-high-potency-5-000-iu-30-softgels/140406",
+    category: "Foundation",
+    subType: "vitamin-d3",
+    description: "Essential fat-soluble vitamin supporting immune function, bone density, mood regulation, and hormonal balance.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00374/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00374/l/11.jpg"
   },
   {
     id: "NOW-00147",
@@ -273,7 +433,7 @@ export const SUPPLEMENTS: Supplement[] = [
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00690/g/58.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00690/l/64.jpg"
   },
-    {
+  {
     id: "NOW-03070",
     name: "Quercetin with Bromelain",
     brand: "NOW Foods",
@@ -498,6 +658,118 @@ export const SUPPLEMENTS: Supplement[] = [
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02332/l/83.jpg"
   },
   {
+    id: "NOW-00436",
+    name: "B-100, 100 Veg Capsules",
+    brand: "NOW Foods",
+    price: 18.80,
+    servings: 100,
+    dosagePerServing: "100mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-b-100-100-veg-capsules/37829",
+    category: "Foundation",
+    subType: "vitamin-b-complex",
+    description: "Complete B-vitamin complex supporting energy production, nervous system function, and methylation pathways.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00436/g/71.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00436/l/68.jpg"
+  },
+  {
+    id: "NOW-00438",
+    name: "B-100, 250 Veg Capsules",
+    brand: "NOW Foods",
+    price: 41.57,
+    servings: 250,
+    dosagePerServing: "100mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-b-100-250-veg-capsules/395",
+    category: "Foundation",
+    subType: "vitamin-b-complex",
+    description: "Complete B-vitamin complex supporting energy production, nervous system function, and methylation pathways.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00438/g/65.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00438/l/70.jpg"
+  },
+  {
+    id: "NOW-00426",
+    name: "B-50, 100 Tablets",
+    brand: "NOW Foods",
+    price: 13.42,
+    servings: 100,
+    dosagePerServing: "50mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-b-50-100-tablets/102318",
+    category: "Foundation",
+    subType: "vitamin-b-complex",
+    description: "These vitamins work to support energy production, maintain healthy homocysteine metabolism, and promote the health of the nervous system.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00426/v/46.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00426/l/51.jpg"
+  },
+  {
+    id: "NOW-00428",
+    name: "B-50, 250 Tablets",
+    brand: "NOW Foods",
+    price: 30.85,
+    servings: 250,
+    dosagePerServing: "50mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-b-50-250-tablets/409",
+    category: "Foundation",
+    subType: "vitamin-b-complex",
+    description: "These vitamins work to support energy production, maintain healthy homocysteine metabolism, and promote the health of the nervous system.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00428/g/61.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00428/l/67.jpg"
+  },
+  {
+    id: "NOW-01418",
+    name: "Berberine Glucose Support, 60 Softgels",
+    brand: "NOW Foods",
+    price: 26.86,
+    servings: 90,
+    dosagePerServing: "400mg",
+    suggestedDaily: 3,
+    productUrl: "https://iherb.com/pr/now-foods-berberine-glucose-support-90-softgels/88818",
+    category: "Longevity",
+    subType: "berberine",
+    description: "Supports healthy blood glucose metabolism and cardiovascular health. Often called 'nature's metformin' in biohacking circles.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01418/g/32.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01418/l/37.jpg"
+  },
+  {
+    id: "CGN-02266",
+    name: "Spermidine, Rice Germ Extract, 1 mg, 30 Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 9.34,
+    servings: 30,
+    dosagePerServing: "1mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-spermidine-rice-germ-extract-1-mg-30-veggie-capsules/119089",
+    category: "Longevity",
+    subType: "spermidine",
+    description: "Naturally occurring polyamine that triggers autophagy — the body's cellular cleaning process. Supports healthy aging and cardiovascular function.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02266/g/57.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02266/l/62.jpg"
+  },
+  {
+    id: "CGN-02377",
+    name: "Spermidine, Rice Germ Extract, 1 mg, 90 Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 18.95,
+    servings: 90,
+    dosagePerServing: "1mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-spermidine-rice-germ-extract-1-mg-90-veggie-capsules/130825",
+    category: "Longevity",
+    subType: "spermidine",
+    description: "Naturally occurring polyamine that triggers autophagy — the body's cellular cleaning process. Supports healthy aging and cardiovascular function.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/g/32.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/l/37.jpg"
+  },
+  {
     id: "NOW-01552",
     name: "Zinc Picolinate",
     brand: "NOW Foods",
@@ -662,7 +934,7 @@ export const SUPPLEMENTS: Supplement[] = [
     name: "Melatonin, 3 mg, 200 Tablets",
     brand: "21st Century",
     price: 8.43,
-    servings:200,
+    servings: 200,
     dosagePerServing: "3mg",
     suggestedDaily: 1,
     productUrl: "https://iherb.com/pr/21st-century-melatonin-3-mg-200-tablets/14103",
@@ -688,7 +960,7 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/nap/nap47625/g/24.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/nap/nap47625/l/32.jpg"
-  },  
+  },
   {
     id: "NOW-04603",
     name: "Ashwagandha, 450 mg, 90 Veg Capsules",
@@ -961,7 +1233,7 @@ export const SUPPLEMENTS: Supplement[] = [
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00211/g/87.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00211/l/92.jpg"
   },
-   {
+  {
     id: "SNS-02293",
     name: "Resveratrol 200™, 60 Tablets",
     brand: "Source Naturals",
@@ -1748,7 +2020,7 @@ export const SUPPLEMENTS: Supplement[] = [
   {
     id: "CEN-21720",
     name: "MSM, 1,000 mg, 90 Tablets",
-    brand: "NOW Foods",
+    brand: "21st Century",
     price: 10.56,
     servings: 90,
     dosagePerServing: "1000mg",
@@ -1764,7 +2036,7 @@ export const SUPPLEMENTS: Supplement[] = [
   {
     id: "NCS-67412",
     name: "MSM, 240 Tablets (1,000 mg per Tablet)",
-    brand: "NOW Foods",
+    brand: "Nutricost",
     price: 21.86,
     servings: 120,
     dosagePerServing: "1000mg",
@@ -1785,7 +2057,7 @@ export const SUPPLEMENTS: Supplement[] = [
     servings: 60,
     dosagePerServing: "550mg",
     suggestedDaily: 2,
-    productUrl: "https://iherb.com/pr/nutricost-msm-240-tablets-1-000-mg-per-tablet/132277",
+    productUrl: "https://iherb.com/pr/now-foods-sports-advanced-joint-support-60-capsules/143717",
     category: "Joint Health",
     subType: "glucosamine-chondroitin",
     description: "Advanced Joint Support is a combination of three key ingredients that support healthy joint structures and function, as well as joint comfort.",
@@ -1924,5 +2196,5 @@ export const SUPPLEMENTS: Supplement[] = [
 
 
 ];
-  
+
 
