@@ -86,7 +86,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
             {/* ПЕРВЫЙ ПРЯМОЙ ПОТОМОК: ВЕРХНЯЯ ЗОНА (Объединяет ВСЕ элементы каталога) */}
             <div>
-              <div className="mb-8">
+              <div className="sticky top-32 md:top-40 z-30 mb-8">
                 <SmartAlerts selectedIds={selectedIds} />
               </div>
 
