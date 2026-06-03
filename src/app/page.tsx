@@ -86,8 +86,9 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
             {/* ПЕРВЫЙ ПРЯМОЙ ПОТОМОК: ВЕРХНЯЯ ЗОНА (Объединяет ВСЕ элементы каталога) */}
             <div>
-              <div className="sticky top-32 md:top-40 z-30 mb-8">
-                <SmartAlerts selectedIds={selectedIds} />
+              <div className="sticky top-20 z-30 my-6">
+                {/* Передаем актуальную корзину и полную базу добавок из хука builder */}
+                <SmartAlerts cart={cart} allSupplements={allSupplements} />
               </div>
 
               {/* ХЕРО-БАННЕР */}
