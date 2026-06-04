@@ -88,7 +88,11 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
             <div>
               <div className="sticky top-20 z-30 my-6">
                 {/* Передаем актуальную корзину и полную базу добавок из хука builder */}
-                <SmartAlerts cart={cart} allSupplements={allSupplements} />
+                <SmartAlerts
+                  cart={cart}
+                  allSupplements={allSupplements}
+                  onAddProduct={(id) => updateQuantity(id, 1)} // ✅ ТАК ПРАВИЛЬНО
+                />
               </div>
 
               {/* ХЕРО-БАННЕР */}
@@ -155,7 +159,8 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
             generateLink={handleGenerateLink}
             mode={sidebarMode}
             setMode={setSidebarMode}
-            onOpenDisclaimer={() => setIsDisclaimerOpen(true)} // <-- Передаем пропсом вниз
+            onOpenDisclaimer={() => setIsDisclaimerOpen(true)}
+            onOpenProductModal={(product) => setSelectedProduct(product)} // <-- ПЕРЕДАЕМ ВОТ ЭТУ СТРОЧКУ!
           />
         </div> {/* <-- ЗАКРЫВАЕМ КОНТЕЙНЕР flex gap-8 */}
       </div> {/* <-- ЗАКРЫВАЕМ МАКСИМАЛЬНЫЙ ОГРАНИЧИТЕЛЬ max-w-[1920px] */}

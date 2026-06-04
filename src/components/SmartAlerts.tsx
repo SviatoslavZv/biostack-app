@@ -12,14 +12,74 @@ interface CartItem {
 interface SmartAlertsProps {
     cart: CartItem[];
     allSupplements: Supplement[];
+    // Добавляем функцию добавления товара, которая прилетает из главного билдера стека
+    onAddProduct: (productId: string) => void;
 }
 
-export const SmartAlerts = ({ cart, allSupplements }: SmartAlertsProps) => {
-    // Стейт для раскрытия/сворачивания панели алертов
+export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     /**
-     * Наш проверенный движок аналитики корзины
+     * Функция-обработчик апсейла.
+     * Находит первый доступный реальный ID товара по его категории/subType и добавляет в корзину.
+     */
+
+    const handleUpsell = (upsellTarget: string) => {
+        // 1. Находим товар в корзине, который Спровоцировал это правило.
+        // Мы ищем правило в STACK_RULES, которое сработало, и смотрим, какая добавка из этой же группы уже есть в корзине.
+        const triggerItemInCart = cart.find(item => {
+            const prod = allSupplements.find(s => s.id === item.id);
+            // Ищем любой товар в корзине, чья синергия завязана на текущий upsellTarget
+            // (Например, если цель Омега-3, то триггером мог быть CoQ10)
+            return prod && prod.subType !== upsellTarget;
+        });
+
+        let targetServings = 0;
+
+        if (triggerItemInCart) {
+            const triggerProduct = allSupplements.find(s => s.id === triggerItemInCart.id);
+            if (triggerProduct && triggerProduct.servings) {
+                // Считаем общее количество порций триггерного товара (порции в банке * количество банок)
+                targetServings = triggerProduct.servings * triggerItemInCart.count;
+            }
+        }
+
+        // 2. Находим ВСЕ товары в каталоге, которые подходят под категорию апсейла
+        const candidateProducts = allSupplements.filter(s =>
+            (s.subType === upsellTarget || s.id === upsellTarget) && s.isAvailable
+        );
+
+        if (candidateProducts.length === 0) {
+            console.warn(`No available products found for upsell target: ${upsellTarget}`);
+            return;
+        }
+
+        // 3. Если у нас нет триггера или у кандидатов нет порций, берем самый первый доступный
+        let bestMatchProduct = candidateProducts[0];
+
+        // 4. УМНЫЙ ПОДБОР: Ищем баночку, где порций ближе всего к targetServings
+        if (targetServings > 0) {
+            let minDifference = Infinity;
+
+            candidateProducts.forEach(product => {
+                if (product.servings) {
+                    // Считаем абсолютную разницу между порциями кандидата и нашей целью
+                    const difference = Math.abs(product.servings - targetServings);
+
+                    if (difference < minDifference) {
+                        minDifference = difference;
+                        bestMatchProduct = product;
+                    }
+                }
+            });
+        }
+
+        // 5. Отправляем лучший мэтч в корзину!
+        onAddProduct(bestMatchProduct.id);
+    };
+
+    /**
+     * Аналитика корзины
      */
     const getContextData = (): RuleContext => {
         const types: string[] = [];
@@ -69,13 +129,10 @@ export const SmartAlerts = ({ cart, allSupplements }: SmartAlertsProps) => {
     };
 
     const context = getContextData();
-    // Фильтруем правила на основе собранного контекста
     const activeRules = STACK_RULES.filter(rule => rule.condition(context));
 
-    // Если корзина пуста или конфликтов нет — компонент не занимает место на экране
     if (activeRules.length === 0) return null;
 
-    // Считаем количество алертов по категориям для компактных бейджей
     const warningsCount = activeRules.filter(r => r.type === 'warning').length;
     const successCount = activeRules.filter(r => r.type === 'success').length;
     const infoCount = activeRules.filter(r => r.type === 'info').length;
@@ -83,7 +140,7 @@ export const SmartAlerts = ({ cart, allSupplements }: SmartAlertsProps) => {
     return (
         <div className="sticky top-16 md:top-20 z-30 mb-8 bg-white border border-slate-200 shadow-md rounded-xl overflow-hidden transition-all duration-300">
 
-            {/* Кликабельная шапка-панель */}
+            {/* Кликабельная шапка */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100/80 active:bg-slate-100 transition-colors text-sm font-semibold text-slate-700 select-none outline-none focus:relative focus:z-10 focus:ring-2 focus:ring-blue-500/20"
@@ -93,33 +150,31 @@ export const SmartAlerts = ({ cart, allSupplements }: SmartAlertsProps) => {
                         🧬 Smart Analyzer:
                     </span>
 
-                    {/* Сводные бейджи — показывают статус "вспышками" */}
                     <div className="flex items-center space-x-1.5 text-xs font-bold">
                         {warningsCount > 0 && (
-                            <span className="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-200 rounded-full flex items-center gap-1">
+                            <span className="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-200 rounded-full">
                                 ⚠️ {warningsCount}
                             </span>
                         )}
                         {successCount > 0 && (
-                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full flex items-center gap-1">
+                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full">
                                 ✅ {successCount}
                             </span>
                         )}
                         {infoCount > 0 && (
-                            <span className="px-2 py-0.5 bg-blue-100 text-blue-800 border border-blue-200 rounded-full flex items-center gap-1">
+                            <span className="px-2 py-0.5 bg-blue-100 text-blue-800 border border-blue-200 rounded-full">
                                 💡 {infoCount}
                             </span>
                         )}
                     </div>
                 </div>
 
-                {/* Текстовый переключатель состояния */}
                 <span className="text-xs text-blue-600 hover:text-blue-700 font-bold bg-blue-50 px-2.5 py-1 rounded-md transition-colors">
                     {isOpen ? 'Collapse ↑' : 'Review Details ↓'}
                 </span>
             </button>
 
-            {/* Раскрывающийся контент с внутренним скроллом */}
+            {/* Раскрывающийся список с алертами */}
             {isOpen && (
                 <div className="p-4 bg-white border-t border-slate-100 space-y-2.5 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
                     {activeRules.map(rule => (
@@ -130,7 +185,10 @@ export const SmartAlerts = ({ cart, allSupplements }: SmartAlertsProps) => {
                                     'bg-emerald-50/60 border-emerald-100 text-emerald-700'
                                 }`}
                         >
-                            {typeof rule.message === 'function' ? rule.message(context) : rule.message}
+                            {/* Прокидываем в message функцию handleUpsell вторым аргументом */}
+                            {typeof rule.message === 'function'
+                                ? rule.message(context, handleUpsell)
+                                : rule.message}
                         </div>
                     ))}
                 </div>

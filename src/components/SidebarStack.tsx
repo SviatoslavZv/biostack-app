@@ -1,10 +1,11 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import { Wallet, Clock, Zap, Layout, Star, ArrowRight, Trash2 } from 'lucide-react';
+import { Wallet, Clock, Zap, Layout, Star, ArrowRight, Trash2, Info } from 'lucide-react';
 import { StackSummary } from './StackSummary';
 import { StackBuilderHook } from '@/hooks/useStackBuilder';
 import { STACK_PRESETS } from '@/constants/presets';
+import { Supplement } from '@/constants/supplements';
 
 interface SidebarStackProps {
   builder: StackBuilderHook;
@@ -12,9 +13,17 @@ interface SidebarStackProps {
   mode: 'custom' | 'editors';
   setMode: (mode: 'custom' | 'editors') => void;
   onOpenDisclaimer: () => void;
+  onOpenProductModal: (product: Supplement) => void;
 }
 
-export const SidebarStack = ({ builder, generateLink, mode, setMode, onOpenDisclaimer }: SidebarStackProps) => {
+export const SidebarStack = ({
+  builder,
+  generateLink,
+  mode,
+  setMode,
+  onOpenDisclaimer,
+  onOpenProductModal
+}: SidebarStackProps) => {
   if (!builder) return null;
 
   const {
@@ -29,10 +38,9 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode, onOpenDiscl
   } = builder;
 
   return (
-    // ИСПРАВЛЕНО: Изменили top-0 на top-16 (под твой хедер) и высоту calc(100vh-64px), чтобы сайдбар не заезжал под шапку сайта
     <aside className="hidden md:flex flex-col w-72 lg:w-96 border-l bg-white sticky top-24 h-[calc(100vh-100px)] shadow-xl z-20">
 
-      {/* ШАПКА: Всегда жестко зафиксирована вверху сайдбара */}
+      {/* ШАПКА: Зафиксирована вверху */}
       <div className="p-6 border-b space-y-4 flex-shrink-0 bg-white">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-black text-slate-900 italic tracking-tight">Your Stack</h2>
@@ -82,7 +90,7 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode, onOpenDiscl
         )}
       </div>
 
-      {/* ОСНОВНОЙ КОНТЕНТ: Только эта область будет прокручиваться */}
+      {/* ОСНОВНОЙ КОНТЕНТ: Скролл-зона карточек */}
       <div className="flex-1 overflow-y-auto p-6 min-h-0 custom-scrollbar">
         {/* --- РЕЖИМ CUSTOM --- */}
         {mode === 'custom' && (
@@ -99,27 +107,80 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode, onOpenDiscl
                 const product = allSupplements.find((s) => s.id === item.id);
                 if (!product) return null;
                 return (
-                  <div key={item.id} className="flex items-center gap-4 p-3 rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-green-200 transition-all group">
-                    <div className="relative w-10 h-10 flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <div key={item.id} className="flex items-center gap-3 p-3 rounded-2xl border border-slate-100 bg-white shadow-sm hover:border-green-200 transition-all group/card relative">
+
+                    {/* ЛЕВАЯ ЧАСТЬ: Интерактивная зона товара (Клик = Модалка, Ховер = Тултип) */}
+                    <button
+                      onClick={() => onOpenProductModal(product)}
+                      className="relative w-12 h-12 flex-shrink-0 group/tooltip bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 hover:border-blue-200 transition-all cursor-pointer outline-none focus:ring-2 focus:ring-blue-100"
+                      title="View full details"
+                    >
                       <Image
                         src={product.imageFront}
                         alt={product.name}
                         fill
-                        className="object-contain"
-                        sizes="40px"
+                        className="object-contain p-1 group-hover/card:scale-105 transition-transform"
+                        sizes="48px"
                       />
+
+                      {/* Иконка "i" как визуальный маркер */}
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-white shadow-sm border border-slate-100 rounded-full flex items-center justify-center text-slate-400 group-hover/tooltip:text-blue-600 group-hover/tooltip:border-blue-100 transition-all z-10">
+                        <Info size={10} />
+                      </div>
+
+                      {/* TOOLTIP: Всплывает вправо внутри карточки поверх текста */}
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 translate-x-14 hidden group-hover/tooltip:block z-50 w-48 p-2.5 bg-slate-900 text-white text-[10px] rounded-xl shadow-2xl border border-slate-800 pointer-events-none animate-in fade-in zoom-in-95 duration-150">
+                        <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+
+                        <div className="space-y-1 font-medium text-left">
+                          <div className="font-black border-b border-slate-800 pb-1 uppercase tracking-tight text-slate-400 flex justify-between">
+                            <span>Stack Logic</span>
+                            <span className="text-emerald-500 italic text-[9px]">Active</span>
+                          </div>
+                          <div className="flex justify-between gap-2 pt-0.5">
+                            <span className="text-slate-400">Pack size:</span>
+                            <span className="font-bold text-slate-200">{product.servings || 'N/A'} serv.</span>
+                          </div>
+                          {product.servings && product.suggestedDaily && (
+                            <div className="flex justify-between border-t border-slate-800 pt-1 mt-1 font-bold">
+                              <span className="text-slate-400">Duration:</span>
+                              <span className="text-blue-400">~{Math.floor(product.servings / product.suggestedDaily)} days</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Название + Бренд + Цена */}
+                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                      <h4 className="text-[10px] font-black text-slate-800 truncate uppercase tracking-tight leading-none mb-1 max-w-[110px] lg:max-w-[160px]">
+                        {product.name}
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] text-slate-400 font-bold truncate max-w-[60px] lg:max-w-[95px]">{product.brand}</span>
+                        <span className="text-[9px] text-emerald-600 font-black px-1.5 py-0.5 bg-emerald-50 rounded-md border border-emerald-100">
+                          ${product.price.toFixed(2)}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-[10px] font-black text-slate-800 truncate uppercase tracking-tight">{product.name}</h4>
-                      <p className="text-[9px] text-slate-400 font-bold">{product.brand}</p>
-                    </div>
-                    <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-1 border border-slate-100">
-                      <button onClick={() => updateQuantity(item.id, -1)} className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-red-500 font-bold">
-                        {item.count === 1 ? <Trash2 size={12} /> : "-"}
+
+                    {/* ПРАВАЯ ЧАСТЬ: Управление количеством */}
+                    <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-1 border border-slate-100 flex-shrink-0">
+                      <button
+                        onClick={() => updateQuantity(item.id, -1)}
+                        className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors"
+                      >
+                        {item.count === 1 ? <Trash2 size={12} /> : <span className="font-black">-</span>}
                       </button>
-                      <span className="text-[10px] font-black w-3 text-center text-slate-700">{item.count}</span>
-                      <button onClick={() => updateQuantity(item.id, 1)} className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-green-500 font-bold">+</button>
+                      <span className="text-[11px] font-black w-4 text-center text-slate-700">{item.count}</span>
+                      <button
+                        onClick={() => updateQuantity(item.id, 1)}
+                        className="w-6 h-6 flex items-center justify-center text-slate-400 hover:text-green-600 transition-colors"
+                      >
+                        <span className="font-black">+</span>
+                      </button>
                     </div>
+
                   </div>
                 );
               })
@@ -170,7 +231,7 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode, onOpenDiscl
         )}
       </div>
 
-      {/* ФУТЕР С АНАЛИТИКОЙ: Жестко зафиксирован внизу сайдбара */}
+      {/* ФУТЕР С АНАЛИТИКОЙ: Зафиксирован внизу */}
       <div className="p-6 bg-slate-50/90 border-t border-slate-100 space-y-4 flex-shrink-0">
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
@@ -200,10 +261,11 @@ export const SidebarStack = ({ builder, generateLink, mode, setMode, onOpenDiscl
           analytics={analytics}
           isSidebar={true}
         />
-        {/* НАШ НОВЫЙ ЛИПКИЙ МИКРО-ДИСКЛЕЙМЕР */}
+
+        {/* ЛИПКИЙ МИКРО-ДИСКЛЕЙМЕР */}
         <div className="text-center -mt-1">
           <button
-            onClick={onOpenDisclaimer} // Вызываем переданную функцию при клике
+            onClick={onOpenDisclaimer}
             className="text-[11px] text-slate-400 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline"
           >
             Medical Disclaimer

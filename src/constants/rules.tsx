@@ -2,32 +2,32 @@ import React from 'react';
 
 /**
  * Интерфейс контекста, который SmartAlerts передает в каждое правило.
- * Предоставляет полную аналитику по текущему состоянию корзины.
  */
 export interface RuleContext {
-  types: string[]; // Плоский массив всех subType с учетом количества (для простых синергий)
-  getMultipleFormsTypes: () => string[]; // Возвращает подтипы, где выбраны РАЗНЫЕ бренды/формы
-  getHighQuantityTypes: () => Array<{ subType: string; count: number; name: string }>; // Возвращает товары, купленные в количестве 2+ шт.
+  types: string[]; // Плоский массив всех subType с учетом количества
+  getMultipleFormsTypes: () => string[]; // Подтипы, где выбраны разные бренды/формы
+  getHighQuantityTypes: () => Array<{ subType: string; count: number; name: string }>; // Товары с количеством 2+ шт.
 }
 
 /**
- * Интерфейс структуры правила.
- * message может быть обычной строкой или функцией, возвращающей JSX.
+ * Расширенный интерфейс структуры правила.
+ * Теперь message может принимать функцию onUpsell для рендеринга интерактивной кнопки.
  */
 export interface Rule {
   id: string;
   condition: (ctx: RuleContext) => boolean;
-  message: string | ((ctx: RuleContext) => React.ReactNode);
+  message: string | ((ctx: RuleContext, onUpsell?: (productId: string) => void) => React.ReactNode);
   type: 'info' | 'warning' | 'success';
+  upsellProductId?: string; // ID товара из каталога, который это правило может порекомендовать
 }
 
 /**
- * Единая база знаний и правил для анализа стека добавок
+ * Единая база знаний и правил для анализа стека добавок с поддержкой апсейла
  */
 export const STACK_RULES: Rule[] = [
 
   // ==========================================================================
-  // ⚠️ ГЛОБАЛЬНЫЕ ДИНАМИЧЕСКИЕ ПРАВИЛА (Автоматически работают для всего каталога)
+  // ⚠️ ГЛОБАЛЬНЫЕ ДИНАМИЧЕСКИЕ ПРАВИЛА (Работают автоматически)
   // ==========================================================================
   {
     id: 'global-multiple-forms',
@@ -162,14 +162,40 @@ export const STACK_RULES: Rule[] = [
   {
     id: 'high-d3-without-k2',
     condition: (ctx) => ctx.types.includes('vitamin-d3') && !ctx.types.includes('vitamin-d3-k2'),
-    message: "⚠️ Taking Vitamin D3 without K2 long-term may increase arterial calcium risk. Consider adding D3+K2 instead.",
-    type: 'warning'
+    type: 'warning',
+    upsellProductId: 'vitamin-d3-k2', // ID подтипа или конкретного дефолтного товара для апсейла
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>⚠️ Taking Vitamin D3 without K2 long-term may increase arterial calcium risk. Consider switching to or adding D3+K2.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('vitamin-d3-k2')}
+            className="text-xs bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add D3+K2
+          </button>
+        )}
+      </div>
+    )
   },
   {
     id: 'berberine-coq10-caution',
     condition: (ctx) => ctx.types.includes('berberine') && !ctx.types.includes('coq10'),
-    message: "⚠️ Berberine may reduce CoQ10 levels over time. Consider adding CoQ10 to protect mitochondrial energy production.",
-    type: 'warning'
+    type: 'warning',
+    upsellProductId: 'coq10',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>⚠️ Berberine may reduce CoQ10 levels over time. Consider adding CoQ10 to protect mitochondrial energy.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('coq10')}
+            className="text-xs bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add CoQ10
+          </button>
+        )}
+      </div>
+    )
   },
   {
     id: 'too-many-stimulants',
@@ -182,14 +208,162 @@ export const STACK_RULES: Rule[] = [
   },
 
   // ==========================================================================
-  // ℹ️ СОВЕТЫ — Умные подсказки по таймингу, биодоступности и улучшению стека
+  // ℹ️ СОВЕТЫ — Умные подсказки по таймингу, биодоступности и коммерческий КРОСС-ПРОДАЖИ
   // ==========================================================================
+  {
+    id: 'coq10-without-omega3',
+    condition: (ctx) => ctx.types.includes('coq10') && !ctx.types.includes('omega-3'),
+    type: 'info',
+    upsellProductId: 'omega-3',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>💡 CoQ10 is fat-soluble. Consider adding Omega-3 to your stack for better absorption.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('omega-3')}
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add Omega-3
+          </button>
+        )}
+      </div>
+    )
+  },
   {
     id: 'zinc-copper-imbalance',
     condition: (ctx) => ctx.types.includes('zinc') && !ctx.types.includes('copper'),
-    message: "💡 Long-term Zinc supplementation can deplete Copper levels. Consider adding a low-dose Copper supplement to maintain mineral balance.",
-    type: 'info'
+    type: 'info',
+    upsellProductId: 'copper',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>💡 Long-term Zinc use can deplete Copper levels. Add low-dose Copper to maintain mineral balance.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('copper')}
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add Copper
+          </button>
+        )}
+      </div>
+    )
   },
+  {
+    id: 'astaxanthin-fat-soluble',
+    condition: (ctx) => ctx.types.includes('astaxanthin') && !ctx.types.includes('omega-3'),
+    type: 'info',
+    upsellProductId: 'omega-3',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>💡 Astaxanthin is fat-soluble. Take it with a meal, or add Omega-3 to your stack for absorption.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('omega-3')}
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add Omega-3
+          </button>
+        )}
+      </div>
+    )
+  },
+  {
+    id: 'caffeine-without-ashwagandha',
+    condition: (ctx) => ctx.types.includes('caffeine') && !ctx.types.includes('ashwagandha'),
+    type: 'info',
+    upsellProductId: 'ashwagandha',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>💡 Consider adding Ashwagandha to your stack — it helps reduce cortisol spikes caused by caffeine.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('ashwagandha')}
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add Ashwagandha
+          </button>
+        )}
+      </div>
+    )
+  },
+  {
+    id: 'sleep-stack-suggestion',
+    condition: (ctx) => (ctx.types.includes('magnesium') || ctx.types.includes('magnesium-threonate')) && !ctx.types.includes('melatonin'),
+    type: 'info',
+    upsellProductId: 'melatonin',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>💡 You have Magnesium — adding Melatonin would complete a powerful sleep optimization stack.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('melatonin')}
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add Melatonin
+          </button>
+        )}
+      </div>
+    )
+  },
+  {
+    id: 'longevity-stack-suggestion',
+    condition: (ctx) => ctx.types.includes('resveratrol') && !ctx.types.includes('quercetin'),
+    type: 'info',
+    upsellProductId: 'quercetin',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>💡 You have Resveratrol — adding Quercetin would significantly enhance your longevity stack synergy.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('quercetin')}
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add Quercetin
+          </button>
+        )}
+      </div>
+    )
+  },
+  {
+    id: 'collagen-vitamin-c',
+    condition: (ctx) => (ctx.types.includes('collagen-bovine') || ctx.types.includes('collagen-marine')) && !ctx.types.includes('vitamin-c'),
+    type: 'info',
+    upsellProductId: 'vitamin-c',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>💡 Vitamin C is essential for collagen synthesis. Add it to maximize collagen effectiveness.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('vitamin-c')}
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add Vitamin C
+          </button>
+        )}
+      </div>
+    )
+  },
+  {
+    id: 'prostate-complete-stack',
+    condition: (ctx) => ctx.types.includes('prostate-support') && !ctx.types.includes('zinc'),
+    type: 'info',
+    upsellProductId: 'zinc',
+    message: (ctx, onUpsell) => (
+      <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+        <span>💡 Add Zinc to complement your prostate support formula — zinc is crucial for prostate health.</span>
+        {onUpsell && (
+          <button
+            onClick={() => onUpsell('zinc')}
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+          >
+            + Add Zinc
+          </button>
+        )}
+      </div>
+    )
+  },
+
+  // Обычные текстовые советы по таймингу (без апсейла)
   {
     id: 'zinc-nausea-warning',
     condition: (ctx) => ctx.types.includes('zinc'),
@@ -199,13 +373,7 @@ export const STACK_RULES: Rule[] = [
   {
     id: 'nac-stomach-protection',
     condition: (ctx) => ctx.types.includes('nac'),
-    message: "💧 Take NAC with a full glass of water. It is highly acidic and can occasionally cause acid reflux or irritate an empty stomach.",
-    type: 'info'
-  },
-  {
-    id: 'coq10-without-omega3',
-    condition: (ctx) => ctx.types.includes('coq10') && !ctx.types.includes('omega-3'),
-    message: "💡 CoQ10 is fat-soluble. Consider adding Omega-3 to your stack for better absorption.",
+    message: "💧 Take NAC with a full glass of water. It is highly acidic and can occasionally cause acid reflux.",
     type: 'info'
   },
   {
@@ -221,45 +389,15 @@ export const STACK_RULES: Rule[] = [
     type: 'info'
   },
   {
-    id: 'astaxanthin-fat-soluble',
-    condition: (ctx) => ctx.types.includes('astaxanthin') && !ctx.types.includes('omega-3'),
-    message: "💡 Astaxanthin is fat-soluble. Take it with a meal containing healthy fats, or add Omega-3 to your stack.",
-    type: 'info'
-  },
-  {
     id: 'nmn-morning',
     condition: (ctx) => ctx.types.includes('nmn'),
-    message: "☀️ Take NMN in the morning — it supports NAD+ production and cellular energy, best aligned with your circadian rhythm.",
+    message: "☀️ Take NMN in the morning — it supports NAD+ production best aligned with your circadian rhythm.",
     type: 'info'
   },
   {
     id: 'spermidine-fasting',
     condition: (ctx) => ctx.types.includes('spermidine'),
     message: "⏱️ Spermidine activates autophagy most effectively when taken during a fasting window or in the morning.",
-    type: 'info'
-  },
-  {
-    id: 'caffeine-without-ashwagandha',
-    condition: (ctx) => ctx.types.includes('caffeine') && !ctx.types.includes('ashwagandha'),
-    message: "💡 Consider adding Ashwagandha to your stack — it helps reduce cortisol spikes caused by caffeine.",
-    type: 'info'
-  },
-  {
-    id: 'sleep-stack-suggestion',
-    condition: (ctx) => (ctx.types.includes('magnesium') || ctx.types.includes('magnesium-threonate')) && !ctx.types.includes('melatonin'),
-    message: "💡 You have Magnesium — adding Melatonin would complete a powerful sleep optimization stack.",
-    type: 'info'
-  },
-  {
-    id: 'longevity-stack-suggestion',
-    condition: (ctx) => ctx.types.includes('resveratrol') && !ctx.types.includes('quercetin'),
-    message: "💡 You have Resveratrol — adding Quercetin would significantly enhance your longevity stack synergy.",
-    type: 'info'
-  },
-  {
-    id: 'collagen-vitamin-c',
-    condition: (ctx) => (ctx.types.includes('collagen-bovine') || ctx.types.includes('collagen-marine')) && !ctx.types.includes('vitamin-c'),
-    message: "💡 Vitamin C is essential for collagen synthesis. Add it to your stack to maximize collagen effectiveness.",
     type: 'info'
   },
   {
@@ -278,12 +416,6 @@ export const STACK_RULES: Rule[] = [
     id: 'b-complex-morning',
     condition: (ctx) => ctx.types.includes('vitamin-b-complex'),
     message: "☀️ Take B-Complex in the morning with breakfast — B vitamins support energy metabolism and may interfere with sleep if taken late.",
-    type: 'info'
-  },
-  {
-    id: 'prostate-complete-stack',
-    condition: (ctx) => ctx.types.includes('prostate-support') && !ctx.types.includes('zinc'),
-    message: "💡 Add Zinc to complement your prostate support formula — zinc is one of the most important minerals for prostate health.",
     type: 'info'
   }
 ];

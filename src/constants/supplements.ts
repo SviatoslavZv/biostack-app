@@ -723,7 +723,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01418",
-    name: "Berberine Glucose Support, 60 Softgels",
+    name: "Berberine Glucose Support, 90 Softgels",
     brand: "NOW Foods",
     price: 26.86,
     servings: 90,
