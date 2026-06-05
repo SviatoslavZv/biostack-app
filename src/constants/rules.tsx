@@ -11,12 +11,16 @@ export interface RuleContext {
 
 /**
  * Расширенный интерфейс структуры правила.
- * Теперь message может принимать функцию onUpsell для рендеринга интерактивной кнопки.
+ * Теперь message принимает getBestMatchName для вывода точного подобранного бренда и объема на кнопке.
  */
 export interface Rule {
   id: string;
   condition: (ctx: RuleContext) => boolean;
-  message: string | ((ctx: RuleContext, onUpsell?: (productId: string) => void) => React.ReactNode);
+  message: string | ((
+    ctx: RuleContext,
+    onUpsell?: (productId: string) => void,
+    getBestMatchName?: (targetSubType: string) => string
+  ) => React.ReactNode);
   type: 'info' | 'warning' | 'success';
   upsellProductId?: string; // ID товара из каталога, который это правило может порекомендовать
 }
@@ -130,6 +134,13 @@ export const STACK_RULES: Rule[] = [
   // ⚠️ ПРЕДУПРЕЖДЕНИЯ — Специфические конфликты и риски несовместимости
   // ==========================================================================
   {
+    id: 'magnesium-forms-overlap',
+    // Срабатывает, если в корзине одновременно есть обычный магний и треонат магния
+    condition: (ctx) => ctx.types.includes('magnesium') && ctx.types.includes('magnesium-threonate'),
+    message: "⚠️ Multiple forms of MAGNESIUM detected (Lysinate/Glycinate + Threonate). While Threonate targets brain health, ensure your total elemental magnesium dosage doesn't exceed your daily protocol limits to avoid GI distress.",
+    type: 'warning'
+  },
+  {
     id: 'vitamin-d3-k2-overlap',
     condition: (ctx) => ctx.types.includes('vitamin-d3') && ctx.types.includes('vitamin-d3-k2'),
     message: "⚠️ You have both Vitamin D3 and D3+K2 in your stack. This may lead to excessive Vitamin D intake.",
@@ -163,16 +174,17 @@ export const STACK_RULES: Rule[] = [
     id: 'high-d3-without-k2',
     condition: (ctx) => ctx.types.includes('vitamin-d3') && !ctx.types.includes('vitamin-d3-k2'),
     type: 'warning',
-    upsellProductId: 'vitamin-d3-k2', // ID подтипа или конкретного дефолтного товара для апсейла
-    message: (ctx, onUpsell) => (
+    upsellProductId: 'vitamin-d3-k2',
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>⚠️ Taking Vitamin D3 without K2 long-term may increase arterial calcium risk. Consider switching to or adding D3+K2.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('vitamin-d3-k2')}
-            className="text-xs bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold px-2.5 py-1.5 
+            rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add D3+K2
+            + Add {getBestMatchName ? getBestMatchName('vitamin-d3-k2') : 'D3+K2'}
           </button>
         )}
       </div>
@@ -183,15 +195,16 @@ export const STACK_RULES: Rule[] = [
     condition: (ctx) => ctx.types.includes('berberine') && !ctx.types.includes('coq10'),
     type: 'warning',
     upsellProductId: 'coq10',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>⚠️ Berberine may reduce CoQ10 levels over time. Consider adding CoQ10 to protect mitochondrial energy.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('coq10')}
-            className="text-xs bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold px-2.5 py-1.5 
+            rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add CoQ10
+            + Add {getBestMatchName ? getBestMatchName('coq10') : 'CoQ10'}
           </button>
         )}
       </div>
@@ -208,22 +221,23 @@ export const STACK_RULES: Rule[] = [
   },
 
   // ==========================================================================
-  // ℹ️ СОВЕТЫ — Умные подсказки по таймингу, биодоступности и коммерческий КРОСС-ПРОДАЖИ
+  // ℹ&nbsp; СОВЕТЫ — Умные подсказки по таймингу, биодоступности и коммерческие КРОСС-ПРОДАЖИ
   // ==========================================================================
   {
     id: 'coq10-without-omega3',
     condition: (ctx) => ctx.types.includes('coq10') && !ctx.types.includes('omega-3'),
     type: 'info',
     upsellProductId: 'omega-3',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>💡 CoQ10 is fat-soluble. Consider adding Omega-3 to your stack for better absorption.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('omega-3')}
-            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1.5 
+            rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add Omega-3
+            + Add {getBestMatchName ? getBestMatchName('omega-3') : 'Omega-3'}
           </button>
         )}
       </div>
@@ -234,15 +248,16 @@ export const STACK_RULES: Rule[] = [
     condition: (ctx) => ctx.types.includes('zinc') && !ctx.types.includes('copper'),
     type: 'info',
     upsellProductId: 'copper',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>💡 Long-term Zinc use can deplete Copper levels. Add low-dose Copper to maintain mineral balance.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('copper')}
-            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1.5 
+            rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add Copper
+            + Add {getBestMatchName ? getBestMatchName('copper') : 'Copper'}
           </button>
         )}
       </div>
@@ -253,15 +268,16 @@ export const STACK_RULES: Rule[] = [
     condition: (ctx) => ctx.types.includes('astaxanthin') && !ctx.types.includes('omega-3'),
     type: 'info',
     upsellProductId: 'omega-3',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>💡 Astaxanthin is fat-soluble. Take it with a meal, or add Omega-3 to your stack for absorption.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('omega-3')}
-            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1.5 
+            rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add Omega-3
+            + Add {getBestMatchName ? getBestMatchName('omega-3') : 'Omega-3'}
           </button>
         )}
       </div>
@@ -272,15 +288,16 @@ export const STACK_RULES: Rule[] = [
     condition: (ctx) => ctx.types.includes('caffeine') && !ctx.types.includes('ashwagandha'),
     type: 'info',
     upsellProductId: 'ashwagandha',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>💡 Consider adding Ashwagandha to your stack — it helps reduce cortisol spikes caused by caffeine.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('ashwagandha')}
-            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1.5 
+            rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add Ashwagandha
+            + Add {getBestMatchName ? getBestMatchName('ashwagandha') : 'Ashwagandha'}
           </button>
         )}
       </div>
@@ -291,15 +308,16 @@ export const STACK_RULES: Rule[] = [
     condition: (ctx) => (ctx.types.includes('magnesium') || ctx.types.includes('magnesium-threonate')) && !ctx.types.includes('melatonin'),
     type: 'info',
     upsellProductId: 'melatonin',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>💡 You have Magnesium — adding Melatonin would complete a powerful sleep optimization stack.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('melatonin')}
-            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white 
+            font-bold px-2.5 py-1.5 rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add Melatonin
+            + Add {getBestMatchName ? getBestMatchName('melatonin') : 'Melatonin'}
           </button>
         )}
       </div>
@@ -310,15 +328,16 @@ export const STACK_RULES: Rule[] = [
     condition: (ctx) => ctx.types.includes('resveratrol') && !ctx.types.includes('quercetin'),
     type: 'info',
     upsellProductId: 'quercetin',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>💡 You have Resveratrol — adding Quercetin would significantly enhance your longevity stack synergy.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('quercetin')}
-            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1.5 
+            rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add Quercetin
+            + Add {getBestMatchName ? getBestMatchName('quercetin') : 'Quercetin'}
           </button>
         )}
       </div>
@@ -329,15 +348,15 @@ export const STACK_RULES: Rule[] = [
     condition: (ctx) => (ctx.types.includes('collagen-bovine') || ctx.types.includes('collagen-marine')) && !ctx.types.includes('vitamin-c'),
     type: 'info',
     upsellProductId: 'vitamin-c',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>💡 Vitamin C is essential for collagen synthesis. Add it to maximize collagen effectiveness.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('vitamin-c')}
-            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1.5 rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add Vitamin C
+            + Add {getBestMatchName ? getBestMatchName('vitamin-c') : 'Vitamin C'}
           </button>
         )}
       </div>
@@ -348,15 +367,15 @@ export const STACK_RULES: Rule[] = [
     condition: (ctx) => ctx.types.includes('prostate-support') && !ctx.types.includes('zinc'),
     type: 'info',
     upsellProductId: 'zinc',
-    message: (ctx, onUpsell) => (
+    message: (ctx, onUpsell, getBestMatchName) => (
       <div className="flex items-center justify-between flex-wrap gap-2 w-full">
         <span>💡 Add Zinc to complement your prostate support formula — zinc is crucial for prostate health.</span>
         {onUpsell && (
           <button
             onClick={() => onUpsell('zinc')}
-            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1 rounded shadow-sm transition-colors"
+            className="text-xs bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-2.5 py-1.5 rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
           >
-            + Add Zinc
+            + Add {getBestMatchName ? getBestMatchName('zinc') : 'Zinc'}
           </button>
         )}
       </div>

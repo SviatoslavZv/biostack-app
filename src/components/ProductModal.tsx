@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Supplement } from "@/constants/supplements";
-import { X, ExternalLink, ShieldCheck, Leaf } from "lucide-react";
+import { X, ExternalLink, ShieldCheck, Leaf, Sparkles, Box } from "lucide-react";
 import { formatPartnerLink } from "@/utils/links";
 
 interface Props {
@@ -13,6 +13,10 @@ interface Props {
 export const ProductModal = ({ item, onClose }: Props) => {
     if (!item) return null;
 
+    const duration = item.servings && item.suggestedDaily
+        ? Math.floor(item.servings / item.suggestedDaily)
+        : null;
+
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:p-6">
             {/* Overlay: темный фон с размытием */}
@@ -22,76 +26,137 @@ export const ProductModal = ({ item, onClose }: Props) => {
             />
 
             {/* Modal Content */}
-            <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:row animate-in zoom-in-95 duration-300 border border-green-100/20">
+            <div className="relative bg-white w-full max-w-4xl max-h-[90vh] md:h-[580px] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300 border border-slate-100 ">
 
                 {/* Кнопка закрытия */}
                 <button
                     onClick={onClose}
-                    className="absolute top-6 right-6 z-10 p-2 bg-slate-100 hover:bg-green-100 text-slate-500 hover:text-green-600 rounded-full transition-all active:scale-90"
+                    className="absolute top-6 right-6 z-20 p-2 bg-white/80 backdrop-blur-sm hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-full shadow-sm border border-slate-100 transition-all active:scale-90 cursor-pointer"
                 >
-                    <X size={20} />
+                    <X size={18} />
                 </button>
 
-                <div className="flex flex-col md:flex-row h-full overflow-y-auto md:overflow-hidden">
-                    {/* Левая часть: Изображение (Back) */}
-                    <div className="md:w-1/2 bg-slate-50 p-8 flex flex-col items-center justify-center border-r border-slate-100 min-h-[300px]">
-                        <div className="relative w-full aspect-square max-w-[350px] group cursor-zoom-in">
+                {/* Контейнер-сетка: жестко h-full на десктопе */}
+                <div className="flex flex-col md:flex-row h-full w-full min-h-0">
+
+                    {/* ЛЕВАЯ ЧАСТЬ: Абсолютный монолит без паддингов, высота строго 100% */}
+                    <div className="w-full md:w-1/2 h-[350px] md:h-full bg-white relative overflow-hidden group/gallery border-b md:border-b-0 md:border-r border-slate-100 flex items-center justify-center">
+
+                        {/* ФРОНТАЛЬНОЕ ИЗОБРАЖЕНИЕ: При ховере плавно сжимается по горизонтали и уходит */}
+                        <div className="absolute inset-0 transition-all duration-500 ease-in-out group-hover/gallery:opacity-0 group-hover/gallery:scale-x-0 group-hover/gallery:scale-y-95 flex items-center justify-center p-4">
                             <Image
-                                src={item.imageBack || item.imageFront}
-                                alt={item.name}
+                                src={item.imageFront}
+                                alt={`${item.name} Front`}
                                 fill
-                                priority // Добавим приоритет, так как это важное окно
-                                className="object-contain drop-shadow-2xl transition-transform duration-700 ease-in-out group-hover:scale-150"
-                                sizes="(max-width: 768px) 100vw, 50vw" // <--- ДОБАВЛЯЕМ ЭТУ СТРОКУ
+                                priority
+                                className="object-contain drop-shadow-2xl scale-90"
+                                sizes="(max-width: 768px) 100vw, 50vw"
                             />
                         </div>
-                        <p className="mt-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                            Supplement Facts & Ingredients
-                        </p>
+
+                        {/* ЗАДНЕЕ ИЗОБРАЖЕНИЕ: Раскрывается по горизонтали с микро-задержкой, создавая эффект переворота */}
+                        <div className="absolute inset-0 opacity-0 scale-x-0 scale-y-105 group-hover/gallery:opacity-100 group-hover/gallery:scale-x-[1.55] group-hover/gallery:scale-y-[1.55] transition-all duration-500 ease-out flex items-center justify-center cursor-zoom-in z-10 p-2 delay-75">
+                            <Image
+                                src={item.imageBack || item.imageFront}
+                                alt={`${item.name} Ingredients`}
+                                fill
+                                className="object-contain drop-shadow-2xl"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                            />
+                        </div>
+
+                        {/* СТАТИЧНАЯ ПОДСКАЗКА */}
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-black text-slate-400 uppercase tracking-widest pointer-events-none group-hover/gallery:opacity-0 transition-opacity duration-300 z-0">
+                            Hover to view Supplement Facts 🔍
+                        </div>
                     </div>
 
-                    {/* Правая часть: Инфо */}
-                    <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                        <div className="mb-8">
-                            <div className="flex items-center gap-2 mb-3">
-                                <Leaf size={14} className="text-green-500" />
-                                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-green-600">
-                                    {item.category}
+                    {/* ПРАВАЯ ЧАСТЬ: Независимый аккуратный скролл контента */}
+                    <div className="w-full md:w-1/2 h-full p-8 md:p-12 flex flex-col justify-between overflow-y-auto bg-white custom-scrollbar">
+
+                        <div>
+                            {/* Категория и Бренд */}
+                            <div className="flex items-center justify-between gap-2 mb-4">
+                                <div className="flex items-center gap-1.5">
+                                    <Leaf size={12} className="text-green-500" />
+                                    <span className="text-[10px] font-black uppercase tracking-wider text-green-600">
+                                        {item.category}
+                                    </span>
+                                </div>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                                    {item.brand}
                                 </span>
                             </div>
-                            <h2 className="text-2xl md:text-4xl font-black text-slate-900 leading-tight">
+
+                            {/* Название */}
+                            <h2 className="text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tight">
                                 {item.name}
                             </h2>
-                            <div className="mt-4 flex items-center gap-4">
-                                <span className="text-2xl font-black text-green-600">${item.price}</span>
-                                <span className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-black rounded-full uppercase">
+
+                            {/* Цена и порции */}
+                            <div className="mt-4 flex items-center gap-3 border-b border-slate-100 pb-5">
+                                <span className="text-2xl font-black text-slate-900">${item.price.toFixed(2)}</span>
+                                <div className="h-4 w-px bg-slate-200" />
+                                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-lg uppercase border border-emerald-100">
                                     {item.servings} Servings
                                 </span>
                             </div>
-                        </div>
 
-                        <p className="text-slate-500 text-sm md:text-base leading-relaxed mb-10 italic">
-                            {item.description || "Premium quality supplement meticulously tested for purity and potency. Perfect addition to your daily biohacking stack."}
-                        </p>
+                            {/* СЕТКА С ПАРАМЕТРАМИ (Интерактивные карточки) */}
+                            <div className="grid grid-cols-2 gap-3 my-6">
 
-                        <div className="space-y-4 mb-10">
-                            <div className="flex items-center gap-3 text-[11px] font-black text-slate-700 uppercase tracking-wider">
-                                <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
-                                    <ShieldCheck className="text-green-500" size={18} />
+                                {/* Карточка: Pack Volume (Мягкий синий ховер) */}
+                                <div className="bg-slate-50/60 p-3 rounded-xl border border-slate-100 flex items-center gap-2.5 
+                    transition-all duration-300 ease-in-out cursor-default
+                    hover:bg-blue-50/60 hover:border-blue-200 group/volume">
+                                    <Box size={14} className="text-blue-500 flex-shrink-0 transition-transform duration-300 group-hover/volume:scale-110" />
+                                    <div className="text-[11px] leading-tight">
+                                        <p className="text-slate-400 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/volume:text-blue-400">Pack Volume</p>
+                                        <p className="font-extrabold text-slate-700 mt-0.5 transition-colors duration-300 group-hover/volume:text-blue-900">{item.servings} Portions</p>
+                                    </div>
                                 </div>
-                                Quality Guaranteed
+
+                                {/* Карточка: Est. Supply (Мягкий янтарный ховер) */}
+                                <div className="bg-slate-50/60 p-3 rounded-xl border border-slate-100 flex items-center gap-2.5 
+                    transition-all duration-300 ease-in-out cursor-default
+                    hover:bg-amber-50/60 hover:border-amber-200 group/supply">
+                                    <Sparkles size={14} className="text-amber-500 flex-shrink-0 transition-transform duration-300 group-hover/supply:scale-110 animate-pulse" />
+                                    <div className="text-[11px] leading-tight">
+                                        <p className="text-slate-400 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/supply:text-amber-500">Est. Supply</p>
+                                        <p className="font-extrabold text-slate-700 mt-0.5 transition-colors duration-300 group-hover/supply:text-amber-900">
+                                            {duration ? `~${duration} Days` : 'Custom Take'}
+                                        </p>
+                                    </div>
+                                </div>
+
                             </div>
+
+                            {/* Описание с интерактивным эффектом */}
+                            <p className="text-slate-500 text-xs leading-relaxed mb-6 italic bg-slate-50/40 p-4 rounded-xl border border-dashed border-slate-200 
+              transition-all duration-300 ease-in-out
+              hover:bg-green-50/50 hover:text-green-700 hover:border-green-200  cursor-default">
+                                {`"${item.description || "Premium quality supplement meticulously tested for purity and potency. Perfect addition to your daily biohacking stack."}"`}
+                            </p>
                         </div>
 
-                        {/* Кнопка iHerb (Теперь в нашем стиле) */}
-                        <a
-                            href={formatPartnerLink(item.productUrl)}
-                            target="_blank"
-                            className="w-full py-5 bg-slate-900 text-white rounded-[1.5rem] flex items-center justify-center gap-3 text-xs font-black uppercase tracking-[0.2em] hover:bg-green-600 shadow-xl shadow-slate-200 hover:shadow-green-200 transition-all duration-300 active:scale-[0.98]"
-                        >
-                            Full Product Info on iHerb
-                            <ExternalLink size={16} />
-                        </a>
+                        {/* НИЖНИЙ БЛОК */}
+                        <div className="space-y-4 mt-4">
+                            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">
+                                <ShieldCheck className="text-emerald-500" size={14} />
+                                Third-Party Tested Purity
+                            </div>
+
+                            <a
+                                href={formatPartnerLink(item.productUrl)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full py-4 bg-slate-900 hover:bg-green-600 text-white rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-200 hover:shadow-green-100 transition-all duration-300 active:scale-[0.99]"
+                            >
+                                Full Product Info on iHerb
+                                <ExternalLink size={14} />
+                            </a>
+                        </div>
+
                     </div>
                 </div>
             </div>

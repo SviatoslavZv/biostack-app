@@ -12,26 +12,44 @@ interface CartItem {
 interface SmartAlertsProps {
     cart: CartItem[];
     allSupplements: Supplement[];
-    // Добавляем функцию добавления товара, которая прилетает из главного билдера стека
     onAddProduct: (productId: string) => void;
 }
+
+/**
+ * Карта связей: "Рекомендуемый Апсейл" -> "Возможные триггеры в корзине"
+ * Используется для безошибочного определения товара, запустившего правило.
+ */
+const UPSELL_TRIGGERS: Record<string, string[]> = {
+    'vitamin-d3-k2': ['vitamin-d3'],
+    'coq10': ['berberine'],
+    'omega-3': ['coq10', 'astaxanthin', 'curcumin'],
+    'copper': ['zinc'],
+    'ashwagandha': ['caffeine'],
+    'melatonin': ['magnesium', 'magnesium-threonate'],
+    'quercetin': ['resveratrol'],
+    'vitamin-c': ['collagen-bovine', 'collagen-marine', 'nac', 'zinc', 'iron'],
+    'zinc': ['prostate-support', 'saw-palmetto', 'vitamin-c']
+};
 
 export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     /**
-     * Функция-обработчик апсейла.
-     * Находит первый доступный реальный ID товара по его категории/subType и добавляет в корзину.
+     * Поиск идеального мэтча по объему.
+     * Находит триггерный товар, вычисляет целевое количество порций и подбирает лучшую баночку.
      */
+    const getBestMatchProduct = (upsellTarget: string): Supplement | null => {
+        // 1. Находим точные триггеры для нашей цели апсейла
+        const triggerSubTypes = UPSELL_TRIGGERS[upsellTarget] || [];
 
-    const handleUpsell = (upsellTarget: string) => {
-        // 1. Находим товар в корзине, который Спровоцировал это правило.
-        // Мы ищем правило в STACK_RULES, которое сработало, и смотрим, какая добавка из этой же группы уже есть в корзине.
+        // 2. Ищем товар в корзине, который выступает триггером
         const triggerItemInCart = cart.find(item => {
             const prod = allSupplements.find(s => s.id === item.id);
-            // Ищем любой товар в корзине, чья синергия завязана на текущий upsellTarget
-            // (Например, если цель Омега-3, то триггером мог быть CoQ10)
-            return prod && prod.subType !== upsellTarget;
+            if (!prod) return false;
+            if (triggerSubTypes.length > 0) {
+                return triggerSubTypes.includes(prod.subType);
+            }
+            return prod.subType !== upsellTarget;
         });
 
         let targetServings = 0;
@@ -39,47 +57,66 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
         if (triggerItemInCart) {
             const triggerProduct = allSupplements.find(s => s.id === triggerItemInCart.id);
             if (triggerProduct && triggerProduct.servings) {
-                // Считаем общее количество порций триггерного товара (порции в банке * количество банок)
+                // Вычисляем целевой объем: (порции в банке * количество банок в корзине)
                 targetServings = triggerProduct.servings * triggerItemInCart.count;
             }
         }
 
-        // 2. Находим ВСЕ товары в каталоге, которые подходят под категорию апсейла
+        // 3. Фильтруем каталог: берем только товары нужного подтипа
         const candidateProducts = allSupplements.filter(s =>
             (s.subType === upsellTarget || s.id === upsellTarget) && s.isAvailable
         );
 
-        if (candidateProducts.length === 0) {
-            console.warn(`No available products found for upsell target: ${upsellTarget}`);
-            return;
-        }
+        if (candidateProducts.length === 0) return null;
 
-        // 3. Если у нас нет триггера или у кандидатов нет порций, берем самый первый доступный
-        let bestMatchProduct = candidateProducts[0];
+        // Дефолт — первый кандидат
+        let bestMatch = candidateProducts[0];
 
-        // 4. УМНЫЙ ПОДБОР: Ищем баночку, где порций ближе всего к targetServings
+        // 4. УМНЫЙ ПОДБОР: Находим баночку, где порции ближе всего к targetServings
         if (targetServings > 0) {
             let minDifference = Infinity;
 
             candidateProducts.forEach(product => {
                 if (product.servings) {
-                    // Считаем абсолютную разницу между порциями кандидата и нашей целью
                     const difference = Math.abs(product.servings - targetServings);
 
                     if (difference < minDifference) {
                         minDifference = difference;
-                        bestMatchProduct = product;
+                        bestMatch = product;
                     }
                 }
             });
         }
 
-        // 5. Отправляем лучший мэтч в корзину!
-        onAddProduct(bestMatchProduct.id);
+        return bestMatch;
     };
 
     /**
-     * Аналитика корзины
+     * Возвращает отформатированную строку с брендом и объемом подобранного товара.
+     * Прокидывается в правила rules.tsx для динамических надписей на кнопках.
+     */
+    const getBestMatchName = (upsellTarget: string): string => {
+        const bestMatch = getBestMatchProduct(upsellTarget);
+        if (!bestMatch) return upsellTarget;
+        // Возвращаем аккуратную строку в формате: Brand (90 serv.)
+        return `${bestMatch.brand} (${bestMatch.servings} serv.)`;
+    };
+
+    /**
+     * Обработчик апсейла.
+     * Находит лучший мэтч по порциям и добавляет его в корзину.
+     */
+    const handleUpsell = (upsellTarget: string) => {
+        const bestMatch = getBestMatchProduct(upsellTarget);
+        if (bestMatch) {
+            onAddProduct(bestMatch.id);
+        } else {
+            console.warn(`No available products found for upsell target: ${upsellTarget} `);
+        }
+    };
+
+    /**
+     * Аналитика корзины для контекста правил
      */
     const getContextData = (): RuleContext => {
         const types: string[] = [];
@@ -140,10 +177,10 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
     return (
         <div className="sticky top-16 md:top-20 z-30 mb-8 bg-white border border-slate-200 shadow-md rounded-xl overflow-hidden transition-all duration-300">
 
-            {/* Кликабельная шапка */}
+
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100/80 active:bg-slate-100 transition-colors text-sm font-semibold text-slate-700 select-none outline-none focus:relative focus:z-10 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100/80 active:bg-slate-100 transition-colors text-sm font-semibold text-slate-700 select-none outline-none cursor-pointer focus:relative focus:z-10 focus:ring-2 focus:ring-blue-500/20"
             >
                 <div className="flex items-center space-x-3">
                     <span className="flex items-center gap-1.5">
@@ -174,20 +211,20 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
                 </span>
             </button>
 
-            {/* Раскрывающийся список с алертами */}
+
             {isOpen && (
                 <div className="p-4 bg-white border-t border-slate-100 space-y-2.5 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
                     {activeRules.map(rule => (
                         <div
                             key={rule.id}
-                            className={`p-3.5 rounded-xl border text-sm font-medium transition-all duration-200 animate-in fade-in slide-in-from-top-1 ${rule.type === 'info' ? 'bg-blue-50/60 border-blue-100 text-blue-700' :
+                            className={`p - 3.5 rounded - xl border text - sm font - medium transition - all duration - 200 animate -in fade -in slide -in -from - top - 1 ${rule.type === 'info' ? 'bg-blue-50/60 border-blue-100 text-blue-700' :
                                 rule.type === 'warning' ? 'bg-amber-50/60 border-amber-100 text-amber-700' :
                                     'bg-emerald-50/60 border-emerald-100 text-emerald-700'
-                                }`}
+                                } `}
                         >
-                            {/* Прокидываем в message функцию handleUpsell вторым аргументом */}
+
                             {typeof rule.message === 'function'
-                                ? rule.message(context, handleUpsell)
+                                ? rule.message(context, handleUpsell, getBestMatchName)
                                 : rule.message}
                         </div>
                     ))}
