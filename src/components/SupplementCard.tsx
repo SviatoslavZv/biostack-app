@@ -12,7 +12,6 @@ interface Props {
   isBestValue?: boolean;
   onUpdateQuantity: (id: string, delta: number) => void;
   onOpenModal: () => void;
-  onAdd: () => void;
 }
 
 export const SupplementCard = ({
@@ -23,7 +22,6 @@ export const SupplementCard = ({
   isBestValue,
   onUpdateQuantity,
   onOpenModal,
-  onAdd
 }: Props) => {
   const isPriority = index < 13;
 
@@ -139,7 +137,7 @@ export const SupplementCard = ({
             </div>
           ) : (
             <button
-              onClick={onAdd}
+              onClick={() => onUpdateQuantity(item.id, 1)} // <-- Обернули в стрелочную функцию!
               className="w-full bg-green-50 text-green-700 text-[11px] font-black py-[11px] rounded-xl transition-all hover:bg-green-600 hover:text-white flex items-center justify-center gap-1.5 uppercase active:scale-95 border border-green-100/50 hover:shadow-lg hover:shadow-green-200/50"
             >
               <Plus size={12} strokeWidth={4} />

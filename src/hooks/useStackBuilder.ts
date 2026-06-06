@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { SUPPLEMENTS, Supplement } from "@/constants/supplements";
 import { PresetItem } from "@/constants/presets";
+import { STACK_RULES, RuleContext } from "@/constants/rules";
 
 export interface CartItem {
     id: string;
@@ -10,6 +11,7 @@ export interface CartItem {
 export interface StackAnalytics {
     dailyCost: number;
     durationDays: number;
+    efficiency: number;
 }
 
 // Описываем что именно возвращает наш хук
@@ -49,16 +51,16 @@ export const useStackBuilder = (): StackBuilderHook => {
     }, [cart]);
 
     // Скрупулёзный разбор динамического формирования категорий:
-const dynamicCategories = useMemo<string[]>(()=> {
-  // 1. Собираем все категории из реальных товаров
-  const categoriesInDb = SUPPLEMENTS.map(item => item.category);
-  
-  // 2. Оставляем только уникальные с помощью Set
-  const uniqueCategories = Array.from(new Set(categoriesInDb));
-  
-  // 3. Возвращаем итоговый массив, где 'All' всегда на первом месте
-  return ['All', ...uniqueCategories];
-}, []); // Массив зависимостей пустой, так как база SUPPLEMENTS статична
+    const dynamicCategories = useMemo<string[]>(() => {
+        // 1. Собираем все категории из реальных товаров
+        const categoriesInDb = SUPPLEMENTS.map(item => item.category);
+
+        // 2. Оставляем только уникальные с помощью Set
+        const uniqueCategories = Array.from(new Set(categoriesInDb));
+
+        // 3. Возвращаем итоговый массив, где 'All' всегда на первом месте
+        return ['All', ...uniqueCategories];
+    }, []); // Массив зависимостей пустой, так как база SUPPLEMENTS статична
 
     const updateQuantity = (id: string, delta: number) => {
         setCart(prev => {
@@ -104,28 +106,80 @@ const dynamicCategories = useMemo<string[]>(()=> {
         selectedSupps.forEach(supp => {
             const cartItem = cart.find(c => c.id === supp.id);
             if (cartItem && supp.servings && supp.suggestedDaily) {
-                // 1. Считаем стоимость дня для этого препарата
-                // (Цена / порции в банке) * порций в день
                 const costPerServing = supp.servings > 0 ? supp.price / supp.servings : 0;
                 const itemDailyCost = costPerServing * supp.suggestedDaily;
                 totalDailyCost += itemDailyCost;
 
-                // 2. Считаем на сколько дней хватит запаса этого препарата
-                // (Порции в банке * количество банок) / порций в день
                 const itemDuration = (supp.servings * cartItem.count) / supp.suggestedDaily;
-
                 if (itemDuration < minDays) {
                     minDays = itemDuration;
                 }
             }
         });
 
-        
+        // --- ИДЕАЛЬНЫЙ ДИНАМИЧЕСКИЙ РАСЧЕТ STACK EFFICIENCY ---
+        let efficiency = selectedIds.length > 0 ? 100 : 0;
 
+        if (selectedIds.length > 0) {
+            const subtypesOnly = selectedSupps.map(s => s.subType);
+
+            // Честно реализуем интерфейс RuleContext, чтобы rules.ts не падал
+            const ctx: RuleContext = {
+                types: subtypesOnly,
+
+                getMultipleFormsTypes: () => {
+                    const duplicates = subtypesOnly.filter((type, index) => subtypesOnly.indexOf(type) !== index);
+                    return Array.from(new Set(duplicates));
+                },
+
+                getHighQuantityTypes: () => {
+                    const highQty: Array<{ subType: string; count: number; name: string }> = [];
+                    selectedSupps.forEach(supp => {
+                        const cartItem = cart.find(c => c.id === supp.id);
+                        if (cartItem && cartItem.count >= 2) {
+                            highQty.push({
+                                subType: supp.subType,
+                                count: cartItem.count,
+                                name: supp.name
+                            });
+                        }
+                    });
+                    return highQty;
+                }
+            };
+
+            let warningPenalties = 0;
+            let upsellPenalties = 0;
+
+            // Пробегаемся по всем правилам базы знаний
+            STACK_RULES.forEach(rule => {
+                try {
+                    if (rule.condition(ctx)) {
+                        if (rule.type === 'warning') {
+                            warningPenalties += 20;
+                        } else if (rule.type === 'info' && rule.upsellProductId) {
+                            upsellPenalties += 10;
+                        }
+                    }
+                } catch (e) {
+                    console.error(`Error evaluating rule ${rule.id}:`, e);
+                }
+            });
+
+            const hasDuplicateSubtypes = ctx.getMultipleFormsTypes().length > 0;
+            const hasHighQuantity = ctx.getHighQuantityTypes().length > 0;
+            if (hasDuplicateSubtypes || hasHighQuantity) {
+                warningPenalties += 20;
+            }
+
+            const finalUpsellPenalty = Math.min(25, upsellPenalties);
+            efficiency = Math.max(10, 100 - finalUpsellPenalty - warningPenalties);
+        }
 
         return {
             dailyCost: totalDailyCost,
-            durationDays: minDays === Infinity ? 0 : Math.floor(minDays)
+            durationDays: minDays === Infinity ? 0 : Math.floor(minDays),
+            efficiency: efficiency
         };
     }, [cart, selectedIds]);
 
