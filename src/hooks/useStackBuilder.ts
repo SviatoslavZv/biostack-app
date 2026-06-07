@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, ReactNode } from 'react';
 import { SUPPLEMENTS, Supplement } from "@/constants/supplements";
 import { PresetItem } from "@/constants/presets";
 import { STACK_RULES, RuleContext } from "@/constants/rules";
@@ -8,13 +8,32 @@ export interface CartItem {
     count: number;
 }
 
+export interface PenaltyAction {
+    supplementId: string;
+    buttonText: string;
+}
+
+export type RuleMessageFunction = (
+    ctx: RuleContext,
+    onUpsell?: (target: string) => void,
+    getBestMatchName?: (target: string) => string
+) => ReactNode;
+
+export interface EfficiencyPenalty {
+    id: string;
+    type: 'warning' | 'info';
+    points: number;
+    message: ReactNode | RuleMessageFunction;
+    action?: PenaltyAction;
+}
+
 export interface StackAnalytics {
     dailyCost: number;
     durationDays: number;
     efficiency: number;
+    penalties: EfficiencyPenalty[];
 }
 
-// Описываем что именно возвращает наш хук
 export interface StackBuilderHook {
     cart: CartItem[];
     selectedIds: string[];
@@ -30,8 +49,6 @@ export interface StackBuilderHook {
     clearStack: () => void;
 }
 
-
-
 export const useStackBuilder = (): StackBuilderHook => {
     const [cart, setCart] = useState<CartItem[]>(() => {
         if (typeof window === 'undefined') return [];
@@ -44,23 +61,16 @@ export const useStackBuilder = (): StackBuilderHook => {
     const [activeCategory, setActiveCategory] = useState<string>('All');
 
     useEffect(() => {
-        // Сохраняем ТОЛЬКО если мы в браузере и корзина изменилась
         if (typeof window !== 'undefined') {
             localStorage.setItem('biostack-cart', JSON.stringify(cart));
         }
     }, [cart]);
 
-    // Скрупулёзный разбор динамического формирования категорий:
     const dynamicCategories = useMemo<string[]>(() => {
-        // 1. Собираем все категории из реальных товаров
         const categoriesInDb = SUPPLEMENTS.map(item => item.category);
-
-        // 2. Оставляем только уникальные с помощью Set
         const uniqueCategories = Array.from(new Set(categoriesInDb));
-
-        // 3. Возвращаем итоговый массив, где 'All' всегда на первом месте
         return ['All', ...uniqueCategories];
-    }, []); // Массив зависимостей пустой, так как база SUPPLEMENTS статична
+    }, []);
 
     const updateQuantity = (id: string, delta: number) => {
         setCart(prev => {
@@ -80,22 +90,30 @@ export const useStackBuilder = (): StackBuilderHook => {
         setCart(presetItems.map(item => ({ id: item.id, count: item.count })));
     };
 
-    const clearStack = () => {
-        setCart([]); // Просто очищаем массив корзины
-    };
+    const clearStack = () => setCart([]);
 
-    const selectedIds = cart.map(item => item.id);
-
-    const filteredSupplements = SUPPLEMENTS.filter(item =>
-        (activeCategory === 'All' || item.category === activeCategory) && item.isAvailable
+    // ✅ Мемоизация selectedIds — новый массив не создаётся на каждый рендер
+    const selectedIds = useMemo(
+        () => cart.map(item => item.id),
+        [cart]
     );
 
-    const totalPrice = SUPPLEMENTS
-        .filter(item => selectedIds.includes(item.id))
-        .reduce((sum, item) => {
-            const count = cart.find(c => c.id === item.id)?.count || 0;
-            return sum + (item.price * count);
-        }, 0);
+    // ✅ Мемоизация filteredSupplements
+    const filteredSupplements = useMemo(() =>
+        SUPPLEMENTS.filter(item =>
+            (activeCategory === 'All' || item.category === activeCategory) && item.isAvailable
+        ), [activeCategory]);
+
+    // ✅ Мемоизация totalPrice
+    const totalPrice = useMemo(() =>
+        SUPPLEMENTS
+            .filter(item => selectedIds.includes(item.id))
+            .reduce((sum, item) => {
+                const count = cart.find(c => c.id === item.id)?.count || 0;
+                return sum + (item.price * count);
+            }, 0),
+        [cart, selectedIds]
+    );
 
     const analytics = useMemo(() => {
         const selectedSupps = SUPPLEMENTS.filter(s => selectedIds.includes(s.id));
@@ -107,31 +125,27 @@ export const useStackBuilder = (): StackBuilderHook => {
             const cartItem = cart.find(c => c.id === supp.id);
             if (cartItem && supp.servings && supp.suggestedDaily) {
                 const costPerServing = supp.servings > 0 ? supp.price / supp.servings : 0;
-                const itemDailyCost = costPerServing * supp.suggestedDaily;
-                totalDailyCost += itemDailyCost;
+                totalDailyCost += costPerServing * supp.suggestedDaily;
 
                 const itemDuration = (supp.servings * cartItem.count) / supp.suggestedDaily;
-                if (itemDuration < minDays) {
-                    minDays = itemDuration;
-                }
+                if (itemDuration < minDays) minDays = itemDuration;
             }
         });
 
-        // --- ИДЕАЛЬНЫЙ ДИНАМИЧЕСКИЙ РАСЧЕТ STACK EFFICIENCY ---
         let efficiency = selectedIds.length > 0 ? 100 : 0;
+        const penalties: EfficiencyPenalty[] = [];
 
         if (selectedIds.length > 0) {
             const subtypesOnly = selectedSupps.map(s => s.subType);
 
-            // Честно реализуем интерфейс RuleContext, чтобы rules.ts не падал
             const ctx: RuleContext = {
                 types: subtypesOnly,
-
                 getMultipleFormsTypes: () => {
-                    const duplicates = subtypesOnly.filter((type, index) => subtypesOnly.indexOf(type) !== index);
+                    const duplicates = subtypesOnly.filter(
+                        (type, index) => subtypesOnly.indexOf(type) !== index
+                    );
                     return Array.from(new Set(duplicates));
                 },
-
                 getHighQuantityTypes: () => {
                     const highQty: Array<{ subType: string; count: number; name: string }> = [];
                     selectedSupps.forEach(supp => {
@@ -148,38 +162,35 @@ export const useStackBuilder = (): StackBuilderHook => {
                 }
             };
 
-            let warningPenalties = 0;
-            let upsellPenalties = 0;
-
-            // Пробегаемся по всем правилам базы знаний
+            // ✅ Только STACK_RULES — дубликаты блоков удалены
             STACK_RULES.forEach(rule => {
                 try {
                     if (rule.condition(ctx)) {
-                        if (rule.type === 'warning') {
-                            warningPenalties += 20;
-                        } else if (rule.type === 'info' && rule.upsellProductId) {
-                            upsellPenalties += 10;
-                        }
+                        const safeType: 'warning' | 'info' =
+                            rule.type === 'warning' ? 'warning' : 'info';
+                        const pointsDeducted = rule.type === 'warning' ? 20 : 10;
+
+                        penalties.push({
+                            id: rule.id,
+                            type: safeType,
+                            points: pointsDeducted,
+                            message: rule.message,
+                        });
                     }
                 } catch (e) {
                     console.error(`Error evaluating rule ${rule.id}:`, e);
                 }
             });
 
-            const hasDuplicateSubtypes = ctx.getMultipleFormsTypes().length > 0;
-            const hasHighQuantity = ctx.getHighQuantityTypes().length > 0;
-            if (hasDuplicateSubtypes || hasHighQuantity) {
-                warningPenalties += 20;
-            }
-
-            const finalUpsellPenalty = Math.min(25, upsellPenalties);
-            efficiency = Math.max(10, 100 - finalUpsellPenalty - warningPenalties);
+            const totalPenaltyPoints = penalties.reduce((sum, p) => sum + p.points, 0);
+            efficiency = Math.max(10, 100 - totalPenaltyPoints);
         }
 
         return {
             dailyCost: totalDailyCost,
             durationDays: minDays === Infinity ? 0 : Math.floor(minDays),
-            efficiency: efficiency
+            efficiency,
+            penalties
         };
     }, [cart, selectedIds]);
 

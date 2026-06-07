@@ -1,18 +1,11 @@
 import React from 'react';
 
-/**
- * Интерфейс контекста, который SmartAlerts передает в каждое правило.
- */
 export interface RuleContext {
-  types: string[]; // Плоский массив всех subType с учетом количества
-  getMultipleFormsTypes: () => string[]; // Подтипы, где выбраны разные бренды/формы
-  getHighQuantityTypes: () => Array<{ subType: string; count: number; name: string }>; // Товары с количеством 2+ шт.
+  types: string[];
+  getMultipleFormsTypes: () => string[];
+  getHighQuantityTypes: () => Array<{ subType: string; count: number; name: string }>;
 }
 
-/**
- * Расширенный интерфейс структуры правила.
- * Теперь message принимает getBestMatchName для вывода точного подобранного бренда и объема на кнопке.
- */
 export interface Rule {
   id: string;
   condition: (ctx: RuleContext) => boolean;
@@ -22,7 +15,7 @@ export interface Rule {
     getBestMatchName?: (targetSubType: string) => string
   ) => React.ReactNode);
   type: 'info' | 'warning' | 'success';
-  upsellProductId?: string; // ID товара из каталога, который это правило может порекомендовать
+  upsellProductId?: string;
 }
 
 /**
@@ -51,7 +44,7 @@ export const STACK_RULES: Rule[] = [
         <div className="space-y-1">
           {items.map(item => (
             <div key={item.subType}>
-              📦 You've added <strong>{item.count} units</strong> of <em>{item.name}</em>. Ensure this high volume matches your current biohacking protocol or family stack goals.
+              📦 You have added <strong>{item.count} units</strong> of <em>{item.name}</em>. Ensure this high volume matches your current biohacking protocol or family stack goals.
             </div>
           ))}
         </div>

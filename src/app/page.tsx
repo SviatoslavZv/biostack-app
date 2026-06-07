@@ -13,6 +13,9 @@ import { EmptyState } from "@/components/EmptyState";
 import { WelcomeHero } from "@/components/WelcomeHero";
 import { DisclaimerModal } from "@/components/DisclaimerModal";
 
+// 🛠 ИЗМЕНЕНИЕ 1: Импортируем нашу обновленную модалку био-аудита
+import { EfficiencyAuditModal } from "@/components/EfficiencyAuditModal";
+
 // Логика предотвращения Hydration Error
 const subscribe = () => () => { };
 const getSnapshot = () => true;
@@ -34,6 +37,9 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
   const [selectedProduct, setSelectedProduct] = useState<Supplement | null>(null);
   const [sidebarMode, setSidebarMode] = useState<'custom' | 'editors'>('custom');
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
+
+  // 🛠 ИЗМЕНЕНИЕ 2: Создаем стейт, чтобы управлять открытием модалки аудита
+  const [isAuditOpen, setIsAuditOpen] = useState(false);
 
   const {
     cart, selectedIds, activeCategory, setActiveCategory,
@@ -136,6 +142,8 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
           </div>
 
           {/* САЙДБАР БИЛДЕРА */}
+          {/* 🛠 ИЗМЕНЕНИЕ 3: Передаем функцию открытия модалки прямо в сайдбар */}
+          {/* Тебе нужно будет зайти в компонент SidebarStack и повесить onOpenAudit на блок клика по Efficiency */}
           <SidebarStack
             builder={builder}
             generateLink={handleGenerateLink}
@@ -148,7 +156,8 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
       </div>
 
       {/* Мобильный футер суммирования */}
-      <div className="md:hidden">
+      {/* 🛠 ИЗМЕНЕНИЕ 4: Добавляем поддержку открытия из мобильного футера */}
+      <div className="md:hidden" onClick={() => setIsAuditOpen(true)}>
         <StackSummary
           totalPrice={totalPrice}
           selectedCount={selectedIds.length}
@@ -165,6 +174,18 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
       <DisclaimerModal
         isOpen={isDisclaimerOpen}
         onClose={() => setIsDisclaimerOpen(false)}
+      />
+
+      {/*  Рендерим модалку био-аудита */}
+
+      <EfficiencyAuditModal
+        isOpen={isAuditOpen}
+        onClose={() => setIsAuditOpen(false)}
+        efficiency={analytics.efficiency}
+        penalties={analytics.penalties}
+        allSupplements={allSupplements} // <-- Передаем из хука
+        cart={cart}                     // <-- Передаем из хука
+        onAddSupplement={updateQuantity}
       />
     </main>
   );

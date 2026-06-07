@@ -38,7 +38,7 @@ export const WelcomeHero = () => {
 
             {/* КОНТЕНТ БАННЕРА */}
             <div className="flex items-start gap-4 max-w-3xl">
-                <div className="p-3 bg-green-600 rounded-2xl text-white shadow-md shadow-green-200 flex-shrink-0 hidden sm:block">
+                <div className="p-3 bg-green-600 rounded-2xl text-white shadow-md shadow-green-200 shrink-0 hidden sm:block">
                     <Sparkles size={20} />
                 </div>
 

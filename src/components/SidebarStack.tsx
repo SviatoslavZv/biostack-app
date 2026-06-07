@@ -1,7 +1,6 @@
 'use client';
-import React from 'react';
-import Image from 'next/image';
-import { Wallet, Clock, Zap, Layout, Star, ArrowRight, Trash2, Info } from 'lucide-react';
+
+import { Wallet, Clock, Zap, Layout, Star, Trash2 } from 'lucide-react';
 import { StackSummary } from './StackSummary';
 import { OptimizationProgress } from './OptimizationProgress'; // Импортируем новый компонент
 import { StackBuilderHook } from '@/hooks/useStackBuilder';
@@ -25,7 +24,7 @@ export const SidebarStack = ({
   mode,
   setMode,
   onOpenDisclaimer,
-  onOpenProductModal
+  onOpenProductModal,
 }: SidebarStackProps) => {
   if (!builder) return null;
 
@@ -44,7 +43,7 @@ export const SidebarStack = ({
     <aside className="hidden md:flex flex-col w-72 lg:w-96 border-l bg-white sticky top-24 h-[calc(100vh-100px)] shadow-xl z-20">
 
       {/* ШАПКА: Зафиксирована вверху */}
-      <div className="p-6 border-b space-y-4 flex-shrink-0 bg-white">
+      <div className="p-6 border-b space-y-4 shrink-0 bg-white">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-black text-slate-900 italic tracking-tight">Your Stack</h2>
 
@@ -82,6 +81,10 @@ export const SidebarStack = ({
           <OptimizationProgress
             efficiency={analytics.efficiency}
             selectedCount={selectedIds.length}
+            penalties={analytics.penalties}
+            onAddSupplement={updateQuantity}
+            allSupplements={allSupplements}  // 👈 добавляем
+            cart={cart}                      // 👈 добавляем
           />
         )}
       </div>
@@ -151,7 +154,7 @@ export const SidebarStack = ({
       </div>
 
       {/* ФУТЕР С АНАЛИТИКОЙ: Зафиксирован внизу */}
-      <div className="p-6 bg-slate-50/90 border-t border-slate-100 space-y-4 flex-shrink-0">
+      <div className="p-6 bg-slate-50/90 border-t border-slate-100 space-y-4 shrink-0">
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
             <div className="flex items-center gap-2 mb-1">
