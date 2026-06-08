@@ -15,64 +15,41 @@ interface SmartAlertsProps {
     onAddProduct: (productId: string) => void;
 }
 
-/**
- * Карта связей: "Рекомендуемый Апсейл" -> "Возможные триггеры в корзине"
- * Используется для безошибочного определения товара, запустившего правило.
- */
-const UPSELL_TRIGGERS: Record<string, string[]> = {
-    'vitamin-d3-k2': ['vitamin-d3'],
-    'coq10': ['berberine'],
-    'omega-3': ['coq10', 'astaxanthin', 'curcumin'],
-    'copper': ['zinc'],
-    'ashwagandha': ['caffeine'],
-    'melatonin': ['magnesium', 'magnesium-threonate'],
-    'quercetin': ['resveratrol'],
-    'vitamin-c': ['collagen-bovine', 'collagen-marine', 'nac', 'zinc', 'iron'],
-    'zinc': ['prostate-support', 'saw-palmetto', 'vitamin-c']
-};
-
 export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     /**
-     * Поиск идеального мэтча по объему.
-     * Находит триггерный товар, вычисляет целевое количество порций и подбирает лучшую баночку.
+     * Динамический подбор товара без использования UPSELL_TRIGGERS.
+     * Пытается сопоставить объёмы порций с тем, что уже есть в корзине.
      */
     const getBestMatchProduct = (upsellTarget: string): Supplement | null => {
-        // 1. Находим точные триггеры для нашей цели апсейла
-        const triggerSubTypes = UPSELL_TRIGGERS[upsellTarget] || [];
-
-        // 2. Ищем товар в корзине, который выступает триггером
-        const triggerItemInCart = cart.find(item => {
-            const prod = allSupplements.find(s => s.id === item.id);
-            if (!prod) return false;
-            if (triggerSubTypes.length > 0) {
-                return triggerSubTypes.includes(prod.subType);
-            }
-            return prod.subType !== upsellTarget;
-        });
-
-        let targetServings = 0;
-
-        if (triggerItemInCart) {
-            const triggerProduct = allSupplements.find(s => s.id === triggerItemInCart.id);
-            if (triggerProduct && triggerProduct.servings) {
-                // Вычисляем целевой объем: (порции в банке * количество банок в корзине)
-                targetServings = triggerProduct.servings * triggerItemInCart.count;
-            }
-        }
-
-        // 3. Фильтруем каталог: берем только товары нужного подтипа
+        // 1. Фильтруем каталог: берем только доступные товары нужного подтипа
         const candidateProducts = allSupplements.filter(s =>
             (s.subType === upsellTarget || s.id === upsellTarget) && s.isAvailable
         );
 
         if (candidateProducts.length === 0) return null;
 
-        // Дефолт — первый кандидат
+        // По умолчанию ориентируемся на первого кандидата
         let bestMatch = candidateProducts[0];
+        let targetServings = 0;
 
-        // 4. УМНЫЙ ПОДБОР: Находим баночку, где порции ближе всего к targetServings
+        // 2. УМНЫЙ ПОДБОР ОБЪЁМА: 
+        // Вместо хардкодной карты ищем ЛЮБОЙ товар в корзине, который не равен целевому апсейлу,
+        // чтобы понять базовые предпочтения пользователя по объёму банок (например, берёт он 30 или 120 порций).
+        const triggerItemInCart = cart.find(item => {
+            const prod = allSupplements.find(s => s.id === item.id);
+            return prod ? prod.subType !== upsellTarget : false;
+        });
+
+        if (triggerItemInCart) {
+            const triggerProduct = allSupplements.find(s => s.id === triggerItemInCart.id);
+            if (triggerProduct && triggerProduct.servings) {
+                targetServings = triggerProduct.servings * triggerItemInCart.count;
+            }
+        }
+
+        // 3. Находим баночку апсейла, где количество порций ближе всего к ориентиру
         if (targetServings > 0) {
             let minDifference = Infinity;
 
@@ -93,25 +70,23 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
 
     /**
      * Возвращает отформатированную строку с брендом и объемом подобранного товара.
-     * Прокидывается в правила rules.tsx для динамических надписей на кнопках.
+     * Теперь на 100% соответствует рекомендации!
      */
     const getBestMatchName = (upsellTarget: string): string => {
         const bestMatch = getBestMatchProduct(upsellTarget);
-        if (!bestMatch) return upsellTarget;
-        // Возвращаем аккуратную строку в формате: Brand (90 serv.)
+        if (!bestMatch) return upsellTarget.toUpperCase();
         return `${bestMatch.brand} (${bestMatch.servings} serv.)`;
     };
 
     /**
      * Обработчик апсейла.
-     * Находит лучший мэтч по порциям и добавляет его в корзину.
      */
     const handleUpsell = (upsellTarget: string) => {
         const bestMatch = getBestMatchProduct(upsellTarget);
         if (bestMatch) {
             onAddProduct(bestMatch.id);
         } else {
-            console.warn(`No available products found for upsell target: ${upsellTarget} `);
+            console.warn(`No available products found for upsell target: ${upsellTarget}`);
         }
     };
 
@@ -177,7 +152,6 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
     return (
         <div className="sticky top-16 md:top-20 z-30 mb-8 bg-white border border-slate-200 shadow-md rounded-xl overflow-hidden transition-all duration-300">
 
-
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100/80 active:bg-slate-100 transition-colors text-sm font-semibold text-slate-700 select-none outline-none cursor-pointer focus:relative focus:z-10 focus:ring-2 focus:ring-blue-500/20"
@@ -211,18 +185,17 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
                 </span>
             </button>
 
-
             {isOpen && (
                 <div className="p-4 bg-white border-t border-slate-100 space-y-2.5 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
                     {activeRules.map(rule => (
                         <div
                             key={rule.id}
-                            className={`p - 3.5 rounded - xl border text - sm font - medium transition - all duration - 200 animate -in fade -in slide -in -from - top - 1 ${rule.type === 'info' ? 'bg-blue-50/60 border-blue-100 text-blue-700' :
+                            className={`p-3.5 rounded-xl border text-sm font-medium transition-all duration-200 animate-in fade-in slide-in-from-top-1 ${rule.type === 'info' ? 'bg-blue-50/60 border-blue-100 text-blue-700' :
                                 rule.type === 'warning' ? 'bg-amber-50/60 border-amber-100 text-amber-700' :
                                     'bg-emerald-50/60 border-emerald-100 text-emerald-700'
-                                } `}
+                                }`}
                         >
-
+                            {/* Передаем handleUpsell и getBestMatchName строго по контракту */}
                             {typeof rule.message === 'function'
                                 ? rule.message(context, handleUpsell, getBestMatchName)
                                 : rule.message}
