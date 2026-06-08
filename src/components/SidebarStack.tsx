@@ -2,7 +2,7 @@
 
 import { Wallet, Clock, Zap, Layout, Star, Trash2 } from 'lucide-react';
 import { StackSummary } from './StackSummary';
-import { OptimizationProgress } from './OptimizationProgress'; // Импортируем новый компонент
+import { OptimizationProgress } from './OptimizationProgress';
 import { StackBuilderHook } from '@/hooks/useStackBuilder';
 import { STACK_PRESETS } from '@/constants/presets';
 import { Supplement } from '@/constants/supplements';
@@ -42,12 +42,10 @@ export const SidebarStack = ({
   return (
     <aside className="hidden md:flex flex-col w-72 lg:w-96 border-l bg-white sticky top-24 h-[calc(100vh-100px)] shadow-xl z-20">
 
-      {/* ШАПКА: Зафиксирована вверху */}
       <div className="p-6 border-b space-y-4 shrink-0 bg-white">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-black text-slate-900 italic tracking-tight">Your Stack</h2>
 
-          {/* КНОПКА СБРОСА */}
           {selectedIds.length > 0 && (
             <button
               onClick={() => builder.clearStack()}
@@ -76,23 +74,20 @@ export const SidebarStack = ({
           </div>
         </div>
 
-        {/* Аккуратный вызов нового компонента вместо громоздкой верстки */}
         {mode === 'custom' && (
           <OptimizationProgress
             efficiency={analytics.efficiency}
             selectedCount={selectedIds.length}
             penalties={analytics.penalties}
             onAddSupplement={updateQuantity}
-            allSupplements={allSupplements}  // 👈 добавляем
-            cart={cart}                      // 👈 добавляем
+            allSupplements={allSupplements}
+            cart={cart}
           />
         )}
       </div>
 
-      {/* ОСНОВНОЙ КОНТЕНТ: Скролл-зона карточек */}
       <div className="flex-1 overflow-y-auto p-6 min-h-0 custom-scrollbar overscroll-contain">
 
-        {/* --- РЕЖИМ CUSTOM --- */}
         {mode === 'custom' && (
           <div className="space-y-4">
             {selectedIds.length === 0 ? (
@@ -121,7 +116,6 @@ export const SidebarStack = ({
           </div>
         )}
 
-        {/* --- РЕЖИМ EDITORS --- */}
         {mode === 'editors' && (
           <div className="space-y-4">
             <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">
@@ -153,7 +147,6 @@ export const SidebarStack = ({
         )}
       </div>
 
-      {/* ФУТЕР С АНАЛИТИКОЙ: Зафиксирован внизу */}
       <div className="p-6 bg-slate-50/90 border-t border-slate-100 space-y-4 shrink-0">
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
@@ -184,7 +177,6 @@ export const SidebarStack = ({
           isSidebar={true}
         />
 
-        {/* ЛИПКИЙ МИКРО-ДИСКЛЕЙМЕР */}
         <div className="text-center -mt-1">
           <button
             onClick={onOpenDisclaimer}
@@ -193,7 +185,6 @@ export const SidebarStack = ({
             Medical Disclaimer
           </button>
         </div>
-
       </div>
     </aside>
   );

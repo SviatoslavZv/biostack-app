@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import { Supplement } from '@/constants/supplements';  // 👈 добавляем
+import { useState } from 'react';
+import { Supplement } from '@/constants/supplements';
 import { EfficiencyPenalty } from '@/hooks/useStackBuilder';
 import { EfficiencyAuditModal } from './EfficiencyAuditModal';
 
@@ -9,7 +9,7 @@ interface OptimizationProgressProps {
   selectedCount: number;
   penalties: EfficiencyPenalty[];
   onAddSupplement: (id: string, delta: number) => void;
-  allSupplements: Supplement[];  // теперь тип известен
+  allSupplements: Supplement[];
   cart: Array<{ id: string; count: number }>;
 }
 
@@ -18,7 +18,7 @@ export const OptimizationProgress = ({
   selectedCount,
   penalties,
   onAddSupplement,
-  allSupplements,  // 👈 теперь доступна
+  allSupplements,
   cart,
 }: OptimizationProgressProps) => {
   const isEmpty = selectedCount === 0;
@@ -65,7 +65,6 @@ export const OptimizationProgress = ({
         </div>
       </div>
 
-      {/* 🛠 ИЗМЕНЕНИЕ: Теперь модалка получает функцию управления корзиной */}
       <EfficiencyAuditModal
         isOpen={isAuditOpen}
         onClose={() => setIsAuditOpen(false)}
