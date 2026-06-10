@@ -8,7 +8,7 @@ export interface Supplement {
   suggestedDaily: number;   // порций в день (обычно 1 или 2)
   productUrl: string; // Прямая ссылка на товар
   category: "Focus" | "Sleep" | "Energy" | "Longevity" | "Foundation" | "Immune" | "Antioxidants" | "Superfoods" | "Joint Health" | "Collagen" | "Men's Health";
-  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'nmn' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
+  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
   description: string;
   isAvailable: boolean;
   imageFront: string; // Фас
@@ -722,6 +722,22 @@ export const SUPPLEMENTS: Supplement[] = [
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00428/l/67.jpg"
   },
   {
+    id: "NOW-01433",
+    name: "Copper Glycinate, 120 Tablets",
+    brand: "NOW Foods",
+    price: 8.72,
+    servings: 120,
+    dosagePerServing: "3mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-copper-glycinate-120-tablets/116012",
+    category: "Foundation",
+    subType: "copper",
+    description: "Copper is an essential trace mineral involved in energy production, iron metabolism, connective tissue synthesis, and neurotransmitter production.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01433/l/35.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01433/l/40.jpg"
+  },
+  {
     id: "NOW-01418",
     name: "Berberine Glucose Support, 90 Softgels",
     brand: "NOW Foods",
@@ -768,6 +784,55 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/g/32.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/l/37.jpg"
+  },
+  // Fisetin — сенолитик, удаляет стареющие клетки
+  {
+    id: "DRB-00227",
+    name: "Fisetin , 100 mg, 30 Veggie Caps",
+    brand: "Doctor's Best",
+    price: 23.02,
+    servings: 30,
+    dosagePerServing: "100mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/doctor-s-best-fisetin-100-mg-30-veggie-caps/43592",
+    category: "Longevity",
+    subType: "fisetin",
+    description: "Powerful flavonoid and senolytic compound. Selectively clears senescent cells, activates autophagy, and supports long-term cognitive and cellular health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00227/g/75.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00227/l/80.jpg"
+  },
+  {
+    id: "NCS-67856",
+    name: "Fisetin, 100 mg , 60 Capsules",
+    brand: "Nutricost",
+    price: 24.19,
+    servings: 60,
+    dosagePerServing: "100mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/nutricost-fisetin-100-mg-60-capsules/136817",
+    category: "Longevity",
+    subType: "fisetin",
+    description: "Powerful flavonoid and senolytic compound. Selectively clears senescent cells, activates autophagy, and supports long-term cognitive and cellular health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67856/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67856/l/13.jpg"
+  },
+  {
+    id: "LKN-02514",
+    name: "Fisetin, 100 mg, 90 Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 31.06,
+    servings: 90,
+    dosagePerServing: "100mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-fisetin-100-mg-90-veggie-capsules/142030",
+    category: "Longevity",
+    subType: "fisetin",
+    description: "Powerful flavonoid and senolytic compound. Selectively clears senescent cells, activates autophagy, and supports long-term cognitive and cellular health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn02514/g/122.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn02514/l/127.jpg"
   },
   {
     id: "NOW-01552",
@@ -961,6 +1026,55 @@ export const SUPPLEMENTS: Supplement[] = [
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/nap/nap47625/g/24.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/nap/nap47625/l/32.jpg"
   },
+  // L-Glycine — аминокислота улучшающая качество сна
+  {
+    id: "NOW-00107",
+    name: "Glycine, 100 Veg Capsules (1,000 mg per Capsule)",
+    brand: "NOW Foods",
+    price: 12.75,
+    servings: 33,
+    dosagePerServing: "3000mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-glycine-100-veg-capsules-1-000-mg-per-capsule/18106",
+    category: "Sleep",
+    subType: "glycine",
+    description: "Inhibitory amino acid that lowers core body temperature before sleep. Clinically shown to improve sleep quality and reduce daytime fatigue.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00107/g/50.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00107/l/55.jpg"
+  },
+  {
+    id: "NOW-00131",
+    name: "Glycine, 1,000 mg, 250 Veg Capsules",
+    brand: "NOW Foods",
+    price: 30.52,
+    servings: 83,
+    dosagePerServing: "3000mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-glycine-1-000-mg-250-veg-capsules/149310",
+    category: "Sleep",
+    subType: "glycine",
+    description: "Inhibitory amino acid that lowers core body temperature before sleep. Clinically shown to improve sleep quality and reduce daytime fatigue.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00131/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00131/l/13.jpg"
+  },
+  {
+    id: "NOW-00225",
+    name: "Glycine, Pure Powder, 1 lb (454 g)",
+    brand: "NOW Foods",
+    price: 22.44,
+    servings: 151,
+    dosagePerServing: "3000mg",
+    suggestedDaily: 3,
+    productUrl: "https://iherb.com/pr/now-foods-glycine-pure-powder-1-lb-454-g/615",
+    category: "Sleep",
+    subType: "glycine",
+    description: "Inhibitory amino acid that lowers core body temperature before sleep. Clinically shown to improve sleep quality and reduce daytime fatigue.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00225/g/32.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00225/l/38.jpg"
+  },
   {
     id: "NOW-04603",
     name: "Ashwagandha, 450 mg, 90 Veg Capsules",
@@ -1056,6 +1170,72 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now04595/g/8.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now04595/l/13.jpg"
+  },
+  // Lion's Mane — главный ноотропный гриб в биохакинге
+  {
+    id: "NOW-04789",
+    name: "Lion's Mane, 500 mg, 60 Veg Capsules",
+    brand: "NOW Foods",
+    price: 17.45,
+    servings: 30,
+    dosagePerServing: "1000mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-lion-s-mane-500-mg-60-veg-capsules/113978",
+    category: "Focus",
+    subType: "lions-mane",
+    description: "Medicinal mushroom that stimulates Nerve Growth Factor (NGF) synthesis. Supports memory, focus, and long-term neuroplasticity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now04789/g/39.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now04789/l/45.jpg"
+  },
+  {
+    id: "SWV-11096",
+    name: "Full Spectrum® Lion's Mane, 500 mg, 60 Veg Capsules",
+    brand: "Swanson Vitamins",
+    price: 12.99,
+    servings: 30,
+    dosagePerServing: "1000mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/swanson-vitamins-full-spectrum-lion-s-mane-mushroom-500-mg-60-vegan-capsules/109018",
+    category: "Focus",
+    subType: "lions-mane",
+    description: "Medicinal mushroom that stimulates Nerve Growth Factor (NGF) synthesis. Supports memory, focus, and long-term neuroplasticity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/swv/swv11096/v/72.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/swv/swv11096/l/78.jpg"
+  },
+  {
+    id: "FOA-66038",
+    name: "Lion's Mane, 500 mg , 60 Vegetable Capsules",
+    brand: "Force Factor",
+    price: 8.99,
+    servings: 30,
+    dosagePerServing: "1000mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/force-factor-lion-s-mane-500-mg-60-vegetable-capsules/135738",
+    category: "Focus",
+    subType: "lions-mane",
+    description: "Medicinal mushroom that stimulates Nerve Growth Factor (NGF) synthesis. Supports memory, focus, and long-term neuroplasticity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/foa/foa66038/g/29.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/foa/foa66038/l/34.jpg"
+  },
+  // Bacopa Monnieri — аюрведический ноотроп для памяти
+  {
+    id: "NOW-04588",
+    name: "Bacopa Extract, 450 mg, 90 Veg Capsules",
+    brand: "NOW Foods",
+    price: 22.83,
+    servings: 90,
+    dosagePerServing: "450mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-bacopa-extract-450-mg-90-veg-capsules/89694",
+    category: "Focus",
+    subType: "bacopa",
+    description: "Standardized Ayurvedic adaptogen with clinically studied memory and learning benefits. Reduces anxiety and enhances information retention.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now04588/g/36.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now04588/l/41.jpg"
   },
   {
     id: "CGN-00944",
@@ -1426,6 +1606,38 @@ export const SUPPLEMENTS: Supplement[] = [
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs57251/l/11.jpg"
   },
   {
+    id: "NOW-03043",
+    name: "Alpha Lipoic Acid, 250 mg, 120 Veg Capsules",
+    brand: "NOW Foods",
+    price: 24.84,
+    servings: 120,
+    dosagePerServing: "250mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-alpha-lipoic-acid-250-mg-120-veg-capsules/315",
+    category: "Antioxidants",
+    subType: "alpha-lipoic-acid",
+    description: "Universal antioxidant — soluble in both water and fat. Regenerates vitamins C and E, supports healthy glucose metabolism and mitochondrial function.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03043/g/60.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03043/l/66.jpg"
+  },
+  {
+    id: "NOW-03042",
+    name: "Alpha Lipoic Acid, 250 mg, 60 Veg Capsules",
+    brand: "NOW Foods",
+    price: 13.42,
+    servings: 60,
+    dosagePerServing: "250mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-alpha-lipoic-acid-250-mg-60-veg-capsules/102326",
+    category: "Antioxidants",
+    subType: "alpha-lipoic-acid",
+    description: "Universal antioxidant — soluble in both water and fat. Regenerates vitamins C and E, supports healthy glucose metabolism and mitochondrial function.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03042/g/39.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03042/l/44.jpg"
+  },
+  {
     id: "DRB-00096",
     name: "Noni Fruit Powder, 120 Veggie Caps (650 mg per Capsule)",
     brand: "Doctor's Best",
@@ -1584,6 +1796,39 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/foa/foa66030/g/29.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/foa/foa66030/l/34.jpg"
+  },
+  {
+    id: "NOW-00330",
+    name: "Vitamin A, 3,000 mcg (10,000 IU), 100 Softgels",
+    brand: "NOW Foods",
+    price: 5.36,
+    servings: 100,
+    dosagePerServing: "10000 IU",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-vitamin-a-3-000-mcg-10-000-iu-100-softgels/11192",
+    category: "Immune",
+    subType: "vitamin-a",
+    description: "Essential fat-soluble vitamin supporting immune barrier function, vision, and skin integrity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00330/g/65.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00330/l/70.jpg"
+  },
+  // Beta Glucan — иммуномодулятор
+  {
+    id: "NOW-03054",
+    name: "Beta-1,3/1,6-D-Glucan, 100 mg, 90 Veg Capsules",
+    brand: "NOW Foods",
+    price: 13.42,
+    servings: 90,
+    dosagePerServing: "100mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-beta-1-3-1-6-d-glucan-90-veg-capsules/406",
+    category: "Immune",
+    subType: "beta-glucan",
+    description: "Highly purified yeast beta-glucan that primes immune cells for rapid response. One of the most researched natural immunomodulators.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03054/g/54.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03054/l/59.jpg"
   },
   {
     id: "NCS-67022",
