@@ -53,7 +53,6 @@ export const TIMING_PRESETS: Record<string, TimingSlot> = {
   'bacopa':             'morning',
   'alpha-lipoic-acid':  'morning',
   'spermidine':         'morning',
-  'ashwagandha':        'morning',
 
   // ☀️ ДЕНЬ — нутриенты с едой, иммунитет, антиоксиданты
   'omega-3':            'noon',
@@ -81,4 +80,5 @@ export const TIMING_PRESETS: Record<string, TimingSlot> = {
   'melatonin':          'evening',
   'theanine':           'evening',
   'glycine':            'evening',
+  'ashwagandha':        'evening',
 };

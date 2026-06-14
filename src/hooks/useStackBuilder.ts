@@ -136,42 +136,42 @@ export const useStackBuilder = (): StackBuilderHook => {
         const penalties: EfficiencyPenalty[] = [];
 
         if (selectedIds.length > 0) {
-    // 1. Создаем плоский массив подтипов с учетом количества каждой позиции в корзине
-    const subtypesOnly: string[] = [];
-    selectedSupps.forEach(supp => {
-        const cartItem = cart.find(c => c.id === supp.id);
-        const count = cartItem ? cartItem.count : 0;
-        for (let i = 0; i < count; i++) {
-            subtypesOnly.push(supp.subType);
-        }
-    });
-
-    const ctx: RuleContext = {
-        types: subtypesOnly,
-        getMultipleFormsTypes: () => {
-            // Теперь это сработает, если у пользователя добавлены разные товары с ОДИНАКОВЫМ subType
-            // (например, две разные банки магния)
-            const duplicates = subtypesOnly.filter(
-                (type, index) => subtypesOnly.indexOf(type) !== index
-            );
-            return Array.from(new Set(duplicates));
-        },
-        getHighQuantityTypes: () => {
-            const highQty: Array<{ subType: string; count: number; name: string }> = [];
+            // 1. Создаем плоский массив подтипов с учетом количества каждой позиции в корзине
+            const subtypesOnly: string[] = [];
             selectedSupps.forEach(supp => {
                 const cartItem = cart.find(c => c.id === supp.id);
-                // Если одной конкретной банки больше или равно 2 единиц
-                if (cartItem && cartItem.count >= 2) {
-                    highQty.push({
-                        subType: supp.subType,
-                        count: cartItem.count,
-                        name: supp.name
-                    });
+                const count = cartItem ? cartItem.count : 0;
+                for (let i = 0; i < count; i++) {
+                    subtypesOnly.push(supp.subType);
                 }
             });
-            return highQty;
-        }
-    };
+
+            const ctx: RuleContext = {
+                types: subtypesOnly,
+                getMultipleFormsTypes: () => {
+                    // Теперь это сработает, если у пользователя добавлены разные товары с ОДИНАКОВЫМ subType
+                    // (например, две разные банки магния)
+                    const duplicates = subtypesOnly.filter(
+                        (type, index) => subtypesOnly.indexOf(type) !== index
+                    );
+                    return Array.from(new Set(duplicates));
+                },
+                getHighQuantityTypes: () => {
+                    const highQty: Array<{ subType: string; count: number; name: string }> = [];
+                    selectedSupps.forEach(supp => {
+                        const cartItem = cart.find(c => c.id === supp.id);
+                        // Если одной конкретной банки больше или равно 2 единиц
+                        if (cartItem && cartItem.count >= 2) {
+                            highQty.push({
+                                subType: supp.subType,
+                                count: cartItem.count,
+                                name: supp.name
+                            });
+                        }
+                    });
+                    return highQty;
+                }
+            };
             // ✅ Только STACK_RULES — дубликаты блоков удалены
             STACK_RULES.forEach(rule => {
                 try {

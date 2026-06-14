@@ -2,6 +2,8 @@
 import Image from 'next/image';
 import { Supplement } from "@/constants/supplements";
 import { formatPartnerLink } from "@/utils/links";
+import { TIMING_META } from '@/constants/timing';
+import { getSupplementTiming } from '@/utils/timingUtils';
 import { ExternalLink, Plus, Trash2 } from "lucide-react";
 
 interface Props {
@@ -24,6 +26,11 @@ export const SupplementCard = ({
   onOpenModal,
 }: Props) => {
   const isPriority = index < 13;
+  // Получаем тайминг для этого товара
+  // getSupplementTiming вернёт 'morning', 'noon' или 'evening'
+  // TIMING_META даст нам иконку и название для этого слота
+  const timing = getSupplementTiming(item.subType);
+  const timingInfo = TIMING_META[timing];
 
   return (
     <div
@@ -54,6 +61,7 @@ export const SupplementCard = ({
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
               />
             </div>
+
             {/* Задняя сторона */}
             <div className="absolute inset-0 p-2.5 transition-all duration-700 opacity-0 group-hover/card:opacity-100 group-hover/card:scale-[2.8] origin-center">
               <Image
@@ -68,10 +76,34 @@ export const SupplementCard = ({
         </div>
 
         {isBestValue && (
-          <div className="absolute top-2.5 left-2.5 bg-green-600 text-white text-[8px] font-black px-2 py-0.5 rounded-full z-20 uppercase shadow-sm">
+          <div className="absolute top-2.5 left-2.5 bg-green-600 text-white text-[8px] font-black px-2 py-0.5 rounded-full z-20 uppercase shadow-sm transition-opacity duration-500 group-hover/card:opacity-0">
             Best Value
           </div>
         )}
+
+
+        {/* Бейдж тайминга */}
+        <div className={`
+  absolute bottom-2.5 left-2.5 z-20
+  flex items-center gap-1
+  px-1.5 py-0.5 rounded-full
+  text-[9px] font-black
+  backdrop-blur-sm border
+  transition-opacity duration-500 group-hover/card:opacity-0
+  ${timing === 'morning'
+            ? 'bg-amber-50/90 text-amber-600 border-amber-200'
+            : timing === 'noon'
+              ? 'bg-sky-50/90 text-sky-600 border-sky-200'
+              : 'bg-indigo-50/90 text-indigo-600 border-indigo-200'
+          }
+`}>
+          {/* Иконка слота — берём из TIMING_META */}
+          <span className="text-[10px] leading-none">{timingInfo.icon}</span>
+          {/* Название слота */}
+          <span>{timingInfo.label}</span>
+        </div>
+
+
 
         {/* Кнопка перехода на iHerb (ИСПРАВЛЕНО: e.stopPropagation не дает клику провалиться в открытие модалки) */}
         <a
@@ -80,7 +112,8 @@ export const SupplementCard = ({
           className="absolute top-2.5 right-2.5 flex items-center group/link z-30"
           onClick={(e) => e.stopPropagation()}
         >
-          <span className="mr-1.5 px-2.5 py-1 bg-white/95 backdrop-blur-sm border border-green-100 text-green-600 text-[10px] font-bold rounded-full opacity-0 -translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all duration-300 shadow-sm">
+          <span className="mr-1.5 px-2.5 py-1 bg-white/95 backdrop-blur-sm border border-green-100 text-green-600
+           text-[10px] font-bold rounded-full opacity-0 -translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all duration-300 shadow-sm">
             iHerb
           </span>
           <div className="p-1.5 bg-green-50 shadow-sm border border-green-100 text-green-600 rounded-full group-hover/link:bg-green-600 group-hover/link:text-white transition-all duration-300">
@@ -88,6 +121,7 @@ export const SupplementCard = ({
           </div>
         </a>
       </div>
+
 
       {/* 2. Контент */}
       <div className="flex flex-col flex-1 text-center">

@@ -8,6 +8,7 @@ import { STACK_PRESETS } from '@/constants/presets';
 import { Supplement } from '@/constants/supplements';
 import { CartProductCard } from './CartProductCard';
 import { PresetCard } from './PresetCard';
+import { StackTimeline } from './StackTimeline';
 
 interface SidebarStackProps {
   builder: StackBuilderHook;
@@ -91,6 +92,7 @@ export const SidebarStack = ({
         {mode === 'custom' && (
           <div className="space-y-4">
             {selectedIds.length === 0 ? (
+              // Пустое состояние — остаётся как было
               <div className="py-20 flex flex-col items-center text-center space-y-3 opacity-50">
                 <Zap size={24} className="text-slate-300" />
                 <p className="text-xs font-bold uppercase tracking-tighter text-slate-400">
@@ -98,20 +100,32 @@ export const SidebarStack = ({
                 </p>
               </div>
             ) : (
-              cart.map((item) => {
-                const product = allSupplements.find((s) => s.id === item.id);
-                if (!product) return null;
-                return (
-                  <CartProductCard
-                    key={item.id}
-                    id={item.id}
-                    count={item.count}
-                    product={product}
-                    updateQuantity={updateQuantity}
-                    onOpenProductModal={onOpenProductModal}
-                  />
-                );
-              })
+              // ВАЖНО: здесь Fragment <> оборачивает ОБА блока —
+              // список карточек И таймлайн
+              // Почему Fragment? Потому что JSX требует один корневой элемент,
+              // но мы не хотим добавлять лишний <div>
+              <>
+                {cart.map((item) => {
+                  const product = allSupplements.find((s) => s.id === item.id);
+                  if (!product) return null;
+                  return (
+                    <CartProductCard
+                      key={item.id}
+                      id={item.id}
+                      count={item.count}
+                      product={product}
+                      updateQuantity={updateQuantity}
+                      onOpenProductModal={onOpenProductModal}
+                    />
+                  );
+                })}
+
+                {/* Таймлайн идёт ПОСЛЕ map, но ВНУТРИ Fragment */}
+                <StackTimeline
+                  cart={cart}
+                  allSupplements={allSupplements}
+                />
+              </>
             )}
           </div>
         )}
