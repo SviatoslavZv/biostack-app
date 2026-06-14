@@ -36,7 +36,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
   const {
     cart, selectedIds, activeCategory, setActiveCategory,
-    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics, categories,
+    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics, categories, replaceInCart,
   } = builder;
 
   const displaySupplements = useMemo(() => {
@@ -77,6 +77,8 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
                   cart={cart}
                   allSupplements={allSupplements}
                   onAddProduct={(id) => updateQuantity(id, 1)}
+                  optimizations={analytics.optimizations}
+                  onReplace={replaceInCart}
                 />
               </div>
 

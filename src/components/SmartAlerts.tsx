@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Supplement } from "@/constants/supplements";
 import { STACK_RULES, RuleContext } from "@/constants/rules";
+import { OptimizationSuggestion } from '@/utils/stackLogic';
 
 interface CartItem {
     id: string;
@@ -13,9 +14,11 @@ interface SmartAlertsProps {
     cart: CartItem[];
     allSupplements: Supplement[];
     onAddProduct: (productId: string) => void;
+    optimizations: OptimizationSuggestion[]
+    onReplace: (oldId: string, newId: string, newCount: number) => void
 }
 
-export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsProps) => {
+export const SmartAlerts = ({ cart, allSupplements, onAddProduct, optimizations, onReplace }: SmartAlertsProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     /**
@@ -143,11 +146,12 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
     const context = getContextData();
     const activeRules = STACK_RULES.filter(rule => rule.condition(context));
 
-    if (activeRules.length === 0) return null;
+    if (activeRules.length === 0 && optimizations.length === 0) return null;
 
     const warningsCount = activeRules.filter(r => r.type === 'warning').length;
     const successCount = activeRules.filter(r => r.type === 'success').length;
     const infoCount = activeRules.filter(r => r.type === 'info').length;
+    const optimizationsCount = optimizations.length;
 
     return (
         <div className="sticky top-16 md:top-20 z-30 mb-8 bg-white border border-slate-200 shadow-md rounded-xl overflow-hidden transition-all duration-300">
@@ -177,6 +181,11 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
                                 💡 {infoCount}
                             </span>
                         )}
+                        {optimizationsCount > 0 && (
+                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full">
+                                💰 {optimizationsCount}
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -187,6 +196,34 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
 
             {isOpen && (
                 <div className="p-4 bg-white border-t border-slate-100 space-y-2.5 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
+
+                    {/* Подсказки по оптимизации цены — показываем первыми */}
+                    {optimizations.map((opt) => (
+                        <div
+                            key={opt.currentProduct.id}
+                            className="p-3.5 rounded-xl border bg-emerald-50/60 border-emerald-100 text-emerald-700 text-sm font-medium animate-in fade-in slide-in-from-top-1"
+                        >
+                            <div className="flex items-center justify-between flex-wrap gap-2 w-full">
+                                <span>
+                                    💰 Switch to <strong>{opt.bestProduct.brand} ({opt.bestProduct.servings} serv.)</strong> and save{' '}
+                                    <strong>${opt.savings.toFixed(2)}</strong>
+                                </span>
+                                <button
+                                    onClick={() => onReplace(
+                                        opt.currentProduct.id,
+                                        opt.bestProduct.id,
+                                        opt.suggestedCount
+                                    )}
+                                    className="text-xs bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold px-2.5 py-1.5 
+                          rounded-lg shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+                                >
+                                    🔄 Switch to Best Value
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Обычные правила из STACK_RULES */}
                     {activeRules.map(rule => (
                         <div
                             key={rule.id}
@@ -195,7 +232,6 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct }: SmartAlertsP
                                     'bg-emerald-50/60 border-emerald-100 text-emerald-700'
                                 }`}
                         >
-                            {/* Передаем handleUpsell и getBestMatchName строго по контракту */}
                             {typeof rule.message === 'function'
                                 ? rule.message(context, handleUpsell, getBestMatchName)
                                 : rule.message}

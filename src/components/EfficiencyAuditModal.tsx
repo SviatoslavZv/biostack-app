@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { X, AlertTriangle, Info, ShieldCheck } from "lucide-react";
 import { EfficiencyPenalty } from "@/hooks/useStackBuilder";
 import { Supplement } from "@/constants/supplements";
+import { OptimizationSuggestion } from "@/utils/stackLogic";
 
 interface EfficiencyAuditModalProps {
     isOpen: boolean;
@@ -13,6 +14,8 @@ interface EfficiencyAuditModalProps {
     allSupplements: Supplement[];
     cart: Array<{ id: string; count: number }>;
     onAddSupplement: (id: string, delta: number) => void;
+    optimizations: OptimizationSuggestion[];
+    onReplace: (oldId: string, newId: string, newCount: number) => void;
 }
 
 export const EfficiencyAuditModal = ({
@@ -23,6 +26,8 @@ export const EfficiencyAuditModal = ({
     allSupplements = [],
     cart = [],
     onAddSupplement,
+    optimizations = [],
+    onReplace,
 }: EfficiencyAuditModalProps) => {
 
     useEffect(() => {
@@ -161,6 +166,47 @@ export const EfficiencyAuditModal = ({
                         </div>
                     </div>
 
+
+                    {/* Optimization Suggestions — подсказки по экономии бюджета */}
+                    {optimizations.length > 0 && (
+                        <div className="space-y-3 mb-5">
+                            {optimizations.map((opt) => (
+                                <div
+                                    key={opt.currentProduct.id}
+                                    className="flex gap-3 p-4 rounded-[1.5rem] border bg-emerald-50/40 border-emerald-100"
+                                >
+                                    {/* Иконка слева — символ экономии */}
+                                    <div className="mt-0.5 shrink-0 text-emerald-500">
+                                        💰
+                                    </div>
+
+                                    <div className="flex-1 flex flex-col gap-2">
+                                        {/* Текст рекомендации */}
+                                        <div className="text-xs font-bold text-slate-900 leading-snug">
+                                            Switch to <span className="text-emerald-700">{opt.bestProduct.brand} ({opt.bestProduct.servings} serv.)</span> and save{' '}
+                                            <span className="text-emerald-600">${opt.savings.toFixed(2)}</span>
+                                        </div>
+                                        {/* Кнопка действия */}
+                                        <button
+                                            onClick={() => onReplace(
+                                                opt.currentProduct.id,
+                                                opt.bestProduct.id,
+                                                opt.suggestedCount
+                                            )}
+                                            className="self-start text-xs bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 
+              text-white font-bold px-3 py-1.5 rounded-lg shadow-sm transition-all 
+              duration-200 active:scale-95 cursor-pointer"
+                                        >
+                                            🔄 Switch to Best Value
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+
+                    {/* Penalties List */}
                     <div className="space-y-3">
                         {penalties.length === 0 ? (
                             <div className="text-center py-8 bg-gray-50/50 rounded-[1.5rem] border border-dashed border-gray-200">
@@ -195,14 +241,16 @@ export const EfficiencyAuditModal = ({
                                             }
                                         </div>
 
-                                        <div className="flex items-center gap-1.5 mt-2.5">
-                                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${penalty.type === 'warning'
-                                                ? 'bg-red-100 text-red-700'
-                                                : 'bg-amber-100 text-amber-700'
-                                                }`}>
-                                                -{penalty.points} points
-                                            </span>
-                                        </div>
+                                        {penalty.points > 0 && (
+                                            <div className="flex items-center gap-1.5 mt-2.5">
+                                                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${penalty.type === 'warning'
+                                                    ? 'bg-red-100 text-red-700'
+                                                    : 'bg-amber-100 text-amber-700'
+                                                    }`}>
+                                                    -{penalty.points} points
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             ))

@@ -67,3 +67,62 @@ export const getBestValueId = (supplements: Supplement[], subType: string): stri
 };
 
 
+/**
+ * Результат для одного неоптимального товара в корзине.
+ * Описывает: что сейчас стоит, что лучше поставить, и сколько сэкономим.
+ */
+export interface OptimizationSuggestion {
+  currentProduct: Supplement;
+  currentCount: number;      // сколько банок текущего товара в корзине
+  bestProduct: Supplement;
+  suggestedCount: number;    // сколько банок лучшего товара нужно поставить
+  savings: number;           // сколько долларов сэкономит пользователь
+}
+
+/**
+ * Проверяет корзину на наличие неоптимальных по цене товаров.
+ * Возвращает массив всех найденных предложений по оптимизации.
+ */
+export const findOptimizationSuggestions = (
+  cart: CartItem[],
+  supplements: Supplement[]
+): OptimizationSuggestion[] => {
+  if (!cart || !Array.isArray(cart) || cart.length === 0) return [];
+
+  const suggestions: OptimizationSuggestion[] = [];
+
+  for (const cartItem of cart) {
+    const product = supplements.find(s => s.id === cartItem.id);
+    if (!product || !product.subType) continue;
+
+    const bestId = getBestValueId(supplements, product.subType);
+
+    if (bestId && bestId !== cartItem.id) {
+      const bestProduct = supplements.find(s => s.id === bestId);
+      if (!bestProduct) continue;
+
+      const totalServingsNeeded = product.servings * cartItem.count;
+
+      const suggestedCount = Math.max(
+        1,
+        Math.ceil(totalServingsNeeded / bestProduct.servings)
+      );
+
+      const currentTotalCost = product.price * cartItem.count;
+      const newTotalCost = bestProduct.price * suggestedCount;
+      const savings = currentTotalCost - newTotalCost;
+
+      if (savings > 0) {
+        suggestions.push({
+          currentProduct: product,
+          currentCount: cartItem.count,
+          bestProduct,
+          suggestedCount,
+          savings
+        });
+      }
+    }
+  }
+
+  return suggestions;
+};

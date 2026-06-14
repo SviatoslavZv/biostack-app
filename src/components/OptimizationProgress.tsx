@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Supplement } from '@/constants/supplements';
 import { EfficiencyPenalty } from '@/hooks/useStackBuilder';
 import { EfficiencyAuditModal } from './EfficiencyAuditModal';
+import { OptimizationSuggestion } from '@/utils/stackLogic';
 
 interface OptimizationProgressProps {
   efficiency: number;
@@ -11,6 +12,8 @@ interface OptimizationProgressProps {
   onAddSupplement: (id: string, delta: number) => void;
   allSupplements: Supplement[];
   cart: Array<{ id: string; count: number }>;
+  optimizations: OptimizationSuggestion[];
+  onReplace: (oldId: string, newId: string, newCount: number) => void;
 }
 
 export const OptimizationProgress = ({
@@ -20,6 +23,8 @@ export const OptimizationProgress = ({
   onAddSupplement,
   allSupplements,
   cart,
+  optimizations,
+  onReplace,
 }: OptimizationProgressProps) => {
   const isEmpty = selectedCount === 0;
   const [isAuditOpen, setIsAuditOpen] = useState(false);
@@ -73,6 +78,8 @@ export const OptimizationProgress = ({
         onAddSupplement={onAddSupplement}
         allSupplements={allSupplements}
         cart={cart}
+        optimizations={optimizations}
+        onReplace={onReplace}
       />
     </>
   );

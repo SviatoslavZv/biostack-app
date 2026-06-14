@@ -37,7 +37,8 @@ export const SidebarStack = ({
     analytics,
     selectedIds,
     setStackPreset,
-    activeCategory
+    activeCategory,
+    replaceInCart,
   } = builder;
 
   return (
@@ -83,6 +84,8 @@ export const SidebarStack = ({
             onAddSupplement={updateQuantity}
             allSupplements={allSupplements}
             cart={cart}
+            optimizations={analytics.optimizations}
+            onReplace={replaceInCart}
           />
         )}
       </div>

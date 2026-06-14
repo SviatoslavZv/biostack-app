@@ -95,17 +95,17 @@ export const StackTimeline = ({ cart, allSupplements }: StackTimelineProps) => {
                                     <span
                                         key={item.id}
                                         className={`
-                      text-[10px] font-bold px-2 py-1 rounded-lg leading-tight
-                      ${slot === 'morning'
+        text-[10px] font-bold px-2 py-1 rounded-lg leading-tight
+        max-w-[140px] truncate
+        ${slot === 'morning'
                                                 ? 'bg-amber-50 text-amber-700 border border-amber-100'
                                                 : slot === 'noon'
                                                     ? 'bg-blue-50 text-blue-700 border border-blue-100'
                                                     : 'bg-indigo-50 text-indigo-700 border border-indigo-100'
                                             }
-                    `}
+      `}
+                                        title={`${item.brand} — ${item.name}`}
                                     >
-                                        {/* Показываем только бренд и краткое название
-                        чтобы не переполнять маленький сайдбар */}
                                         {item.brand.split(' ')[0]} {item.name.split(',')[0]}
                                     </span>
                                 ))}

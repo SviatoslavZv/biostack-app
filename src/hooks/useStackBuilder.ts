@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, ReactNode } from 'react';
 import { SUPPLEMENTS, Supplement } from "@/constants/supplements";
 import { PresetItem } from "@/constants/presets";
 import { STACK_RULES, RuleContext } from "@/constants/rules";
+import { findOptimizationSuggestions, OptimizationSuggestion } from '@/utils/stackLogic';
 
 export interface CartItem {
     id: string;
@@ -32,6 +33,7 @@ export interface StackAnalytics {
     durationDays: number;
     efficiency: number;
     penalties: EfficiencyPenalty[];
+    optimizations: OptimizationSuggestion[];
 }
 
 export interface StackBuilderHook {
@@ -47,6 +49,7 @@ export interface StackBuilderHook {
     totalPrice: number;
     analytics: StackAnalytics;
     clearStack: () => void;
+    replaceInCart: (oldId: string, newId: string, newCount: number) => void;
 }
 
 export const useStackBuilder = (): StackBuilderHook => {
@@ -91,6 +94,40 @@ export const useStackBuilder = (): StackBuilderHook => {
     };
 
     const clearStack = () => setCart([]);
+
+
+    /**
+     * Заменяет один товар в корзине на другой с заданным количеством.
+     * Используется для фичи "Switch to Best Value" —
+     * убираем неоптимальный товар, ставим оптимальный.
+     * 
+     * @param oldId - id товара который нужно удалить
+     * @param newId - id товара который нужно добавить
+     * @param newCount - сколько банок нового товара поставить
+     */
+    const replaceInCart = (oldId: string, newId: string, newCount: number) => {
+        setCart(prev => {
+            // Шаг 1: убираем старый товар из корзины
+            const withoutOld = prev.filter(item => item.id !== oldId);
+
+            // Шаг 2: проверяем — может новый товар уже есть в корзине?
+            // (например, пользователь уже использует "лучший" вариант для другого товара)
+            const existingNew = withoutOld.find(item => item.id === newId);
+
+            if (existingNew) {
+                // Если новый товар уже в корзине — суммируем количество
+                return withoutOld.map(item =>
+                    item.id === newId
+                        ? { ...item, count: item.count + newCount }
+                        : item
+                );
+            }
+
+            // Если нового товара ещё нет — просто добавляем
+            return [...withoutOld, { id: newId, count: newCount }];
+        });
+    };
+
 
     // ✅ Мемоизация selectedIds — новый массив не создаётся на каждый рендер
     const selectedIds = useMemo(
@@ -172,13 +209,28 @@ export const useStackBuilder = (): StackBuilderHook => {
                     return highQty;
                 }
             };
-            // ✅ Только STACK_RULES — дубликаты блоков удалены
+            // ✅ STACK_RULES 
             STACK_RULES.forEach(rule => {
                 try {
                     if (rule.condition(ctx)) {
                         const safeType: 'warning' | 'info' =
                             rule.type === 'warning' ? 'warning' : 'info';
-                        const pointsDeducted = rule.type === 'warning' ? 20 : 10;
+
+                        // Определяем штраф по трём уровням важности:
+                        let pointsDeducted = 0;
+
+                        if (rule.type === 'warning') {
+                            // Настоящий конфликт (например Zinc + Iron) — серьёзный штраф
+                            pointsDeducted = 20;
+                        } else if (rule.type === 'info' && rule.upsellProductId) {
+                            // Упущенная синергия (например "добавь Omega-3 к CoQ10")
+                            // Небольшой штраф — мотивирует улучшить стек, но не наказывает строго
+                            pointsDeducted = 5;
+                        } else {
+                            // Просто совет по таймингу/приёму — это не ошибка пользователя,
+                            // штраф не начисляем, но в списке советов это всё равно покажем
+                            pointsDeducted = 0;
+                        }
 
                         penalties.push({
                             id: rule.id,
@@ -196,12 +248,19 @@ export const useStackBuilder = (): StackBuilderHook => {
             efficiency = Math.max(10, 100 - totalPenaltyPoints);
         }
 
+        // Считаем подсказки по оптимизации цены —
+        // независимо от efficiency, это отдельная система рекомендаций
+        const optimizations = findOptimizationSuggestions(cart, SUPPLEMENTS);
+
         return {
             dailyCost: totalDailyCost,
             durationDays: minDays === Infinity ? 0 : Math.floor(minDays),
             efficiency,
-            penalties
+            penalties,
+            optimizations // 👈 добавляем в результат
         };
+
+
     }, [cart, selectedIds]);
 
     return {
@@ -217,5 +276,6 @@ export const useStackBuilder = (): StackBuilderHook => {
         categories: dynamicCategories,
         analytics,
         clearStack,
+        replaceInCart,
     };
 };
