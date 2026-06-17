@@ -1,10 +1,12 @@
 'use client';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { Supplement } from "@/constants/supplements";
 import { formatPartnerLink } from "@/utils/links";
 import { TIMING_META } from '@/constants/timing';
 import { getSupplementTiming } from '@/utils/timingUtils';
-import { ExternalLink, Plus, Trash2 } from "lucide-react";
+import { ExternalLink, Plus, Trash2, Share2 } from "lucide-react";
+import { SharePopover } from './SharePopover';
 
 interface Props {
   item: Supplement;
@@ -14,6 +16,7 @@ interface Props {
   isBestValue?: boolean;
   onUpdateQuantity: (id: string, delta: number) => void;
   onOpenModal: () => void;
+  onShare: (productUrl: string, productName: string) => void;
 }
 
 export const SupplementCard = ({
@@ -31,6 +34,9 @@ export const SupplementCard = ({
   // TIMING_META даст нам иконку и название для этого слота
   const timing = getSupplementTiming(item.subType);
   const timingInfo = TIMING_META[timing];
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const shareButtonRef = useRef<HTMLButtonElement>(null);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
 
   return (
     <div
@@ -76,7 +82,7 @@ export const SupplementCard = ({
         </div>
 
         {isBestValue && (
-          <div className="absolute top-2.5 left-2.5 bg-green-600 text-white text-[8px] font-black px-2 py-0.5 rounded-full z-20 uppercase shadow-sm transition-opacity duration-500 group-hover/card:opacity-0">
+          <div className="absolute top-2.5 left-2.5 bg-green-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full z-20 uppercase shadow-sm transition-opacity duration-500 group-hover/card:opacity-0">
             Best Value
           </div>
         )}
@@ -87,7 +93,7 @@ export const SupplementCard = ({
   absolute bottom-2.5 left-2.5 z-20
   flex items-center gap-1
   px-1.5 py-0.5 rounded-full
-  text-[9px] font-black
+  text-[11px] font-black
   backdrop-blur-sm border
   transition-opacity duration-500 group-hover/card:opacity-0
   ${timing === 'morning'
@@ -104,6 +110,34 @@ export const SupplementCard = ({
         </div>
 
 
+        {/* Кнопка "Поделиться" — расположена под кнопкой iHerb */}
+        <div className="absolute top-11 right-2.5 z-30">
+          <button
+            ref={shareButtonRef}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (shareButtonRef.current) {
+                setAnchorRect(shareButtonRef.current.getBoundingClientRect());
+              }
+              setIsShareOpen(prev => !prev);
+            }}
+            className="p-1.5 bg-white/90 backdrop-blur-sm shadow-sm border border-slate-100 text-slate-500 rounded-full hover:bg-slate-50 hover:text-slate-900 transition-all duration-300"
+            title="Share this product"
+          >
+            <Share2 size={18} />
+          </button>
+
+          {isShareOpen && anchorRect && (
+            <SharePopover
+              url={formatPartnerLink(item.productUrl)}
+              title={item.name}
+              onClose={() => setIsShareOpen(false)}
+              anchorRect={anchorRect}
+            />
+          )}
+        </div>
+
+
 
         {/* Кнопка перехода на iHerb (ИСПРАВЛЕНО: e.stopPropagation не дает клику провалиться в открытие модалки) */}
         <a
@@ -113,11 +147,11 @@ export const SupplementCard = ({
           onClick={(e) => e.stopPropagation()}
         >
           <span className="mr-1.5 px-2.5 py-1 bg-white/95 backdrop-blur-sm border border-green-100 text-green-600
-           text-[10px] font-bold rounded-full opacity-0 -translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all duration-300 shadow-sm">
+           text-[13px] font-bold rounded-full opacity-0 -translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all duration-300 shadow-sm">
             iHerb
           </span>
           <div className="p-1.5 bg-green-50 shadow-sm border border-green-100 text-green-600 rounded-full group-hover/link:bg-green-600 group-hover/link:text-white transition-all duration-300">
-            <ExternalLink size={12} />
+            <ExternalLink size={18} />
           </div>
         </a>
       </div>

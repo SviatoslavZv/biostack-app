@@ -66,12 +66,12 @@ export const StackTimeline = ({ cart, allSupplements }: StackTimelineProps) => {
         <div className="mt-4 pt-4 border-t border-slate-100">
 
             {/* Заголовок блока */}
-            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-3">
+            <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest mb-3">
                 Daily Schedule
             </p>
 
             {/* Рендерим только активные слоты */}
-            <div className="space-y-3">
+            <div className="space-y-5">
                 {activeSlots.map(slot => {
                     // Получаем метаданные слота — иконку, название, описание
                     const meta = TIMING_META[slot];
@@ -116,7 +116,7 @@ export const StackTimeline = ({ cart, allSupplements }: StackTimelineProps) => {
             </div>
 
             {/* Подсказка внизу */}
-            <p className="text-[9px] text-slate-400 mt-3 leading-relaxed">
+            <p className="text-[11px] text-slate-800 mt-3 leading-relaxed">
                 ✦ Take fat-soluble supplements with food containing healthy fats
             </p>
         </div>

@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { ShoppingCart, ArrowRight, Wallet } from "lucide-react"; // Добавил Wallet для красоты
+import { useRef } from 'react';
+import { ShoppingCart, ArrowRight, Wallet, Share2 } from "lucide-react";
 import { StackAnalytics } from "@/hooks/useStackBuilder"; // Импортируем тип
 
 interface StackSummaryProps {
@@ -9,7 +9,8 @@ interface StackSummaryProps {
   selectedCount: number;
   generateLink: () => void;
   isSidebar?: boolean;
-  analytics: StackAnalytics; // 1. Добавляем в интерфейс
+  analytics: StackAnalytics;
+  onShare: (anchorRect: DOMRect) => void; // теперь передаёт координаты
 }
 
 export const StackSummary = ({
@@ -17,8 +18,11 @@ export const StackSummary = ({
   selectedCount,
   generateLink,
   isSidebar,
-  analytics, // 2. Получаем из пропсов
+  analytics,
+  onShare,
 }: StackSummaryProps) => {
+
+  const shareButtonRef = useRef<HTMLButtonElement>(null);
 
   if (selectedCount === 0) return null;
 
@@ -28,38 +32,68 @@ export const StackSummary = ({
   if (isSidebar) {
     return (
       <div className="p-6 bg-white border-t border-gray-100 mt-auto">
-        <div className="flex flex-col gap-4">
-          {/* Верхний ряд: Общая цена и Цена в день */}
-          <div className="flex justify-between items-center bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+        <div className="flex flex-col gap-3">
+          {/* Единый ряд: Total / Per Day / Duration */}
+          <div className="grid grid-cols-3 gap-2 bg-slate-50/50 p-3 rounded-xl border border-slate-100">
 
-
-
-
-
-            <div>
-              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1 leading-none">Total Amount</p>
-              <span className="text-2xl font-black text-slate-900 leading-none">
+            <div className="flex flex-col">
+              <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest mb-1 leading-none">
+                Total
+              </p>
+              <span className="flex items-center gap-1.5 text-xl font-black text-slate-900 leading-none">
+                <Wallet size={16} className="text-emerald-600" />
                 ${totalPrice.toFixed(2)}
               </span>
             </div>
 
-            <div className="flex flex-col items-end border-l border-slate-200 pl-4">
-              <span className="text-[9px] text-slate-400 uppercase font-bold tracking-widest mb-1 leading-none">
+            <div className="flex flex-col border-l border-slate-200 pl-2">
+              <span className="text-[9px] text-emerald-600 uppercase font-bold tracking-widest mb-1 leading-none">
                 Per Day
               </span>
               <span className="text-lg font-bold text-emerald-600 leading-none">
                 ${analytics.dailyCost.toFixed(2)}
               </span>
             </div>
+
+            <div className="flex flex-col border-l border-slate-200 pl-2">
+              <span className="text-[9px] text-emerald-600 uppercase font-bold tracking-widest mb-1 leading-none">
+                Duration
+              </span>
+              <span className="text-lg font-bold text-emerald-600 leading-none">
+                {analytics.durationDays}<span className="text-xs">days</span>
+              </span>
+            </div>
           </div>
 
-          <button
-            onClick={generateLink}
-            className={`w-full ${brandGreen} text-white py-4 rounded-2xl font-black text-[12px] uppercase tracking-[0.15em] transition-all active:scale-[0.96] shadow-xl flex items-center justify-center gap-3 group`}
-          >
-            <span>Order Stack on iHerb</span>
-            <ArrowRight size={18} className="group-hover:translate-x-1.5 transition-transform" />
-          </button>
+          {/* Ряд с кнопками: Order (основная) + Share (вторичная) */}
+          <div className="flex gap-2">
+            <button
+              onClick={generateLink}
+              className={`flex-1 ${brandGreen} text-white py-3.5 rounded-2xl font-black text-[12px] uppercase tracking-[0.1em] transition-all active:scale-[0.96] shadow-xl flex items-center justify-center gap-2 group`}
+            >
+              <span>Order on iHerb</span>
+              <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
+            </button>
+
+            <button
+              ref={shareButtonRef}
+              onClick={() => {
+                if (shareButtonRef.current) {
+                  onShare(shareButtonRef.current.getBoundingClientRect());
+                }
+              }}
+              className="shrink-0 w-14 bg-green-50 hover:bg-green-600 text-green-600 hover:text-white border-2 border-green-500 rounded-2xl transition-all duration-300 active:scale-95 flex items-center justify-center"
+              title="Share this stack"
+            >
+              <Share2 size={22} />
+            </button>
+          </div>
+
+          {/* Юридическая пометка о согласии с условиями использования */}
+          <p className="text-[12px] text-slate-700 text-center leading-snug px-2">
+            By proceeding, you confirm you&apos;ve read and agree to our{' '}
+            <span className="font-semibold text-slate-500">Medical Disclaimer & Terms</span>.
+          </p>
         </div>
       </div>
     );

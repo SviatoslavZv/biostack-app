@@ -7,11 +7,13 @@ import { SmartAlerts } from "@/components/SmartAlerts";
 import { Header } from "@/components/Header";
 import { useStackBuilder, StackBuilderHook } from "@/hooks/useStackBuilder";
 import { generateIHerbLink, getBestValueId } from "@/utils/stackLogic";
+import { formatPartnerLink, shareLink, getAppUrl } from "@/utils/links";
 import { SidebarStack } from "@/components/SidebarStack";
 import { ProductModal } from "@/components/ProductModal";
 import { EmptyState } from "@/components/EmptyState";
 import { WelcomeHero } from "@/components/WelcomeHero";
 import { DisclaimerModal } from "@/components/DisclaimerModal";
+import { Toast } from "@/components/Toast";
 
 const subscribe = () => () => { };
 const getSnapshot = () => true;
@@ -33,6 +35,21 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
   const [selectedProduct, setSelectedProduct] = useState<Supplement | null>(null);
   const [sidebarMode, setSidebarMode] = useState<'custom' | 'editors'>('custom');
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
+  const [toast, setToast] = useState<{ message: string; isVisible: boolean }>({
+    message: '',
+    isVisible: false,
+  });
+
+
+  const showToast = (message: string) => {
+    setToast({ message, isVisible: true });
+  };
+
+  const hideToast = () => {
+    setToast(prev => ({ ...prev, isVisible: false }));
+  };
+
+
 
   const {
     cart, selectedIds, activeCategory, setActiveCategory,
@@ -54,6 +71,17 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
   const handleGenerateLink = () => {
     window.open(generateIHerbLink(cart), '_blank');
+  };
+
+  const handleShareProduct = async (productUrl: string, productName: string) => {
+    const link = formatPartnerLink(productUrl);
+    const result = await shareLink(link, productName);
+
+    if (result === 'copied') {
+      showToast('Link copied to clipboard!');
+    }
+    // 'shared' — системное окно само показало успех, toast не нужен
+    // 'failed' — пользователь просто закрыл окно или произошла ошибка, тоже без toast
   };
 
   return (
@@ -87,7 +115,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
               </div>
 
               {displaySupplements.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 transition-all duration-300 animate-in fade-in-50">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 transition-all duration-300 animate-in fade-in-50">
                   {displaySupplements.map((item, index) => (
                     <SupplementCard
                       key={item.id}
@@ -98,6 +126,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
                       count={cart.find(c => c.id === item.id)?.count || 0}
                       onUpdateQuantity={updateQuantity}
                       onOpenModal={() => setSelectedProduct(item)}
+                      onShare={handleShareProduct}
                     />
                   ))}
                 </div>
@@ -159,6 +188,13 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
         isOpen={isDisclaimerOpen}
         onClose={() => setIsDisclaimerOpen(false)}
       />
+
+      <Toast
+        message={toast.message}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
+
     </main>
   );
 }

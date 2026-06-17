@@ -19,7 +19,7 @@ export const Toast = ({ message, isVisible, onClose }: ToastProps) => {
 
     if (!isVisible) return null;
 
-    // Внутри Toast.tsx измени блок return:
+    // Внутри Toast.tsx изменили блок return:
 
     return (
         <div className="fixed bottom-28 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300 px-4 w-full max-w-fit">

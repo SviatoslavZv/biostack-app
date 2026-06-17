@@ -9,6 +9,9 @@ import { Supplement } from '@/constants/supplements';
 import { CartProductCard } from './CartProductCard';
 import { PresetCard } from './PresetCard';
 import { StackTimeline } from './StackTimeline';
+import { useState, useRef } from 'react';
+import { generateIHerbLink } from '@/utils/stackLogic';
+import { SharePopover } from './SharePopover';
 
 interface SidebarStackProps {
   builder: StackBuilderHook;
@@ -27,7 +30,15 @@ export const SidebarStack = ({
   onOpenDisclaimer,
   onOpenProductModal,
 }: SidebarStackProps) => {
+
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   if (!builder) return null;
+
+  const handleOpenShare = (rect: DOMRect) => {
+    setAnchorRect(rect);
+    setIsShareOpen(true);
+  };
 
   const {
     cart,
@@ -90,10 +101,10 @@ export const SidebarStack = ({
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 min-h-0 custom-scrollbar overscroll-contain">
+      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-2 min-h-0 custom-scrollbar overscroll-contain">
 
         {mode === 'custom' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {selectedIds.length === 0 ? (
               // Пустое состояние — остаётся как было
               <div className="py-20 flex flex-col items-center text-center space-y-3 opacity-50">
@@ -164,27 +175,8 @@ export const SidebarStack = ({
         )}
       </div>
 
-      <div className="p-6 bg-slate-50/90 border-t border-slate-100 space-y-4 shrink-0">
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
-            <div className="flex items-center gap-2 mb-1">
-              <Wallet size={14} className="text-emerald-500" />
-              <span className="text-[9px] font-black uppercase text-slate-400 tracking-tighter font-sans">Daily Cost</span>
-            </div>
-            <div className="text-sm font-black text-slate-900">
-              ${analytics.dailyCost.toFixed(2)}
-            </div>
-          </div>
-          <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm">
-            <div className="flex items-center gap-2 mb-1">
-              <Clock size={14} className="text-blue-500" />
-              <span className="text-[9px] font-black uppercase text-slate-400 tracking-tighter font-sans">Duration</span>
-            </div>
-            <div className="text-sm font-black text-slate-900">
-              {analytics.durationDays} days
-            </div>
-          </div>
-        </div>
+      <div className="px-5 pb-5 pt-0 bg-slate-50/90 border-t border-slate-100 space-y-3 shrink-0">
+
 
         <StackSummary
           totalPrice={totalPrice}
@@ -192,17 +184,33 @@ export const SidebarStack = ({
           generateLink={generateLink}
           analytics={analytics}
           isSidebar={true}
+          onShare={handleOpenShare}
         />
 
-        <div className="text-center -mt-1">
+        <div className="text-center -mt-6">
           <button
             onClick={onOpenDisclaimer}
-            className="text-[11px] text-slate-400 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline"
+            className="text-[15px] text-green-700 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline"
           >
             Medical Disclaimer
           </button>
+
         </div>
       </div>
+
+      {/* Попап шаринга всего стека — рендерится через портал, 
+          поэтому может физически находиться в любом месте дерева */}
+      {isShareOpen && anchorRect && (
+        <SharePopover
+          url={generateIHerbLink(cart)}
+          title="My BioStack supplement stack"
+          heading="Share your stack"
+          onClose={() => setIsShareOpen(false)}
+          anchorRect={anchorRect}
+        />
+      )}
+
+
     </aside>
   );
 };
