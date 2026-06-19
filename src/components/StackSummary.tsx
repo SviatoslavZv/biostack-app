@@ -101,7 +101,7 @@ export const StackSummary = ({
 
   // --- 2. ВАРИАНТ ДЛЯ МОБИЛОК ---
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[420px] z-[100] xl:hidden animate-in slide-in-from-bottom-8 duration-500">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-[420px] z-[100] md:hidden animate-in slide-in-from-bottom-8 duration-500">
       <div className="bg-white shadow-[0_15px_50px_rgba(0,0,0,0.12)] rounded-[2rem] p-1.5 pl-5 flex items-center justify-between gap-3 border border-gray-50">
 
         <div className="flex gap-4">

@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
-import { Search, X } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Search, X, Share2 } from 'lucide-react';
+import { getAppUrl } from '@/utils/links';
+import { SharePopover } from './SharePopover';
 
 interface HeaderProps {
   categories: string[];
@@ -22,24 +24,37 @@ export const Header = ({
 }: HeaderProps) => {
 
 
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const shareButtonRef = useRef<HTMLButtonElement>(null);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+
+  const handleOpenShare = () => {
+    if (shareButtonRef.current) {
+      setAnchorRect(shareButtonRef.current.getBoundingClientRect());
+    }
+    setIsShareOpen(prev => !prev);
+  };
+
+
   return (
     <header className="fixed top-0 left-0 right-0 h-[80px] bg-white/80 backdrop-blur-md z-[100] border-b border-gray-100">
       <div className="max-w-[1440px] mx-auto h-full px-8 flex items-center">
 
         {/* ЛЕВО: Логотип */}
         <div
-          className="flex items-center gap-2 mr-12 cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => onCategoryChange('All')} // Сброс на "All" при клике на лого
+          className="flex items-center gap-2 mr-4 md:mr-12 cursor-pointer hover:opacity-80 transition-opacity shrink-0"
+          onClick={() => onCategoryChange('All')}
         >
           <div className="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-green-200">
             B
           </div>
-          <span className="font-black text-2xl tracking-tighter text-slate-900 uppercase">
+          <span className="hidden sm:block font-black text-2xl tracking-tighter text-slate-900 uppercase">
             Biostack
           </span>
         </div>
 
-        {/* ПОИСК (Новый блок) */}
+        {/* ПОИСК — десктоп: всегда видим как строка */}
         <div className="relative flex-1 max-w-md hidden md:block">
           <div className="relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-green-600 transition-colors" size={18} />
@@ -61,6 +76,40 @@ export const Header = ({
           </div>
         </div>
 
+        {/* ПОИСК — мобильный: иконка-лупа, раскрывающая поле */}
+        <div className="md:hidden flex-1 flex items-center justify-end">
+          {isMobileSearchOpen ? (
+            <div className="relative w-full animate-in fade-in slide-in-from-right-4 duration-200">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <input
+                type="text"
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Search..."
+                className="w-full bg-slate-50 border border-green-200 py-2 pl-9 pr-9 rounded-xl text-sm outline-none"
+              />
+              <button
+                onClick={() => {
+                  setIsMobileSearchOpen(false);
+                  onSearchChange("");
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-200 rounded-full transition-colors"
+              >
+                <X size={14} className="text-slate-500" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsMobileSearchOpen(true)}
+              className="p-2.5 text-slate-600 hover:bg-slate-50 rounded-full transition-colors shrink-0"
+              title="Search"
+            >
+              <Search size={20} />
+            </button>
+          )}
+        </div>
+
         {/* КНОПКА КАТЕГОРИЙ */}
         <div className="relative group">
           <button className="flex items-center gap-3 px-5 py-2.5 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all border border-slate-100">
@@ -69,7 +118,7 @@ export const Header = ({
               <div className="w-4 h-[2px] bg-slate-900"></div>
               <div className="w-2 h-[2px] bg-slate-900 group-hover:w-4 transition-all"></div>
             </div>
-            <span className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-900">
+            <span className="hidden sm:inline text-[11px] font-black uppercase tracking-[0.15em] text-slate-900">
               {activeCategory === 'All' ? 'Explore' : activeCategory}
             </span>
           </button>
@@ -93,7 +142,28 @@ export const Header = ({
           </div>
         </div>
 
-        <div className="flex-1"></div>
+        <div className="flex-1 flex justify-end">
+          <button
+            ref={shareButtonRef}
+            onClick={handleOpenShare}
+            className="p-2.5 bg-green-50 hover:bg-green-600 text-green-600 hover:text-white border-2 border-green-500 rounded-full transition-all duration-300 active:scale-95"
+            title="Share BioStack"
+          >
+            <Share2 size={18} />
+          </button>
+
+          {isShareOpen && anchorRect && (
+            <SharePopover
+              url={getAppUrl()}
+              title="BioStack — Smart Supplement Stack Builder"
+              heading="Share BioStack"
+              onClose={() => setIsShareOpen(false)}
+              anchorRect={anchorRect}
+            />
+          )}
+        </div>
+
+
       </div>
     </header>
   );

@@ -98,7 +98,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
       <div className="pt-20 md:pt-24 px-4 md:px-8 2xl:px-12 max-w-[1920px] mx-auto">
         <div className="flex gap-8">
 
-          <div className="flex-1 pb-12 md:pb-16 flex flex-col justify-between min-h-[calc(100vh-240px)]">
+          <div className="flex-1 pb-36 sm:pb-28 md:pb-16 flex flex-col justify-between min-h-[calc(100vh-240px)]">
             <div>
               <div className="sticky top-20 z-30 my-6">
                 <SmartAlerts
