@@ -10,7 +10,7 @@ interface StackSummaryProps {
   generateLink: () => void;
   isSidebar?: boolean;
   analytics: StackAnalytics;
-  onShare: (anchorRect: DOMRect) => void; // теперь передаёт координаты
+  onShare?: (anchorRect: DOMRect) => void; // теперь передаёт координаты
 }
 
 export const StackSummary = ({
@@ -78,7 +78,7 @@ export const StackSummary = ({
             <button
               ref={shareButtonRef}
               onClick={() => {
-                if (shareButtonRef.current) {
+                if (shareButtonRef.current && onShare) {
                   onShare(shareButtonRef.current.getBoundingClientRect());
                 }
               }}
