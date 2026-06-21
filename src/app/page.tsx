@@ -9,11 +9,16 @@ import { useStackBuilder, StackBuilderHook } from "@/hooks/useStackBuilder";
 import { generateIHerbLink, getBestValueId } from "@/utils/stackLogic";
 import { formatPartnerLink, shareLink, getAppUrl } from "@/utils/links";
 import { SidebarStack } from "@/components/SidebarStack";
+import { SharePopover } from "@/components/SharePopover";
 import { ProductModal } from "@/components/ProductModal";
 import { EmptyState } from "@/components/EmptyState";
 import { WelcomeHero } from "@/components/WelcomeHero";
 import { DisclaimerModal } from "@/components/DisclaimerModal";
 import { Toast } from "@/components/Toast";
+import { Trash2 } from "lucide-react";
+import { BottomNav } from "@/components/BottomNav";
+import { PresetsList } from "@/components/PresetsList";
+import { CartItemsList } from "@/components/CartItemsList";
 
 const subscribe = () => () => { };
 const getSnapshot = () => true;
@@ -34,7 +39,10 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Supplement | null>(null);
   const [sidebarMode, setSidebarMode] = useState<'custom' | 'editors'>('custom');
+  const [mobileTab, setMobileTab] = useState<'home' | 'presets' | 'stack'>('home');
   const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   const [toast, setToast] = useState<{ message: string; isVisible: boolean }>({
     message: '',
     isVisible: false,
@@ -53,7 +61,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
   const {
     cart, selectedIds, activeCategory, setActiveCategory,
-    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics, categories, replaceInCart,
+    updateQuantity, filteredSupplements, totalPrice, allSupplements, analytics, categories, replaceInCart, setStackPreset,
   } = builder;
 
   const displaySupplements = useMemo(() => {
@@ -84,6 +92,11 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
     // 'failed' — пользователь просто закрыл окно или произошла ошибка, тоже без toast
   };
 
+  const handleOpenShare = (rect: DOMRect) => {
+    setAnchorRect(rect);
+    setIsShareOpen(true);
+  };
+
   return (
     <main className="min-h-screen bg-white">
       <Header
@@ -98,7 +111,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
       <div className="pt-20 md:pt-24 px-4 md:px-8 2xl:px-12 max-w-[1920px] mx-auto">
         <div className="flex gap-8">
 
-          <div className="flex-1 pb-36 sm:pb-28 md:pb-16 flex flex-col justify-between min-h-[calc(100vh-240px)]">
+          <div className={`flex-1 pb-36 sm:pb-28 md:pb-16 flex-col justify-between min-h-[calc(100vh-240px)] ${mobileTab === 'home' ? 'flex' : 'hidden'} md:flex`}>
             <div>
               <div className="sticky top-20 z-30 my-6">
                 <SmartAlerts
@@ -115,7 +128,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
               </div>
 
               {displaySupplements.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 transition-all duration-300 animate-in fade-in-50">
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 transition-all duration-300 animate-in fade-in-50">
                   {displaySupplements.map((item, index) => (
                     <SupplementCard
                       key={item.id}
@@ -143,10 +156,10 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
             </div>
 
             <div className="mt-10 pt-8 border-t border-slate-100 space-y-2 text-center md:text-left">
-              <p className="text-[11px] text-slate-400 font-black uppercase tracking-widest">
+              <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest">
                 BioStack — Independent Budgeting Tool
               </p>
-              <p className="text-xs text-slate-500 max-w-3xl leading-relaxed">
+              <p className="text-xs text-slate-600 max-w-3xl leading-relaxed">
                 This application is an independent development tool for supplement budget planning and routine tracking.
                 It is not affiliated with or endorsed by the iHerb brand.
                 ⭐ <button
@@ -166,18 +179,70 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
             setMode={setSidebarMode}
             onOpenDisclaimer={() => setIsDisclaimerOpen(true)}
             onOpenProductModal={(product) => setSelectedProduct(product)}
+            onShare={handleOpenShare}
           />
         </div>
       </div>
 
-      <div className="md:hidden">
-        <StackSummary
-          totalPrice={totalPrice}
-          selectedCount={selectedIds.length}
-          generateLink={handleGenerateLink}
-          analytics={analytics}
-        />
-      </div>
+
+
+      {mobileTab === 'presets' && (
+        <div className="md:hidden px-4 pt-6 pb-8">
+          <PresetsList
+            activeCategory={activeCategory}
+            setStackPreset={setStackPreset}
+            onSelect={() => setMobileTab('stack')} />
+        </div>
+      )}
+
+      {mobileTab === 'stack' && (
+        <div className="md:hidden px-4 pt-6 pb-20">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-black text-slate-900 italic tracking-tight">Your Stack</h2>
+            {selectedIds.length > 0 && (
+              <button
+                onClick={() => builder.clearStack()}
+                className="p-2 text-slate-400 hover:text-red-500 transition-colors group"
+                title="Clear all"
+              >
+                <Trash2 size={18} className="group-hover:scale-110 transition-transform" />
+              </button>
+            )}
+          </div>
+
+          <CartItemsList
+            cart={cart}
+            allSupplements={allSupplements}
+            updateQuantity={updateQuantity}
+            onOpenProductModal={(product) => setSelectedProduct(product)}
+          />
+
+          <div className="mt-4">
+            <StackSummary
+              totalPrice={totalPrice}
+              selectedCount={selectedIds.length}
+              generateLink={handleGenerateLink}
+              analytics={analytics}
+              isSidebar={true}
+              onShare={handleOpenShare}
+            />
+            <div className="text-center -mt-3">
+              <button
+                onClick={() => setIsDisclaimerOpen(true)}
+                className="text-[15px] text-green-700 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline"
+              >
+                Medical Disclaimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <BottomNav
+        activeTab={mobileTab}
+        setActiveTab={setMobileTab}
+        stackCount={selectedIds.length}
+      />
 
       <ProductModal
         item={selectedProduct}
@@ -194,6 +259,16 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
         isVisible={toast.isVisible}
         onClose={hideToast}
       />
+
+      {isShareOpen && anchorRect && (
+        <SharePopover
+          url={generateIHerbLink(cart)}
+          title="My BioStack supplement stack"
+          heading="Share your stack"
+          onClose={() => setIsShareOpen(false)}
+          anchorRect={anchorRect}
+        />
+      )}
 
     </main>
   );

@@ -160,29 +160,41 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct, optimizations,
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100/80 active:bg-slate-100 transition-colors text-sm font-semibold text-slate-700 select-none outline-none cursor-pointer focus:relative focus:z-10 focus:ring-2 focus:ring-blue-500/20"
             >
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center gap-x-3 gap-y-1.5 flex-wrap">
                     <span className="flex items-center gap-1.5">
                         🧬 Smart Analyzer:
                     </span>
 
                     <div className="flex items-center space-x-1.5 text-xs font-bold">
                         {warningsCount > 0 && (
-                            <span className="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-200 rounded-full">
+                            <span
+                                aria-label={`${warningsCount} warning${warningsCount > 1 ? 's' : ''}`}
+                                title={`${warningsCount} warning${warningsCount > 1 ? 's' : ''}`}
+                                className="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-200 rounded-full">
                                 ⚠️ {warningsCount}
                             </span>
                         )}
                         {successCount > 0 && (
-                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full">
+                            <span
+                                aria-label={`${successCount} positive synergy match${successCount > 1 ? 'es' : ''}`}
+                                title={`${successCount} positive synergy match${successCount > 1 ? 'es' : ''}`}
+                                className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full">
                                 ✅ {successCount}
                             </span>
                         )}
                         {infoCount > 0 && (
-                            <span className="px-2 py-0.5 bg-blue-100 text-blue-800 border border-blue-200 rounded-full">
+                            <span
+                                aria-label={`${infoCount} tip${infoCount > 1 ? 's' : ''}`}
+                                title={`${infoCount} tip${infoCount > 1 ? 's' : ''}`}
+                                className="px-2 py-0.5 bg-blue-100 text-blue-800 border border-blue-200 rounded-full">
                                 💡 {infoCount}
                             </span>
                         )}
                         {optimizationsCount > 0 && (
-                            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full">
+                            <span
+                                aria-label={`${optimizationsCount} money-saving suggestion${optimizationsCount > 1 ? 's' : ''}`}
+                                title={`${optimizationsCount} money-saving suggestion${optimizationsCount > 1 ? 's' : ''}`}
+                                className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-full">
                                 💰 {optimizationsCount}
                             </span>
                         )}
@@ -195,7 +207,7 @@ export const SmartAlerts = ({ cart, allSupplements, onAddProduct, optimizations,
             </button>
 
             {isOpen && (
-                <div className="p-4 bg-white border-t border-slate-100 space-y-2.5 max-h-[320px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
+                <div className="p-4 bg-white border-t border-slate-100 space-y-2.5 max-h-[320px] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-slate-200">
 
                     {/* Подсказки по оптимизации цены — показываем первыми */}
                     {optimizations.map((opt) => (

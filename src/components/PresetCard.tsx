@@ -10,7 +10,7 @@ interface PresetCardProps {
     description: string;
     items: PresetItem[];
     setStackPreset: (presetItems: PresetItem[]) => void;
-    setMode: (mode: 'custom' | 'editors') => void;
+    onSelect: () => void;
 }
 
 export const PresetCard = ({
@@ -19,13 +19,13 @@ export const PresetCard = ({
     description,
     items,
     setStackPreset,
-    setMode
+    onSelect,
 }: PresetCardProps) => {
     return (
         <button
             onClick={() => {
                 setStackPreset(items);
-                setMode('custom');
+                onSelect();
             }}
             className="w-full text-left p-5 rounded-3xl border border-slate-100 hover:border-purple-200 hover:bg-purple-50/30 transition-all group relative"
         >

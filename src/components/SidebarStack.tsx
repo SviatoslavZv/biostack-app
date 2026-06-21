@@ -1,17 +1,13 @@
 'use client';
 
-import { Wallet, Clock, Zap, Layout, Star, Trash2 } from 'lucide-react';
+import { Layout, Star, Trash2 } from 'lucide-react';
 import { StackSummary } from './StackSummary';
 import { OptimizationProgress } from './OptimizationProgress';
 import { StackBuilderHook } from '@/hooks/useStackBuilder';
-import { STACK_PRESETS } from '@/constants/presets';
 import { Supplement } from '@/constants/supplements';
-import { CartProductCard } from './CartProductCard';
-import { PresetCard } from './PresetCard';
-import { StackTimeline } from './StackTimeline';
-import { useState, useRef } from 'react';
-import { generateIHerbLink } from '@/utils/stackLogic';
-import { SharePopover } from './SharePopover';
+import { CartItemsList } from './CartItemsList';
+import { PresetsList } from './PresetsList';
+
 
 interface SidebarStackProps {
   builder: StackBuilderHook;
@@ -20,6 +16,7 @@ interface SidebarStackProps {
   setMode: (mode: 'custom' | 'editors') => void;
   onOpenDisclaimer: () => void;
   onOpenProductModal: (product: Supplement) => void;
+  onShare: (anchorRect: DOMRect) => void;
 }
 
 export const SidebarStack = ({
@@ -29,16 +26,10 @@ export const SidebarStack = ({
   setMode,
   onOpenDisclaimer,
   onOpenProductModal,
+  onShare,
 }: SidebarStackProps) => {
 
-  const [isShareOpen, setIsShareOpen] = useState(false);
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   if (!builder) return null;
-
-  const handleOpenShare = (rect: DOMRect) => {
-    setAnchorRect(rect);
-    setIsShareOpen(true);
-  };
 
   const {
     cart,
@@ -104,74 +95,20 @@ export const SidebarStack = ({
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-2 min-h-0 custom-scrollbar overscroll-contain">
 
         {mode === 'custom' && (
-          <div className="space-y-3">
-            {selectedIds.length === 0 ? (
-              // Пустое состояние — остаётся как было
-              <div className="py-20 flex flex-col items-center text-center space-y-3 opacity-50">
-                <Zap size={24} className="text-slate-300" />
-                <p className="text-xs font-bold uppercase tracking-tighter text-slate-400">
-                  Stack is empty
-                </p>
-              </div>
-            ) : (
-              // ВАЖНО: здесь Fragment <> оборачивает ОБА блока —
-              // список карточек И таймлайн
-              // Почему Fragment? Потому что JSX требует один корневой элемент,
-              // но мы не хотим добавлять лишний <div>
-              <>
-                {cart.map((item) => {
-                  const product = allSupplements.find((s) => s.id === item.id);
-                  if (!product) return null;
-                  return (
-                    <CartProductCard
-                      key={item.id}
-                      id={item.id}
-                      count={item.count}
-                      product={product}
-                      updateQuantity={updateQuantity}
-                      onOpenProductModal={onOpenProductModal}
-                    />
-                  );
-                })}
-
-                {/* Таймлайн идёт ПОСЛЕ map, но ВНУТРИ Fragment */}
-                <StackTimeline
-                  cart={cart}
-                  allSupplements={allSupplements}
-                />
-              </>
-            )}
-          </div>
+          <CartItemsList
+            cart={cart}
+            allSupplements={allSupplements}
+            updateQuantity={updateQuantity}
+            onOpenProductModal={onOpenProductModal}
+          />
         )}
 
         {mode === 'editors' && (
-          <div className="space-y-4">
-            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">
-              {activeCategory === 'All' ? 'Expert Curated Stacks' : `${activeCategory} Solutions`}
-            </p>
-
-            {STACK_PRESETS.filter(p => activeCategory === 'All' || p.category === activeCategory).length === 0 ? (
-              <div className="py-20 flex flex-col items-center text-center space-y-3 opacity-40">
-                <Star size={24} className="text-slate-300" />
-                <p className="text-xs font-bold uppercase tracking-tighter">No presets for {activeCategory}</p>
-              </div>
-            ) : (
-              STACK_PRESETS
-                .filter(p => activeCategory === 'All' || p.category === activeCategory)
-                .map((preset) => (
-                  <PresetCard
-                    key={preset.id}
-                    id={preset.id}
-                    category={preset.category}
-                    title={preset.title}
-                    description={preset.description}
-                    items={preset.items}
-                    setStackPreset={setStackPreset}
-                    setMode={setMode}
-                  />
-                ))
-            )}
-          </div>
+          <PresetsList
+            activeCategory={activeCategory}
+            setStackPreset={setStackPreset}
+            onSelect={() => setMode('custom')}
+          />
         )}
       </div>
 
@@ -184,7 +121,7 @@ export const SidebarStack = ({
           generateLink={generateLink}
           analytics={analytics}
           isSidebar={true}
-          onShare={handleOpenShare}
+          onShare={onShare}
         />
 
         <div className="text-center -mt-6">
@@ -198,17 +135,7 @@ export const SidebarStack = ({
         </div>
       </div>
 
-      {/* Попап шаринга всего стека — рендерится через портал, 
-          поэтому может физически находиться в любом месте дерева */}
-      {isShareOpen && anchorRect && (
-        <SharePopover
-          url={generateIHerbLink(cart)}
-          title="My BioStack supplement stack"
-          heading="Share your stack"
-          onClose={() => setIsShareOpen(false)}
-          anchorRect={anchorRect}
-        />
-      )}
+
 
 
     </aside>

@@ -174,7 +174,7 @@ export const SupplementCard = ({
 
         <div className="flex items-baseline justify-center flex-wrap gap-x-8 mt-auto">
           <span className="text-[17px] font-black text-green-600 transition-transform duration-300 group-hover/main-card:scale-110">
-            ${item.price}
+            ${item.price.toFixed(2)}
           </span>
           <span className="text-[11px] font-bold text-slate-500/90 tracking-tight">
             ${(item.price / item.servings).toFixed(2)} / dose
