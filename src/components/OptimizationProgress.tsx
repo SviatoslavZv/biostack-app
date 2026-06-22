@@ -51,7 +51,7 @@ export const OptimizationProgress = ({
         tabIndex={isEmpty ? undefined : 0}
         className={`space-y-2 select-none ${isEmpty
           ? 'cursor-not-allowed'
-          : 'cursor-pointer group/progress p-2 -mx-2 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all duration-300'
+          : 'cursor-pointer group/progress p-1 -mx-2 rounded-2xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all duration-300'
           }`}
       >
         <div className="flex justify-between text-[10px] font-black uppercase text-slate-400 tracking-widest">

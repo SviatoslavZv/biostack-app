@@ -44,7 +44,7 @@ export const SidebarStack = ({
   } = builder;
 
   return (
-    <aside className="hidden md:flex flex-col w-72 lg:w-96 border-l bg-white sticky top-24 h-[calc(100vh-100px)] shadow-xl z-20">
+    <aside className="hidden md:flex flex-col w-72 lg:w-96 border-l bg-white sticky top-14 h-[calc(100vh-100px)] shadow-xl z-20">
 
       <div className="p-6 border-b space-y-4 shrink-0 bg-white">
         <div className="flex items-center justify-between">
@@ -127,7 +127,7 @@ export const SidebarStack = ({
         <div className="text-center -mt-6">
           <button
             onClick={onOpenDisclaimer}
-            className="text-[15px] text-green-700 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline"
+            className="text-[15px] text-green-700 hover:text-green-600 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline cursor-pointer"
           >
             Medical Disclaimer
           </button>

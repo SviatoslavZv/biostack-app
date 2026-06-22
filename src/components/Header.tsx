@@ -174,7 +174,7 @@ export const Header = ({
       </div>
 
       {isMobileSearchOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 px-4 py-3 shadow-lg animate-in slide-in-from-top-2 duration-200">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 px-4 py-3 shadow-lg animate-in slide-in-from-top-2 duration-200 ">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             <input

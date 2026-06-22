@@ -28,7 +28,7 @@ export const SupplementCard = ({
   onUpdateQuantity,
   onOpenModal,
 }: Props) => {
-  const isPriority = index < 13;
+  const isPriority = index < 6;
   // Получаем тайминг для этого товара
   // getSupplementTiming вернёт 'morning', 'noon' или 'evening'
   // TIMING_META даст нам иконку и название для этого слота
@@ -37,6 +37,7 @@ export const SupplementCard = ({
   const [isShareOpen, setIsShareOpen] = useState(false);
   const shareButtonRef = useRef<HTMLButtonElement>(null);
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   return (
     <div

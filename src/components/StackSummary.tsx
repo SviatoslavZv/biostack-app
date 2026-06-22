@@ -31,12 +31,12 @@ export const StackSummary = ({
   // --- 1. ВАРИАНТ ДЛЯ САЙДБАРА ---
   if (isSidebar) {
     return (
-      <div className="p-6 bg-white border-t border-gray-100 mt-auto">
+      <div className="p-3 bg-white border-t border-gray-100 mt-auto">
         <div className="flex flex-col gap-3">
 
           {/* Единый ряд: Total / Per Day / Duration */}
 
-          <div className="grid grid-cols-[auto_1fr_1fr] gap-3 items-center bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+          <div className="grid grid-cols-[auto_1fr_1fr] gap-3 items-center bg-slate-50/50 p-2 rounded-xl border border-slate-100">
             <span className="flex items-center gap-1.5 text-xl font-black text-slate-900 whitespace-nowrap">
               <Wallet size={18} className="text-emerald-600" />
               ${totalPrice.toFixed(2)}
@@ -65,7 +65,7 @@ export const StackSummary = ({
           <div className="flex gap-2">
             <button
               onClick={generateLink}
-              className={`flex-1 ${brandGreen} text-white py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-wide transition-all active:scale-[0.96] shadow-xl flex items-center justify-center gap-1.5 group whitespace-nowrap`}
+              className={`flex-1 ${brandGreen} text-white py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-wide transition-all active:scale-[0.96] shadow-xl flex items-center justify-center gap-1.5 group whitespace-nowrap cursor-pointer`}
             >
               <span>Order on iHerb</span>
               <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform" />
@@ -78,7 +78,7 @@ export const StackSummary = ({
                   onShare(shareButtonRef.current.getBoundingClientRect());
                 }
               }}
-              className="shrink-0 w-14 bg-green-50 hover:bg-green-600 text-green-600 hover:text-white border-2 border-green-500 rounded-2xl transition-all duration-300 active:scale-95 flex items-center justify-center"
+              className="shrink-0 w-14 bg-green-50 hover:bg-green-600 text-green-600 hover:text-white border-2 border-green-500 rounded-2xl transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer"
               title="Share this stack"
             >
               <Share2 size={22} />
@@ -86,7 +86,7 @@ export const StackSummary = ({
           </div>
 
           {/* Юридическая пометка о согласии с условиями использования */}
-          <p className="text-[12px] text-slate-700 text-center leading-snug">
+          <p className="text-[12px] text-slate-800 text-center leading-snug md:text-[10px]">
             By proceeding, you confirm you&apos;ve read and agree to our{' '}
             <span className="font-semibold text-slate-500">Medical Disclaimer & Terms</span>.
           </p>

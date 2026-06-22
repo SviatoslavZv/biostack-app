@@ -14,39 +14,42 @@ export const DisclaimerModal = ({ isOpen, onClose }: DisclaimerModalProps) => {
     if (!isOpen) return null;
 
     return (
-        // ХЕНДЛЕР ОВЕРЛЕЯ: Если пользователь кликнет на затемненный фон вокруг модалки, она закроется
+        // ХЕНДЛЕР ОВЕРЛЕЯ
+        // ИЗМЕНЕНИЕ: На мобилках прижимаем к низу (items-end), на десктопе центрируем (sm:items-center).
+        // Добавили отступы p-3 pb-20 sm:p-4, где pb-20 гарантированно приподнимает окно над нижним таб-баром!
         <div
             onClick={onClose}
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3 pb-20 sm:p-4 animate-in fade-in duration-200"
         >
-            {/* КОНТЕНТНОЕ ОКНО: StopPropagation отменяет всплытие события клика, чтобы при нажатии 
-          внутри самого окна модалка случайно не закрывалась */}
+            {/* КОНТЕНТНОЕ ОКНО */}
+            {/* ИЗМЕНЕНИЕ: rounded-3xl для красивых скруглений со всех сторон. */}
+            {/* ИЗМЕНЕНИЕ: max-h-[70vh] на мобилках отодвинет верхний край от основного хедера BioStack, оставляя зазор, а sm:max-h-[80vh] вернет стандартный размер на ПК. */}
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-slate-100 space-y-6 animate-in zoom-in-95 duration-200 relative overflow-hidden"
+                className="bg-white rounded-3xl max-w-lg w-full max-h-[70vh] sm:max-h-[80vh] flex flex-col p-5 md:p-7 shadow-2xl border border-slate-100 animate-in slide-in-from-bottom-5 sm:zoom-in-95 duration-200 relative overflow-hidden"
             >
                 {/* Яркая предупреждающая полоса на самом верху карточки */}
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-500 to-orange-500" />
+                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-500 to-orange-500 flex-shrink-0" />
 
                 {/* КНОПКА-КРЕСТИК ДЛЯ ЗАКРЫТИЯ */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-xl hover:bg-slate-100 transition-colors"
+                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-xl hover:bg-slate-100 transition-colors z-10"
                     aria-label="Close modal"
                 >
                     <X size={16} />
                 </button>
 
-                {/* ЗАГОЛОВОК ОКНА */}
-                <div className="flex items-center gap-3 text-amber-600">
+                {/* ЗАГОЛОВОК ОКНА (Фиксированный сверху) */}
+                <div className="flex items-center gap-3 text-amber-600 pb-3 mt-1 flex-shrink-0">
                     <div className="p-2 bg-amber-50 rounded-xl">
-                        <ShieldAlert size={24} />
+                        <ShieldAlert size={22} />
                     </div>
-                    <h3 className="text-xl font-black text-slate-900 tracking-tight">Medical Disclaimer</h3>
+                    <h3 className="text-lg md:text-xl font-black text-slate-900 tracking-tight">Medical Disclaimer</h3>
                 </div>
 
-                {/* ЮРИДИЧЕСКИЙ ТЕКСТ НА АНГЛИЙСКОМ */}
-                <div className="space-y-4 text-xs md:text-sm text-slate-600 leading-relaxed font-medium">
+                {/* ЮРИДИЧЕСКИЙ ТЕКСТ НА АНГЛИЙСКОМ (Изолированный внутренний скролл) */}
+                <div className="flex-1 overflow-y-auto overscroll-contain pr-1.5 space-y-3.5 text-xs md:text-sm text-slate-600 leading-relaxed font-medium scrollbar-thin scrollbar-thumb-slate-200">
                     <p>
                         <strong>Important:</strong> The <strong>BioStack</strong> application is not a substitute for professional medical advice,
                         diagnosis, or treatment. All technical data provided in this database (such as dosages, serving sizes, and product facts)
@@ -58,22 +61,24 @@ export const DisclaimerModal = ({ isOpen, onClose }: DisclaimerModalProps) => {
                     </p>
 
                     {/* Акцентный блок-предупреждение */}
-                    <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-slate-500 italic flex gap-2">
-                        <Scale size={28} className="text-slate-400 flex-shrink-0" />
-                        <p>
+                    <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-slate-700 italic flex gap-2">
+                        <Scale size={24} className="text-slate-400 flex-shrink-0" />
+                        <p className="text-[11px] md:text-xs">
                             By using this calculator, you acknowledge that you bear full personal responsibility for how you interpret the calculations
                             and any subsequent reliance on the information provided herein.
                         </p>
                     </div>
                 </div>
 
-                {/* КНОПКА ПОДТВЕРЖДЕНИЯ */}
-                <button
-                    onClick={onClose}
-                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-2xl text-xs uppercase tracking-widest transition-all hover:shadow-lg active:scale-[0.98]"
-                >
-                    I Understand
-                </button>
+                {/* КНОПКА ПОДТВЕРЖДЕНИЯ (Фиксированная снизу) */}
+                <div className="pt-3.5 mt-2 border-t border-slate-100 flex-shrink-0">
+                    <button
+                        onClick={onClose}
+                        className="w-full py-3 bg-slate-900 hover:bg-green-600 text-white font-black rounded-2xl text-xs uppercase tracking-widest transition-all hover:shadow-lg active:scale-[0.98] cursor-pointer"
+                    >
+                        I Understand
+                    </button>
+                </div>
             </div>
         </div>
     );

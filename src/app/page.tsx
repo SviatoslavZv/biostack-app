@@ -196,37 +196,37 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
       )}
 
       {mobileTab === 'stack' && (
-        <div className="md:hidden px-4 pt-6 pb-20">
-          <div className="flex items-center justify-between mb-4">
+        <div className="md:hidden fixed inset-x-0 top-[80px] bottom-[64px] flex flex-col z-10">
+          {/* Хедер вкладки — фиксированная высота, не скроллится */}
+          <div className="flex items-center justify-between px-4 py-1 bg-white border-b border-slate-100 shrink-0">
             <h2 className="text-xl font-black text-slate-900 italic tracking-tight">Your Stack</h2>
             {selectedIds.length > 0 && (
-              <button
-                onClick={() => builder.clearStack()}
-                className="p-2 text-slate-400 hover:text-red-500 transition-colors group"
-                title="Clear all"
-              >
+              <button onClick={() => builder.clearStack()} className="p-2 text-slate-400 hover:text-red-500 transition-colors group" title="Clear all">
                 <Trash2 size={18} className="group-hover:scale-110 transition-transform" />
               </button>
             )}
           </div>
 
-          <CartItemsList
-            cart={cart}
-            allSupplements={allSupplements}
-            updateQuantity={updateQuantity}
-            onOpenProductModal={(product) => setSelectedProduct(product)}
-          />
+          {/* Список товаров — скроллится независимо */}
+          <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
+            <CartItemsList
+              cart={cart}
+              allSupplements={allSupplements}
+              updateQuantity={updateQuantity}
+              onOpenProductModal={(product) => setSelectedProduct(product)}
+            />
+          </div>
 
-          <div className="mt-4">
+          {/* StackSummary — всегда прибит к низу, не скроллится */}
+          <div className="shrink-0 bg-white border-t border-slate-100">
             <StackSummary
               totalPrice={totalPrice}
               selectedCount={selectedIds.length}
               generateLink={handleGenerateLink}
-              analytics={analytics}
-              isSidebar={true}
+              analytics={analytics} isSidebar={true}
               onShare={handleOpenShare}
             />
-            <div className="text-center -mt-3">
+            <div className="text-center pb-4 -mt-3">
               <button
                 onClick={() => setIsDisclaimerOpen(true)}
                 className="text-[15px] text-green-700 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline"

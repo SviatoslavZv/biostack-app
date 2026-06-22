@@ -11,6 +11,10 @@ interface Props {
 }
 
 export const ProductModal = ({ item, onClose }: Props) => {
+    const [isFlipped, setIsFlipped] = React.useState(false);
+    React.useEffect(() => {
+        setIsFlipped(false);
+    }, [item?.id]);
     if (!item) return null;
 
     const duration = item.servings && item.suggestedDaily
@@ -39,11 +43,13 @@ export const ProductModal = ({ item, onClose }: Props) => {
                 {/* Контейнер-сетка: жестко h-full на десктопе */}
                 <div className="flex flex-col md:flex-row h-full w-full min-h-0">
 
-                    {/* ЛЕВАЯ ЧАСТЬ: Абсолютный монолит без паддингов, высота строго 100% */}
-                    <div className="w-full md:w-1/2 h-[350px] md:h-full bg-white relative overflow-hidden group/gallery border-b md:border-b-0 md:border-r border-slate-100 flex items-center justify-center">
-
-                        {/* ФРОНТАЛЬНОЕ ИЗОБРАЖЕНИЕ: При ховере плавно сжимается по горизонтали и уходит */}
-                        <div className="absolute inset-0 transition-all duration-500 ease-in-out group-hover/gallery:opacity-0 group-hover/gallery:scale-x-0 group-hover/gallery:scale-y-95 flex items-center justify-center p-4">
+                    {/* ЛЕВАЯ ЧАСТЬ */}
+                    <div
+                        className="w-full md:w-1/2 h-[220px] md:h-full bg-white relative overflow-hidden border-b md:border-b-0 md:border-r border-slate-100 flex items-center justify-center cursor-pointer"
+                        onClick={() => setIsFlipped(prev => !prev)}
+                    >
+                        {/* ФРОНТАЛЬНОЕ ИЗОБРАЖЕНИЕ */}
+                        <div className={`absolute inset-0 transition-all duration-500 ease-in-out ${isFlipped ? 'opacity-0 scale-x-0 scale-y-95' : 'opacity-100 scale-x-100 scale-y-100'} flex items-center justify-center p-4`}>
                             <Image
                                 src={item.imageFront}
                                 alt={`${item.name} Front`}
@@ -54,8 +60,8 @@ export const ProductModal = ({ item, onClose }: Props) => {
                             />
                         </div>
 
-                        {/* ЗАДНЕЕ ИЗОБРАЖЕНИЕ: Раскрывается по горизонтали с микро-задержкой, создавая эффект переворота */}
-                        <div className="absolute inset-0 opacity-0 scale-x-0 scale-y-105 group-hover/gallery:opacity-100 group-hover/gallery:scale-x-[1.55] group-hover/gallery:scale-y-[1.55] transition-all duration-500 ease-out flex items-center justify-center cursor-zoom-in z-10 p-2 delay-75">
+                        {/* ЗАДНЕЕ ИЗОБРАЖЕНИЕ */}
+                        <div className={`absolute inset-0 transition-all duration-500 ease-out delay-75 ${isFlipped ? 'opacity-100 scale-x-[1.55] scale-y-[1.55]' : 'opacity-0 scale-x-0 scale-y-105'} flex items-center justify-center z-10 p-2`}>
                             <Image
                                 src={item.imageBack || item.imageFront}
                                 alt={`${item.name} Ingredients`}
@@ -65,18 +71,20 @@ export const ProductModal = ({ item, onClose }: Props) => {
                             />
                         </div>
 
-                        {/* СТАТИЧНАЯ ПОДСКАЗКА */}
-                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[9px] font-black text-slate-400 uppercase tracking-widest pointer-events-none group-hover/gallery:opacity-0 transition-opacity duration-300 z-0">
-                            Hover to view Supplement Facts 🔍
+                        {/* ПОДСКАЗКА */}
+                        <div className={`absolute bottom-3 md:bottom-6 left-1/2 -translate-x-1/2 text-[8px] md:text-[9px] font-black text-emerald-500 md:text-slate-400 uppercase tracking-widest pointer-events-none transition-opacity duration-300 z-0 ${isFlipped ? 'opacity-0' : 'opacity-100'}`}>
+                            Tap to view Facts 🔍
                         </div>
                     </div>
 
+
+
                     {/* ПРАВАЯ ЧАСТЬ: Независимый аккуратный скролл контента */}
-                    <div className="w-full md:w-1/2 h-full p-8 md:p-12 flex flex-col justify-between overflow-y-auto bg-white custom-scrollbar">
+                    <div className="w-full md:w-1/2 h-full p-5 md:p-12 flex flex-col justify-between overflow-y-auto bg-white custom-scrollbar">
 
                         <div>
                             {/* Категория и Бренд */}
-                            <div className="flex items-center justify-between gap-2 mb-4">
+                            <div className="flex items-center justify-between gap-2 mb-2 md:mb-4">
                                 <div className="flex items-center gap-1.5">
                                     <Leaf size={12} className="text-green-500" />
                                     <span className="text-[10px] font-black uppercase tracking-wider text-green-600">
@@ -94,7 +102,7 @@ export const ProductModal = ({ item, onClose }: Props) => {
                             </h2>
 
                             {/* Цена и порции */}
-                            <div className="mt-4 flex items-center gap-3 border-b border-slate-100 pb-5">
+                            <div className="mt-2 md:mt-4 flex items-center gap-3 border-b border-slate-100 pb-3 md:pb-5">
                                 <span className="text-2xl font-black text-slate-900">${item.price.toFixed(2)}</span>
                                 <div className="h-4 w-px bg-slate-200" />
                                 <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-lg uppercase border border-emerald-100">
@@ -103,7 +111,7 @@ export const ProductModal = ({ item, onClose }: Props) => {
                             </div>
 
                             {/* СЕТКА С ПАРАМЕТРАМИ (Интерактивные карточки) */}
-                            <div className="grid grid-cols-2 gap-3 my-6">
+                            <div className="grid grid-cols-2 gap-3 my-3 md:my-6">
 
                                 {/* Карточка: Pack Volume (Мягкий синий ховер) */}
                                 <div className="bg-slate-50/60 p-3 rounded-xl border border-slate-100 flex items-center gap-2.5 
@@ -121,7 +129,7 @@ export const ProductModal = ({ item, onClose }: Props) => {
                     transition-all duration-300 ease-in-out cursor-default
                     hover:bg-amber-50/60 hover:border-amber-200 group/supply">
                                     <Sparkles size={14} className="text-amber-500 flex-shrink-0 transition-transform duration-300 group-hover/supply:scale-110 animate-pulse" />
-                                    <div className="text-[11px] leading-tight">
+                                    <div className="text-[12px] leading-tight">
                                         <p className="text-slate-400 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/supply:text-amber-500">Est. Supply</p>
                                         <p className="font-extrabold text-slate-700 mt-0.5 transition-colors duration-300 group-hover/supply:text-amber-900">
                                             {duration ? `~${duration} Days` : 'Custom Take'}
@@ -132,7 +140,7 @@ export const ProductModal = ({ item, onClose }: Props) => {
                             </div>
 
                             {/* Описание с интерактивным эффектом */}
-                            <p className="text-slate-500 text-xs leading-relaxed mb-6 italic bg-slate-50/40 p-4 rounded-xl border border-dashed border-slate-200 
+                            <p className="text-slate-500 text-xs leading-relaxed mb-2 md:mb-6 italic bg-slate-50/40 p-3 md:p-4 rounded-xl border border-dashed border-slate-200 
               transition-all duration-300 ease-in-out
               hover:bg-green-50/50 hover:text-green-700 hover:border-green-200  cursor-default">
                                 {`"${item.description || "Premium quality supplement meticulously tested for purity and potency. Perfect addition to your daily biohacking stack."}"`}
@@ -140,8 +148,8 @@ export const ProductModal = ({ item, onClose }: Props) => {
                         </div>
 
                         {/* НИЖНИЙ БЛОК */}
-                        <div className="space-y-4 mt-4">
-                            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">
+                        <div className="space-y-3 mt-2 md:mt-4">
+                            <div className="hidden md:flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">
                                 <ShieldCheck className="text-emerald-500" size={14} />
                                 Third-Party Tested Purity
                             </div>
@@ -150,10 +158,10 @@ export const ProductModal = ({ item, onClose }: Props) => {
                                 href={formatPartnerLink(item.productUrl)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-full py-4 bg-slate-900 hover:bg-green-600 text-white rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-200 hover:shadow-green-100 transition-all duration-300 active:scale-[0.99]"
+                                className="w-full py-3 bg-slate-900 hover:bg-green-600 text-white rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-200 hover:shadow-green-100 transition-all duration-300 active:scale-[0.99]"
                             >
                                 Full Product Info on iHerb
-                                <ExternalLink size={14} />
+                                <ExternalLink size={10} />
                             </a>
                         </div>
 
