@@ -8,7 +8,7 @@ export interface Supplement {
   suggestedDaily: number;   // порций в день (обычно 1 или 2)
   productUrl: string; // Прямая ссылка на товар
   category: "Focus" | "Sleep" | "Energy" | "Longevity" | "Foundation" | "Immune" | "Antioxidants" | "Superfoods" | "Joint Health" | "Collagen" | "Men's Health";
-  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper' | 'nmn';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
+  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper' | 'nmn' | 'rutin' | 'spermidine'| 'serrapeptase';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
   description: string;
   isAvailable: boolean;
   imageFront: string; // Фас
@@ -769,22 +769,7 @@ export const SUPPLEMENTS: Supplement[] = [
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02266/g/57.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02266/l/62.jpg"
   },
-  {
-    id: "CGN-02377",
-    name: "Spermidine, Rice Germ Extract, 1 mg, 90 Veggie Capsules",
-    brand: "California Gold Nutrition",
-    price: 18.95,
-    servings: 90,
-    dosagePerServing: "1mg",
-    suggestedDaily: 1,
-    productUrl: "https://iherb.com/pr/california-gold-nutrition-spermidine-rice-germ-extract-1-mg-90-veggie-capsules/130825",
-    category: "Longevity",
-    subType: "spermidine",
-    description: "Naturally occurring polyamine that triggers autophagy — the body's cellular cleaning process. Supports healthy aging and cardiovascular function.",
-    isAvailable: true,
-    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/g/32.jpg",
-    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/l/37.jpg"
-  },
+
   // Fisetin — сенолитик, удаляет стареющие клетки
   {
     id: "DRB-00227",
@@ -1637,6 +1622,70 @@ export const SUPPLEMENTS: Supplement[] = [
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03042/g/39.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03042/l/44.jpg"
   },
+  {
+    id: "NOW-00735",
+    name: "Rutin, 450 mg, 100 Veg Capsules",
+    brand: "NOW Foods",
+    price: 13.42,
+    servings: 100,
+    dosagePerServing: "450mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-rutin-450-mg-100-veg-capsules/9868",
+    category: "Antioxidants",
+    subType: "rutin",
+    description: "Vascular health, Capillary integrity, Antioxidant support",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00735/g/66.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00735/l/72.jpg"
+  },
+  {
+    id: "NAP-02550",
+    name: "Rutin, 500 mg, 60 Tablets",
+    brand: "NaturesPlus",
+    price: 11.50,
+    servings: 60,
+    dosagePerServing: "500mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/naturesplus-rutin-500-mg-60-tablets/51131",
+    category: "Antioxidants",
+    subType: "rutin",
+    description: "Vascular health, Capillary integrity, Antioxidant support",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/nap/nap02550/g/45.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/nap/nap02550/l/50.jpg"
+  },
+  {
+    id: "NCS-67345",
+    name: "Рутин, 500 мг, 180 капсул",
+    brand: "Nutricost",
+    price: 28.22,
+    servings: 180,
+    dosagePerServing: "500mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/nutricost-rutin-500-mg-180-capsules/129414",
+    category: "Antioxidants",
+    subType: "rutin",
+    description: "Vascular health, Capillary integrity, Antioxidant support",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67345/g/24.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67345/l/29.jpg"
+  },
+  {
+    id: "CGN-02377",
+    name: "Spermidine, Rice Germ Extract, 1 mg, 90 Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 22.30,
+    servings: 90,
+    dosagePerServing: "1mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-spermidine-rice-germ-extract-1-mg-90-veggie-capsules/130825",
+    category: "Antioxidants",
+    subType: "spermidine",
+    description: "Spermidine is a polyamine that may promote cellular cleanup processes like autophagy and support healthy cell function and renewal.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/g/32.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/l/37.jpg"
+  },  
   {
     id: "DRB-00096",
     name: "Noni Fruit Powder, 120 Veggie Caps (650 mg per Capsule)",
