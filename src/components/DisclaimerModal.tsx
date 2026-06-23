@@ -1,6 +1,6 @@
 'use client'; // Указываем, что это клиентский компонент, так как есть интерактив взаимодействия с UI
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ShieldAlert, Scale, X } from 'lucide-react'; // Импортируем аккуратные иконки
 
 // Описываем интерфейс пропсов (Props), которые наш компонент ожидает получить от родителя
@@ -10,23 +10,27 @@ interface DisclaimerModalProps {
 }
 
 export const DisclaimerModal = ({ isOpen, onClose }: DisclaimerModalProps) => {
-    // Если родитель передал isOpen: false, компонент просто ничего не рендерит
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isOpen])
     if (!isOpen) return null;
 
     return (
         // ХЕНДЛЕР ОВЕРЛЕЯ
-        // ИЗМЕНЕНИЕ: На мобилках прижимаем к низу (items-end), на десктопе центрируем (sm:items-center).
-        // Добавили отступы p-3 pb-20 sm:p-4, где pb-20 гарантированно приподнимает окно над нижним таб-баром!
+
         <div
             onClick={onClose}
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-3 pb-20 sm:p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm sm:backdrop-blur-none z-[110] flex items-center justify-center p-4 animate-in fade-in duration-200 "
         >
             {/* КОНТЕНТНОЕ ОКНО */}
-            {/* ИЗМЕНЕНИЕ: rounded-3xl для красивых скруглений со всех сторон. */}
-            {/* ИЗМЕНЕНИЕ: max-h-[70vh] на мобилках отодвинет верхний край от основного хедера BioStack, оставляя зазор, а sm:max-h-[80vh] вернет стандартный размер на ПК. */}
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white rounded-3xl max-w-lg w-full max-h-[70vh] sm:max-h-[80vh] flex flex-col p-5 md:p-7 shadow-2xl border border-slate-100 animate-in slide-in-from-bottom-5 sm:zoom-in-95 duration-200 relative overflow-hidden"
+                className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] sm:max-h-[80vh] flex flex-col p-5 md:p-7 shadow-2xl border border-slate-100 animate-in slide-in-from-bottom-5 sm:zoom-in-95 duration-200 relative"
             >
                 {/* Яркая предупреждающая полоса на самом верху карточки */}
                 <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-500 to-orange-500 flex-shrink-0" />
