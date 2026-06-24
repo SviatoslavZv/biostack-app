@@ -1,12 +1,11 @@
 'use client';
-import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { Supplement } from "@/constants/supplements";
 import { formatPartnerLink } from "@/utils/links";
 import { TIMING_META } from '@/constants/timing';
 import { getSupplementTiming } from '@/utils/timingUtils';
 import { ExternalLink, Plus, Trash2, Share2 } from "lucide-react";
-import { SharePopover } from './SharePopover';
+
 
 interface Props {
   item: Supplement;
@@ -16,7 +15,7 @@ interface Props {
   isBestValue?: boolean;
   onUpdateQuantity: (id: string, delta: number) => void;
   onOpenModal: () => void;
-  onShare: (productUrl: string, productName: string) => void;
+  onShare: (productUrl: string, productName: string, rect: DOMRect) => void;
 }
 
 export const SupplementCard = ({
@@ -27,6 +26,7 @@ export const SupplementCard = ({
   isBestValue,
   onUpdateQuantity,
   onOpenModal,
+  onShare,
 }: Props) => {
   const isPriority = index < 6;
   // Получаем тайминг для этого товара
@@ -34,11 +34,6 @@ export const SupplementCard = ({
   // TIMING_META даст нам иконку и название для этого слота
   const timing = getSupplementTiming(item.subType);
   const timingInfo = TIMING_META[timing];
-  const [isShareOpen, setIsShareOpen] = useState(false);
-  const shareButtonRef = useRef<HTMLButtonElement>(null);
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
-  const [isFlipped, setIsFlipped] = useState(false);
-
   return (
     <div
       className={`animate-fade-in-up relative flex flex-col p-4 rounded-[2rem] border-2 transition-all duration-500 h-full overflow-hidden group/main-card ${isSelected
@@ -114,28 +109,16 @@ export const SupplementCard = ({
         {/* Кнопка "Поделиться" — расположена под кнопкой iHerb */}
         <div className="absolute top-11 right-2.5 z-30">
           <button
-            ref={shareButtonRef}
             onClick={(e) => {
               e.stopPropagation();
-              if (shareButtonRef.current) {
-                setAnchorRect(shareButtonRef.current.getBoundingClientRect());
-              }
-              setIsShareOpen(prev => !prev);
+              const rect = e.currentTarget.getBoundingClientRect();
+              onShare(item.productUrl, item.name, rect);
             }}
             className="p-1.5 bg-white/90 backdrop-blur-sm shadow-sm border border-slate-100 text-slate-500 rounded-full hover:bg-slate-50 hover:text-slate-900 transition-all duration-300"
             title="Share this product"
           >
             <Share2 size={18} />
           </button>
-
-          {isShareOpen && anchorRect && (
-            <SharePopover
-              url={formatPartnerLink(item.productUrl)}
-              title={item.name}
-              onClose={() => setIsShareOpen(false)}
-              anchorRect={anchorRect}
-            />
-          )}
         </div>
 
 

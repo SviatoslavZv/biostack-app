@@ -7,7 +7,7 @@ import { SmartAlerts } from "@/components/SmartAlerts";
 import { Header } from "@/components/Header";
 import { useStackBuilder, StackBuilderHook } from "@/hooks/useStackBuilder";
 import { generateIHerbLink, getBestValueId } from "@/utils/stackLogic";
-import { formatPartnerLink, shareLink, getAppUrl } from "@/utils/links";
+import { formatPartnerLink, shareLink, isMobileDevice } from "@/utils/links";
 import { SidebarStack } from "@/components/SidebarStack";
 import { SharePopover } from "@/components/SharePopover";
 import { ProductModal } from "@/components/ProductModal";
@@ -47,11 +47,13 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
     message: '',
     isVisible: false,
   });
+  const [shareUrl, setShareUrl] = useState<string>('');
+  const [shareTitle, setShareTitle] = useState<string>('');
 
 
-  const showToast = (message: string) => {
-    setToast({ message, isVisible: true });
-  };
+  // const showToast = (message: string) => {
+  //   setToast({ message, isVisible: true });
+  // };
 
   const hideToast = () => {
     setToast(prev => ({ ...prev, isVisible: false }));
@@ -81,18 +83,26 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
     window.open(generateIHerbLink(cart), '_blank');
   };
 
-  const handleShareProduct = async (productUrl: string, productName: string) => {
-    const link = formatPartnerLink(productUrl);
-    const result = await shareLink(link, productName);
-
-    if (result === 'copied') {
-      showToast('Link copied to clipboard!');
+  const handleShareProduct = async (productUrl: string, productName: string, rect: DOMRect) => {
+    if ('share' in navigator && isMobileDevice()) {
+      await shareLink(formatPartnerLink(productUrl), productName);
+      return;
     }
-    // 'shared' — системное окно само показало успех, toast не нужен
-    // 'failed' — пользователь просто закрыл окно или произошла ошибка, тоже без toast
+    // Десктоп — открываем SharePopover с данными этого товара
+    setShareUrl(formatPartnerLink(productUrl));
+    setShareTitle(productName);
+    setAnchorRect(rect);
+    setIsShareOpen(true);
   };
 
-  const handleOpenShare = (rect: DOMRect) => {
+  const handleOpenShare = async (rect: DOMRect) => {
+    if ('share' in navigator && isMobileDevice()) {
+      await shareLink(generateIHerbLink(cart), 'My BioStack supplement stack');
+      return;
+    }
+    // Десктоп — записываем данные стека и открываем попап
+    setShareUrl(generateIHerbLink(cart));
+    setShareTitle('My BioStack supplement stack');
     setAnchorRect(rect);
     setIsShareOpen(true);
   };
@@ -103,7 +113,6 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
         categories={categories}
         onCategoryChange={handleCategoryChange}
         activeCategory={activeCategory}
-        selectedCount={selectedIds.length}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
@@ -247,6 +256,7 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
       <ProductModal
         item={selectedProduct}
         onClose={() => setSelectedProduct(null)}
+        onShare={handleShareProduct}
       />
 
       <DisclaimerModal
@@ -262,9 +272,9 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
       {isShareOpen && anchorRect && (
         <SharePopover
-          url={generateIHerbLink(cart)}
-          title="My BioStack supplement stack"
-          heading="Share your stack"
+          url={shareUrl}
+          title={shareTitle}
+          heading={shareTitle === 'My BioStack supplement stack' ? 'Share your stack' : 'Share this product'}
           onClose={() => setIsShareOpen(false)}
           anchorRect={anchorRect}
         />

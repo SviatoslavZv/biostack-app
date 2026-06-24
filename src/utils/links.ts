@@ -18,6 +18,10 @@ export const getAppUrl = (): string => {
   return '';
 };
 
+export const isMobileDevice = (): boolean => {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+};
+
 /**
  * Универсальная функция "поделиться".
  * Если браузер поддерживает Web Share API — открывает системное окно "Поделиться".
@@ -28,18 +32,18 @@ export const getAppUrl = (): string => {
  * @returns 'shared' | 'copied' | 'failed'
  */
 export const shareLink = async (url: string, title: string): Promise<'shared' | 'copied' | 'failed'> => {
-  if (typeof navigator !== 'undefined' && navigator.share) {
+  if ('share' in navigator && isMobileDevice()) {
     try {
       await navigator.share({ title, url });
       return 'shared';
-    } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
-        return 'failed';
-      }
+    } catch {
+      // AbortError — пользователь закрыл окно, это нормально
+      // Любая другая ошибка — share не сработал, возвращаем 'failed' сразу
+      return 'failed';
     }
   }
 
-  if (typeof navigator !== 'undefined' && navigator.clipboard) {
+  if (navigator.clipboard) {
     try {
       await navigator.clipboard.writeText(url);
       return 'copied';
@@ -58,7 +62,7 @@ export const shareLink = async (url: string, title: string): Promise<'shared' | 
  * это официальный публичный механизм, не требует API-ключей.
  */
 export const getSharePlatformUrl = (
-  platform: 'telegram' | 'whatsapp' | 'viber' | 'facebook' | 'twitter'| 'pinterest',
+  platform: 'telegram' | 'whatsapp' | 'viber' | 'facebook' | 'twitter' | 'pinterest',
   url: string,
   text: string
 ): string => {
@@ -78,5 +82,7 @@ export const getSharePlatformUrl = (
       return `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
     case 'pinterest':
       return `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedText}`;
+    default:
+      return url;
   }
 };

@@ -67,7 +67,7 @@ export const SharePopover = ({ url, title, heading = 'Share with friends', onClo
             ref={popoverRef}
             onClick={(e) => e.stopPropagation()}
             style={{ position: 'fixed', top, left, width: popoverWidth }}
-            className="bg-white rounded-2xl shadow-2xl shadow-slate-300/40 border border-slate-100 p-4 z-[100] animate-in fade-in slide-in-from-top-2 duration-200"
+            className="bg-white rounded-2xl shadow-2xl shadow-slate-600/50 border border-slate-200 p-4 z-[120] animate-in fade-in slide-in-from-top-2 duration-200"
         >
             <div className="flex items-center justify-between mb-3">
                 <p className="text-[13px] font-black uppercase text-slate-400 tracking-widest">

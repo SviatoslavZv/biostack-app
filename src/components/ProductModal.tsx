@@ -2,15 +2,16 @@
 import React from 'react';
 import Image from 'next/image';
 import { Supplement } from "@/constants/supplements";
-import { X, ExternalLink, ShieldCheck, Leaf, Sparkles, Box } from "lucide-react";
+import { X, ExternalLink, ShieldCheck, Leaf, Sparkles, Box, Share2 } from "lucide-react";
 import { formatPartnerLink } from "@/utils/links";
 
 interface Props {
     item: Supplement | null;
     onClose: () => void;
+    onShare: (productUrl: string, productName: string, rect: DOMRect) => void;
 }
 
-export const ProductModal = ({ item, onClose }: Props) => {
+export const ProductModal = ({ item, onClose, onShare }: Props) => {
     const [isFlipped, setIsFlipped] = React.useState(false);
     React.useEffect(() => {
         setIsFlipped(false);
@@ -108,6 +109,16 @@ export const ProductModal = ({ item, onClose }: Props) => {
                                 <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-lg uppercase border border-emerald-100">
                                     {item.servings} Servings
                                 </span>
+                                <button
+                                    onClick={(e) => {
+                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        onShare(item.productUrl, item.name, rect);
+                                    }}
+                                    className="ml-auto p-2 bg-slate-50 hover:bg-green-50 text-slate-500 hover:text-green-600 border border-slate-100 hover:border-green-200 rounded-xl transition-all duration-300 active:scale-95"
+                                    title="Share this product"
+                                >
+                                    <Share2 size={22} />
+                                </button>
                             </div>
 
                             {/* СЕТКА С ПАРАМЕТРАМИ (Интерактивные карточки) */}
@@ -117,9 +128,9 @@ export const ProductModal = ({ item, onClose }: Props) => {
                                 <div className="bg-slate-50/60 p-3 rounded-xl border border-slate-100 flex items-center gap-2.5 
                     transition-all duration-300 ease-in-out cursor-default
                     hover:bg-blue-50/60 hover:border-blue-200 group/volume">
-                                    <Box size={14} className="text-blue-500 flex-shrink-0 transition-transform duration-300 group-hover/volume:scale-110" />
+                                    <Box size={16} className="text-blue-400 flex-shrink-0 transition-transform duration-300 group-hover/volume:scale-110" />
                                     <div className="text-[11px] leading-tight">
-                                        <p className="text-slate-400 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/volume:text-blue-400">Pack Volume</p>
+                                        <p className="text-slate-500 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/volume:text-blue-400">Pack Volume</p>
                                         <p className="font-extrabold text-slate-700 mt-0.5 transition-colors duration-300 group-hover/volume:text-blue-900">{item.servings} Portions</p>
                                     </div>
                                 </div>
@@ -128,9 +139,9 @@ export const ProductModal = ({ item, onClose }: Props) => {
                                 <div className="bg-slate-50/60 p-3 rounded-xl border border-slate-100 flex items-center gap-2.5 
                     transition-all duration-300 ease-in-out cursor-default
                     hover:bg-amber-50/60 hover:border-amber-200 group/supply">
-                                    <Sparkles size={14} className="text-amber-500 flex-shrink-0 transition-transform duration-300 group-hover/supply:scale-110 animate-pulse" />
+                                    <Sparkles size={16} className="text-amber-500 flex-shrink-0 transition-transform duration-300 group-hover/supply:scale-110 animate-pulse" />
                                     <div className="text-[12px] leading-tight">
-                                        <p className="text-slate-400 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/supply:text-amber-500">Est. Supply</p>
+                                        <p className="text-slate-600 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/supply:text-amber-500">Est. Supply</p>
                                         <p className="font-extrabold text-slate-700 mt-0.5 transition-colors duration-300 group-hover/supply:text-amber-900">
                                             {duration ? `~${duration} Days` : 'Custom Take'}
                                         </p>
@@ -140,9 +151,9 @@ export const ProductModal = ({ item, onClose }: Props) => {
                             </div>
 
                             {/* Описание с интерактивным эффектом */}
-                            <p className="text-slate-500 text-xs leading-relaxed mb-2 md:mb-6 italic bg-slate-50/40 p-3 md:p-4 rounded-xl border border-dashed border-slate-200 
+                            <p className="text-slate-600 text-xs leading-relaxed mb-2 md:mb-6 italic bg-slate-50/40 p-3 md:p-4 rounded-xl border border-dashed border-slate-200 
               transition-all duration-300 ease-in-out
-              hover:bg-green-50/50 hover:text-green-700 hover:border-green-200  cursor-default">
+              hover:bg-green-50/50 hover:text-green-700 hover:border-green-300  cursor-default">
                                 {`"${item.description || "Premium quality supplement meticulously tested for purity and potency. Perfect addition to your daily biohacking stack."}"`}
                             </p>
                         </div>

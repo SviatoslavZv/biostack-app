@@ -2,23 +2,21 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Share2 } from 'lucide-react';
-import { getAppUrl } from '@/utils/links';
+import { getAppUrl, isMobileDevice } from '@/utils/links';
 import { SharePopover } from './SharePopover';
 
 interface HeaderProps {
   categories: string[];
   activeCategory: string;
   onCategoryChange: (category: string) => void;
-  selectedCount: number;
-  searchQuery: string;       // НОВОЕ
-  onSearchChange: (value: string) => void; // НОВОЕ
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
 }
 
 export const Header = ({
   categories = [],
   activeCategory,
   onCategoryChange,
-  selectedCount,
   searchQuery,
   onSearchChange
 }: HeaderProps) => {
@@ -42,7 +40,19 @@ export const Header = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleOpenShare = () => {
+  const handleOpenShare = async () => {
+    if ('share' in navigator && isMobileDevice()) {
+      try {
+        await navigator.share({
+          title: 'BioStack — Smart Supplement Stack Builder',
+          url: getAppUrl(),
+        });
+      } catch {
+        // пользователь закрыл окно — ничего не делаем
+      }
+      return;
+    }
+    // Десктоп — открываем SharePopover как раньше
     if (shareButtonRef.current) {
       setAnchorRect(shareButtonRef.current.getBoundingClientRect());
     }
