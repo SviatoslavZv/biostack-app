@@ -28,7 +28,7 @@ export const SupplementCard = ({
   onOpenModal,
   onShare,
 }: Props) => {
-  const isPriority = index < 6;
+  const isPriority = index < 30;
   // Получаем тайминг для этого товара
   // getSupplementTiming вернёт 'morning', 'noon' или 'evening'
   // TIMING_META даст нам иконку и название для этого слота
@@ -59,6 +59,7 @@ export const SupplementCard = ({
                 alt={item.name}
                 fill
                 priority={isPriority}
+                loading={isPriority ? "eager" : "lazy"}
                 className="object-contain drop-shadow-md group-hover/main-card:drop-shadow-xl transition-all duration-500"
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
               />
@@ -70,6 +71,7 @@ export const SupplementCard = ({
                 src={item.imageBack}
                 alt="Facts"
                 fill
+                loading="lazy"
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />

@@ -8,7 +8,7 @@ export interface Supplement {
   suggestedDaily: number;   // порций в день (обычно 1 или 2)
   productUrl: string; // Прямая ссылка на товар
   category: "Focus" | "Sleep" | "Energy" | "Longevity" | "Foundation" | "Immune" | "Antioxidants" | "Superfoods" | "Joint Health" | "Collagen" | "Men's Health";
-  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper' | 'nmn' | 'rutin' | 'spermidine'| 'serrapeptase';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
+  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper' | 'nmn' | 'rutin' | 'spermidine'| 'serrapeptase'| 'urolithin' | 'pqq';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
   description: string;
   isAvailable: boolean;
   imageFront: string; // Фас
@@ -19,7 +19,7 @@ export interface Supplement {
 export const SUPPLEMENTS: Supplement[] = [
   {
     id: "CGN-01901",
-    name: "Magnesium Glycinate",
+    name: "Magnesium Bisglycinate Chelate, Albion TRAACS®, 60 Veggie Capsules (100 mg per Capsule)",
     brand: "California Gold Nutrition",
     price: 9.22,
     servings: 30,
@@ -35,7 +35,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "CGN-01902",
-    name: "Magnesium Glycinate",
+    name: "Magnesium Bisglycinate Chelate, Albion TRAACS®, 240 Veggie Capsules (100 mg per Capsule)",
     brand: "California Gold Nutrition",
     price: 28.42,
     servings: 120,
@@ -51,7 +51,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "DRB-00025",
-    name: "Magnesium Lysinate Glycinate, Chelated",
+    name: "High Absorption Magnesium, 120 Tablets (100 mg per Tablet)",
     brand: "Doctor's Best",
     price: 12.06,
     servings: 60,
@@ -67,7 +67,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "DRB-00087",
-    name: "Magnesium Lysinate Glycinate, Chelated",
+    name: "High Absorption Magnesium Lysinate Glycinate, Chelated, Albion® TRAACS®, 240 Tablets (100 mg per Tablet)",
     brand: "Doctor's Best",
     price: 22.90,
     servings: 120,
@@ -83,7 +83,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01284",
-    name: "Magnesium Glycinate With BioPerine®",
+    name: "Magnesium Glycinate With BioPerine®, 60 Veg Capsules",
     brand: "NOW Foods",
     price: 10.06,
     servings: 30,
@@ -99,7 +99,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01287",
-    name: "Magnesium Glycinate With BioPerine®",
+    name: "Magnesium Glycinate With BioPerine®, 180 Veg Capsules",
     brand: "NOW Foods",
     price: 21.32,
     servings: 90,
@@ -131,7 +131,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-02394",
-    name: "Magtein®, Magnesium L-Threonate, 180 Veg Capsules",
+    name: "Magtein®, Magnesium L-Threonate, 180 Veg Capsules (48 mg per Capsule)",
     brand: "NOW Foods",
     price: 73.90,
     servings: 60,
@@ -165,7 +165,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "NCS-67393",
     name: "Magnesium L-Threonate, 120 Capsules (666 mg per Capsule)",
     brand: "Nutricost",
-    price: 44.35,
+    price: 60.48,
     servings: 40,
     dosagePerServing: "144mg",
     suggestedDaily: 1,
@@ -275,7 +275,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-00147",
-    name: "L-Theanine",
+    name: "NOW Foods, L-Theanine, 60 Veg Capsules",
     brand: "Now Foods",
     price: 17.45,
     servings: 60,
@@ -291,7 +291,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-00148",
-    name: "L-Theanine",
+    name: "L-Theanine, 120 Veg Capsules",
     brand: "Now Foods",
     price: 26.48,
     servings: 120,
@@ -307,7 +307,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "CGN-01242",
-    name: "L-Theanine",
+    name: "L-Theanine, Featuring AlphaWave®, 200 mg, 60 Veggie Capsules",
     brand: "California Gold Nutrition",
     price: 10.06,
     servings: 60,
@@ -323,9 +323,9 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NCS-67720",
-    name: "L-Theanine",
+    name: "L-Theanine, 200 mg, 30 Capsules",
     brand: "Nutricost",
-    price: 5.47,
+    price: 5.74,
     servings: 30,
     dosagePerServing: "200mg",
     suggestedDaily: 1,
@@ -339,9 +339,9 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NCS-67937",
-    name: "L-Theanine",
+    name: "L-Theanine, 200 mg, 120 Capsules",
     brand: "Nutricost",
-    price: 8.64,
+    price: 9.08,
     servings: 120,
     dosagePerServing: "200mg",
     suggestedDaily: 1,
@@ -355,7 +355,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "CGN-00940",
-    name: "Curcumin C3 Complex",
+    name: "Curcumin C3 Complex® with BioPerine® Black Pepper Extract, Turmeric Curcumin Complex, Enhanced Bioavailablity, 120 Veggie Capsules",
     brand: "California Gold Nutrition",
     price: 34.90,
     servings: 120,
@@ -371,7 +371,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "LKN-02002",
-    name: "Curcumin 95",
+    name: "Curcumin 95, 30 Veggie Capsules (500 mg per Capsule)",
     brand: "California Gold Nutrition",
     price: 9.34,
     servings: 30,
@@ -387,7 +387,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "SPN-02427",
-    name: "Turmeric Curcumin Phytosome Meriva®",
+    name: "Turmeric Curcumin Phytosome Meriva®, 500 mg, 60 Veggie Capsules",
     brand: "California Gold Nutrition",
     price: 24.70,
     servings: 60,
@@ -402,24 +402,24 @@ export const SUPPLEMENTS: Supplement[] = [
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/spn/spn02427/l/143.jpg"
   },
   {
-    id: "LKN-01410",
-    name: "Vitamin C",
+    id: "LKN-01409",
+    name: "Vitamin C, Quali®-C, 1,000 mg, 60 Veggie Capsules",
     brand: "California Gold Nutrition",
-    price: 34.39,
-    servings: 365,
+    price: 8.57,
+    servings: 60,
     dosagePerServing: "1000mg",
     suggestedDaily: 1,
     productUrl: "https://iherb.com/pr/california-gold-nutrition-vitamin-c-quali-c-1-000-mg-60-veggie-capsules/96338",
     category: 'Foundation',
     subType: 'vitamin-c',
-    description: "Supports joint health and antioxidant function with a specialized formula that enhances nutrient absorption, promoting cellular integrity and liver health.",
+    description: "Supports joint health and antioxidant function with a specialized formula that enhances nutrient absorption, promoting cellular integrity and liver health",
     isAvailable: true,
-    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn01410/g/98.jpg",
-    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn01410/l/103.jpg"
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn01409/g/99.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn01409/l/104.jpg"
   },
   {
     id: "NOW-00690",
-    name: "C-1000",
+    name: "C-1000, 100 Veg Capsules",
     brand: "NOW Foods",
     price: 10.06,
     servings: 100,
@@ -435,12 +435,12 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-03070",
-    name: "Quercetin with Bromelain",
+    name: "Quercetin with Bromelain, 120 Veg Capsules",
     brand: "NOW Foods",
     price: 26.86,
     servings: 60,
     dosagePerServing: "800mg",
-    suggestedDaily: 2,
+    suggestedDaily: 1,
     productUrl: "https://iherb.com/pr/now-foods-quercetin-with-bromelain-120-veg-capsules/330",
     category: 'Longevity',
     subType: 'quercetin',
@@ -450,10 +450,26 @@ export const SUPPLEMENTS: Supplement[] = [
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03070/l/53.jpg"
   },
   {
+    id: "NOW-03091",
+    name: "Quercetin with Bromelain, 60 Veg Capsules",
+    brand: "NOW Foods",
+    price: 14.76,
+    servings: 30,
+    dosagePerServing: "800mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-quercetin-with-bromelain-60-veg-capsules/121501",
+    category: 'Longevity',
+    subType: 'quercetin',
+    description: "Supports healthy seasonal immune function and respiratory health, combining quercetin and bromelain for balanced immune response to environmental challenges.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03091/g/32.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03091/l/37.jpg"
+  },
+  {
     id: "NCS-67326",
-    name: "Quercetin",
+    name: "Quercetin, 120 Capsules (500 mg per Capsule)",
     brand: "Nutricost",
-    price: 21.08,
+    price: 22.14,
     servings: 60,
     dosagePerServing: "1000mg",
     suggestedDaily: 1,
@@ -467,7 +483,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-03352",
-    name: "Energy Extreme",
+    name: "Sports, Energy Extreme, 90 Capsules",
     brand: "NOW Foods",
     price: 20.14,
     servings: 45,
@@ -483,7 +499,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01995",
-    name: "Sustained Energy",
+    name: "Sustained Energy, 90 Veg Capsules",
     brand: "NOW Foods",
     price: 20.14,
     servings: 45,
@@ -499,7 +515,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-03326",
-    name: "Energy",
+    name: "Energy, 90 Veg Capsules",
     brand: "NOW Foods",
     price: 18.80,
     servings: 45,
@@ -515,7 +531,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01661",
-    name: "Ultra Omega-3 Fish Oil",
+    name: "Ultra Omega-3 Fish Oil, 90 Softgels",
     brand: "NOW Foods",
     price: 18.80,
     servings: 90,
@@ -531,7 +547,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01662",
-    name: "Ultra Omega-3 Fish Oil",
+    name: "Ultra Omega-3 Fish Oil, 180 Softgels",
     brand: "NOW Foods",
     price: 37.10,
     servings: 180,
@@ -563,7 +579,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01650",
-    name: "Omega-3 Fish Oil, 100 Softgels",
+    name: "Omega-3 Fish Oil, 1,000 mg, 180 EPA - 120 DHA, 100 Softgels",
     brand: "NOW Foods",
     price: 8.72,
     servings: 50,
@@ -579,7 +595,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "MLI-00952",
-    name: "Omega-3 Premium Fish Oil",
+    name: "Omega-3 Premium Fish Oil, 100 Fish Gelatin Softgels (1,100 mg per Softgel)",
     brand: "California Gold Nutrition",
     price: 12.20,
     servings: 50,
@@ -594,10 +610,10 @@ export const SUPPLEMENTS: Supplement[] = [
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/mli/mli00952/l/397.jpg"
   },
   {
-    id: "NCS-67518",
-    name: "Caffeine",
+    id: "NCS-67517",
+    name: "Caffeine , 200 mg , 250 Capsules",
     brand: "Nutricost",
-    price: 11.96,
+    price: 14.07,
     servings: 250,
     dosagePerServing: "200mg",
     suggestedDaily: 1,
@@ -610,8 +626,40 @@ export const SUPPLEMENTS: Supplement[] = [
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67517/l/11.jpg"
   },
   {
+    id: "NCS-67516",
+    name: "Caffeine , 200 mg , 120 Capsules",
+    brand: "Nutricost",
+    price: 10.08,
+    servings: 120,
+    dosagePerServing: "200mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/nutricost-caffeine-200-mg-120-capsules/151258",
+    category: 'Energy',
+    subType: 'caffeine',
+    description: "Provides clean energy and mental alertness. Best combined with L-Theanine to eliminate jitteriness and crash.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67516/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67516/l/13.jpg"
+  },
+  {
+    id: "NCS-67723",
+    name: "Caffeine, 200 mg , 30 Capsules",
+    brand: "Nutricost",
+    price: 6.05,
+    servings: 30,
+    dosagePerServing: "200mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/nutricost-caffeine-200-mg-30-capsules/147379",
+    category: 'Energy',
+    subType: 'caffeine',
+    description: "Provides clean energy and mental alertness. Best combined with L-Theanine to eliminate jitteriness and crash.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67723/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67723/l/13.jpg"
+  },
+  {
     id: "FOA-66273",
-    name: "Caffeine",
+    name: "Caffeine, 200 mg, 250 Tablets",
     brand: "Force Factor",
     price: 17.84,
     servings: 250,
@@ -627,7 +675,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "CGN-02333",
-    name: "Vitamin D3 + K2",
+    name: "Vitamin D3 + K2 as MK-7, 180 Veggie Capsules",
     brand: "California Gold Nutrition",
     price: 16.20,
     servings: 180,
@@ -643,7 +691,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "CGN-02332",
-    name: "Vitamin D3 + K2",
+    name: "Vitamin D3 + K2 as MK-7, 60 Veggie Capsules",
     brand: "California Gold Nutrition",
     price: 9.22,
     servings: 60,
@@ -738,6 +786,54 @@ export const SUPPLEMENTS: Supplement[] = [
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01433/l/40.jpg"
   },
   {
+    id: "DRB-00231",
+    name: "High Potency Serrapeptase, 90 Veggie Caps",
+    brand: "Doctor's Best",
+    price: 33.10,
+    servings: 90,
+    dosagePerServing: "120,000 SPU",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/doctor-s-best-high-potency-serrapeptase-90-veggie-caps/23747",
+    category: "Foundation",
+    subType: "serrapeptase",
+    description: "Proteolytic enzyme that helps break down inappropriate protein complexes. Supports healthy sinuses, joints, and systemic cardiovascular health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00231/g/94.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00231/l/99.jpg"
+  },
+  {
+    id: "DRB-00307",
+    name: "High Potency Serrapeptase, 120,000 SPU, 270 Veggie Caps",
+    brand: "Doctor's Best",
+    price: 90.49,
+    servings: 270,
+    dosagePerServing: "120,000 SPU",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/doctor-s-best-high-potency-serrapeptase-120-000-spu-270-veggie-caps/51946",
+    category: "Foundation",
+    subType: "serrapeptase",
+    description: "Proteolytic enzyme that helps break down inappropriate protein complexes. Supports healthy sinuses, joints, and systemic cardiovascular health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00307/g/95.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00307/l/100.jpg"
+  },
+  {
+    id: "NCS-67399",
+    name: "Serrapeptase, 60 mg (120,000 SPU), 120 Capsules",
+    brand: "Nutricost",
+    price: 18.11,
+    servings: 120,
+    dosagePerServing: "120,000 SPU",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/nutricost-serrapeptase-60-mg-120-000-spu-120-capsules/135523",
+    category: "Foundation",
+    subType: "serrapeptase",
+    description: "Proteolytic enzyme that helps break down inappropriate protein complexes. Supports healthy sinuses, joints, and systemic cardiovascular health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67399/g/25.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67399/l/30.jpg"
+  },
+  {
     id: "NOW-01418",
     name: "Berberine Glucose Support, 90 Softgels",
     brand: "NOW Foods",
@@ -752,6 +848,22 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01418/g/32.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01418/l/37.jpg"
+  },
+  {
+    id: "NOW-NOW-91418",
+    name: "Berberine Glucose Support, 60 Softgels",
+    brand: "NOW Foods",
+    price: 20.14,
+    servings: 60,
+    dosagePerServing: "400mg",
+    suggestedDaily: 3,
+    productUrl: "https://iherb.com/pr/now-foods-berberine-glucose-support-60-softgels/151146",
+    category: "Longevity",
+    subType: "berberine",
+    description: "Supports healthy blood glucose metabolism and cardiovascular health. Often called 'nature's metformin' in biohacking circles.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now91418/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now91418/l/14.jpg"
   },
   {
     id: "CGN-02266",
@@ -818,6 +930,86 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn02514/g/122.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn02514/l/127.jpg"
+  },
+  {
+    id: "SPN-02516",
+    name: "Urolithin A, 250 mg, 60 Liquid Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 38.90,
+    servings: 30,
+    dosagePerServing: "500mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-urolithin-a-250-mg-60-liquid-veggie-capsules/142031",
+    category: "Longevity",
+    subType: "urolithin",
+    description: "Advanced cellular rejuvenator that activates mitophagy. Promotes mitochondrial health, muscle strength, and cellular energy clean-up during aging.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/spn/spn02516/g/31.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/spn/spn02516/l/36.jpg"
+  },
+  {
+    id: "CGN-10017",
+    name: "Urolithin A with MCT Oil Powder, 60 Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 39.86,
+    servings: 60,
+    dosagePerServing: "400mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-urolithin-a-with-mct-oil-powder-60-veggie-capsules/149272",
+    category: "Longevity",
+    subType: "urolithin",
+    description: "Advanced cellular rejuvenator that activates mitophagy. Promotes mitochondrial health, muscle strength, and cellular energy clean-up during aging.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn10017/g/9.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn10017/l/14.jpg"
+  },
+  {
+    id: "CGN-01291",
+    name: "PQQ, 20 mg, 30 Veggie Softgels",
+    brand: "California Gold Nutrition",
+    price: 11.21,
+    servings: 30,
+    dosagePerServing: "20 mg",
+    suggestedDaily: 1,
+    category: "Longevity",
+    subType: "pqq",
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-pqq-20-mg-30-veggie-softgels/86595",
+    description: "Strong antioxidant that promotes the growth of new mitochondria (mitochondrial biogenesis) and supports healthy cognitive and cellular defense functions.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn01291/g/230.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn01291/l/235.jpg"
+  },
+  {
+    id: " CGN-01504",
+    name: "PQQ, 20 mg, 90 Veggie Softgels",
+    brand: "California Gold Nutrition",
+    price: 29.69,
+    servings: 90,
+    dosagePerServing: "20 mg",
+    suggestedDaily: 1,
+    category: "Longevity",
+    subType: "pqq",
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-pqq-20-mg-90-veggie-softgels/97410",
+    description: "Strong antioxidant that promotes the growth of new mitochondria (mitochondrial biogenesis) and supports healthy cognitive and cellular defense functions.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn01504/g/255.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn01504/l/252.jpg"
+  },
+  {
+    id: " LKN-01449",
+    name: "PQQ, 20 mg, 60 Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 15.89,
+    servings: 60,
+    dosagePerServing: "20 mg",
+    suggestedDaily: 1,
+    category: "Longevity",
+    subType: "pqq",
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-pqq-20-mg-60-veggie-capsules/97427",
+    description: "Strong antioxidant that promotes the growth of new mitochondria (mitochondrial biogenesis) and supports healthy cognitive and cellular defense functions.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn01449/g/112.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lkn/lkn01449/l/113.jpg"
   },
   {
     id: "NOW-01552",
