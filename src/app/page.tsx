@@ -19,6 +19,7 @@ import { Trash2 } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { PresetsList } from "@/components/PresetsList";
 import { CartItemsList } from "@/components/CartItemsList";
+import { EmptyStack } from "@/components/EmptyStack";
 
 const subscribe = () => () => { };
 const getSnapshot = () => true;
@@ -218,12 +219,15 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
           {/* Список товаров — скроллится независимо */}
           <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
-            <CartItemsList
-              cart={cart}
-              allSupplements={allSupplements}
-              updateQuantity={updateQuantity}
-              onOpenProductModal={(product) => setSelectedProduct(product)}
-            />
+            {cart.length === 0
+              ? <EmptyStack />
+              : <CartItemsList
+                cart={cart}
+                allSupplements={allSupplements}
+                updateQuantity={updateQuantity}
+                onOpenProductModal={(product) => setSelectedProduct(product)}
+              />
+            }
           </div>
 
           {/* StackSummary — всегда прибит к низу, не скроллится */}

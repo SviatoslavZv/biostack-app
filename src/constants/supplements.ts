@@ -8,7 +8,7 @@ export interface Supplement {
   suggestedDaily: number;   // порций в день (обычно 1 или 2)
   productUrl: string; // Прямая ссылка на товар
   category: "Focus" | "Sleep" | "Energy" | "Longevity" | "Foundation" | "Immune" | "Antioxidants" | "Superfoods" | "Joint Health" | "Collagen" | "Men's Health";
-  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper' | 'nmn' | 'rutin' | 'spermidine'| 'serrapeptase'| 'urolithin' | 'pqq';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
+  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper' | 'nmn' | 'rutin' | 'spermidine'| 'serrapeptase'| 'urolithin' | 'pqq'| 'flower-pollen';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
   description: string;
   isAvailable: boolean;
   imageFront: string; // Фас
@@ -881,7 +881,22 @@ export const SUPPLEMENTS: Supplement[] = [
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02266/g/57.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02266/l/62.jpg"
   },
-
+  {
+    id: "CGN-02377",
+    name: "Spermidine, Rice Germ Extract, 1 mg, 90 Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 22.30,
+    servings: 90,
+    dosagePerServing: "1mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-spermidine-rice-germ-extract-1-mg-90-veggie-capsules/130825",
+    category: "Longevity",
+    subType: "spermidine",
+    description: "Naturally occurring polyamine that triggers autophagy — the body's cellular cleaning process. Supports healthy aging and cardiovascular function.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/g/32.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/l/37.jpg"
+  },
   // Fisetin — сенолитик, удаляет стареющие клетки
   {
     id: "DRB-00227",
@@ -1013,7 +1028,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01552",
-    name: "Zinc Picolinate",
+    name: "Zinc Picolinate, 50 mg, 120 Veg Capsules",
     brand: "NOW Foods",
     price: 12.08,
     servings: 120,
@@ -1029,7 +1044,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01550",
-    name: "Zinc Picolinate",
+    name: "Zinc Picolinate, 50 mg, 60 Veg Capsules",
     brand: "NOW Foods",
     price: 6.70,
     servings: 60,
@@ -1045,7 +1060,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01522",
-    name: "Zinc",
+    name: "Zinc, 50 mg, 250 Tablets",
     brand: "NOW Foods",
     price: 12.08,
     servings: 250,
@@ -1061,7 +1076,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "NOW-01520",
-    name: "Zinc",
+    name: "Zinc, 50 mg, 100 Tablets",
     brand: "NOW Foods",
     price: 6.03,
     servings: 100,
@@ -1077,7 +1092,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "DRB-00573",
-    name: "High Absorption Zinc Bisglycinate",
+    name: "High Absorption Zinc Bisglycinate, 50 mg, 90 Veggie Caps",
     brand: "Doctor's Best",
     price: 10.10,
     servings: 90,
@@ -1159,7 +1174,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "CEN-21240",
     name: "Melatonin, 3 mg, 90 Tablets",
     brand: "21st Century",
-    price: 3.71,
+    price: 5.30,
     servings: 90,
     dosagePerServing: "3mg",
     suggestedDaily: 1,
@@ -1288,7 +1303,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "SWV-14287",
     name: "Ashwagandha 450 mg, 60 Capsules",
     brand: "Swanson Vitamins",
-    price: 6.20,
+    price: 8.81,
     servings: 60,
     dosagePerServing: "450mg",
     suggestedDaily: 1,
@@ -1450,7 +1465,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "LKN-01450",
     name: "CoQ10 with PQQ, 60 Veggie Capsules",
     brand: "California Gold Nutrition",
-    price: 12.95,
+    price: 15.24,
     servings: 60,
     dosagePerServing: "100mg",
     suggestedDaily: 1,
@@ -1562,7 +1577,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "CGN-01174",
     name: "trans-Resveratrol, 200 mg, 60 Veggie Capsules",
     brand: "California Gold Nutrition",
-    price: 19.34,
+    price: 22.75,
     servings: 60,
     dosagePerServing: "200mg",
     suggestedDaily: 1,
@@ -1608,7 +1623,7 @@ export const SUPPLEMENTS: Supplement[] = [
   },
   {
     id: "SNS-02294",
-    name: "Resveratrol 200™, 120 Tablets",
+    name: "Resveratrol 200™, 200 mg , 120 Tablets",
     brand: "Source Naturals",
     price: 29.18,
     servings: 120,
@@ -1637,6 +1652,22 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00086/g/68.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00086/l/70.jpg"
+  },
+  {
+    id: "NOW-00085",
+    name: "NAC With Selenium, 100 Capsules",
+    brand: "NOW Foods",
+    price: 14.76,
+    servings: 100,
+    dosagePerServing: "600mg",
+    suggestedDaily: 2,
+    productUrl: "https://iherb.com/pr/now-foods-nac-with-selenium-100-capsules/37836",
+    category: 'Antioxidants',
+    subType: 'nac',
+    description: "Antioxidant support; Cellular health; Detoxification support.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00085/g/37.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now00085/l/39.jpg"
   },
   {
     id: "DRB-00279",
@@ -1706,7 +1737,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "CGN-01103",
     name: "Astaxanthin, Astalif® Pure Icelandic, 12 mg, 30 Veggie Softgels",
     brand: "California Gold Nutrition",
-    price: 10.61,
+    price: 12.48,
     servings: 30,
     dosagePerServing: "12mg",
     suggestedDaily: 1,
@@ -1861,22 +1892,6 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67345/g/24.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67345/l/29.jpg"
-  },
-  {
-    id: "CGN-02377",
-    name: "Spermidine, Rice Germ Extract, 1 mg, 90 Veggie Capsules",
-    brand: "California Gold Nutrition",
-    price: 22.30,
-    servings: 90,
-    dosagePerServing: "1mg",
-    suggestedDaily: 1,
-    productUrl: "https://iherb.com/pr/california-gold-nutrition-spermidine-rice-germ-extract-1-mg-90-veggie-capsules/130825",
-    category: "Antioxidants",
-    subType: "spermidine",
-    description: "Spermidine is a polyamine that may promote cellular cleanup processes like autophagy and support healthy cell function and renewal.",
-    isAvailable: true,
-    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/g/32.jpg",
-    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02377/l/37.jpg"
   },  
   {
     id: "DRB-00096",
@@ -1898,7 +1913,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "NCS-67280",
     name: "Noni, 240 Capsules (500 mg per Capsule)",
     brand: "Nutricost",
-    price: 12.68,
+    price: 18.11,
     servings: 120,
     dosagePerServing: "1000mg",
     suggestedDaily: 1,
@@ -1914,7 +1929,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "SWV-02124",
     name: "Noni, 60 Capsules (500 mg per Capsule)",
     brand: "Swanson Vitamins",
-    price: 7.47,
+    price: 8.79,
     servings: 30,
     dosagePerServing: "1000mg",
     suggestedDaily: 1,
@@ -2026,7 +2041,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "FOA-66030",
     name: "Elderberry, 575mg, 100 Vegetable Capsules",
     brand: "Force Factor",
-    price: 7.89,
+    price: 11.27,
     servings: 100,
     dosagePerServing: "575 mg",
     suggestedDaily: 1,
@@ -2203,7 +2218,7 @@ export const SUPPLEMENTS: Supplement[] = [
     id: "SWV-14081",
     name: "Grape Seed Extract, High Potency, 200 mg, 60 Capsules",
     brand: "Swanson Vitamins",
-    price: 11.32,
+    price: 14.00,
     servings: 60,
     dosagePerServing: "200mg",
     suggestedDaily: 2,
@@ -2230,6 +2245,22 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/sns/sns01628/g/8.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/sns/sns01628/l/13.jpg"
+  },
+  {
+    id: "SNS-01627",
+    name: "Pomegranate Extract, 500 mg, 60 Tablets",
+    brand: "Source Naturals",
+    price: 9.18,
+    servings: 30,
+    dosagePerServing: "1000mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/source-naturals-pomegranate-extract-500-mg-60-tablets/19208",
+    category: "Superfoods",
+    subType: "pomegranate",
+    description: "Standardized pomegranate extract packed with punicalagins. Supports endothelial function, arterial health, and healthy cardiovascular aging.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/sns/sns01627/g/37.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/sns/sns01627/l/42.jpg"
   },
   {
     id: "SNS-02086",
@@ -2302,7 +2333,7 @@ export const SUPPLEMENTS: Supplement[] = [
     price: 15.51,
     servings: 60,
     dosagePerServing: "400mg",
-    suggestedDaily: 2,
+    suggestedDaily: 1,
     productUrl: "https://iherb.com/pr/paradise-herbs-maqui-berry-60-vegetarian-capsules-400-mg-per-capsule/37244",
     category: "Superfoods",
     subType: "maqui",
@@ -2678,6 +2709,54 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now04748/g/69.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now04748/l/74.jpg"
+  },
+  {
+    id: "CGN-02072",
+    name: "Flower Pollen Extract Blend, 90 Veggie Capsules",
+    brand: "California Gold Nutrition",
+    price: 27.38,
+    servings: 90,
+    dosagePerServing: "126mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/california-gold-nutrition-flower-pollen-extract-blend-90-veggie-capsules/107582",
+    category: "Men's Health",
+    subType: "flower-pollen",
+    description: "Clinically shown to support prostate function, healthy urinary flow, and overall urological health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02072/g/36.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/cgn/cgn02072/l/40.jpg"
+  },
+  {
+    id: "FOA-66031",
+    name: "Flower Pollen Extract, 500 mg, 60 Vegetable Capsules",
+    brand: "Force Factor",
+    price: 9.02,
+    servings: 60,
+    dosagePerServing: "500mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/force-factor-flower-pollen-extract-500-mg-60-vegetable-capsules/138244",
+    category: "Men's Health",
+    subType: "flower-pollen",
+    description: "Clinically shown to support prostate function, healthy urinary flow, and overall urological health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/foa/foa66031/g/29.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/foa/foa66031/l/34.jpg"
+  },
+  {
+    id: " LEX-20296",
+    name: "Ultra Prostate Formula, 60 Softgels",
+    brand: "Life Extension",
+    price: 29.95,
+    servings: 30,
+    dosagePerServing: "378mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/life-extension-ultra-prostate-formula-60-softgels/78778",
+    category: "Men's Health",
+    subType: "flower-pollen",
+    description: "Premium multi-nutrient prostate support featuring Graminex® flower pollen extract, saw palmetto, and beta-sitosterol for advanced bladder and urinary health.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lex/lex20296/g/145.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/lex/lex20296/l/150.jpg"
   },
 
 

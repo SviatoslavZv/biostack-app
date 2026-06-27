@@ -7,6 +7,7 @@ import { StackBuilderHook } from '@/hooks/useStackBuilder';
 import { Supplement } from '@/constants/supplements';
 import { CartItemsList } from './CartItemsList';
 import { PresetsList } from './PresetsList';
+import { EmptyStack } from "@/components/EmptyStack";
 
 
 interface SidebarStackProps {
@@ -95,12 +96,14 @@ export const SidebarStack = ({
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-2 min-h-0 custom-scrollbar overscroll-contain">
 
         {mode === 'custom' && (
-          <CartItemsList
-            cart={cart}
-            allSupplements={allSupplements}
-            updateQuantity={updateQuantity}
-            onOpenProductModal={onOpenProductModal}
-          />
+          cart.length === 0
+            ? <EmptyStack />
+            : <CartItemsList
+              cart={cart}
+              allSupplements={allSupplements}
+              updateQuantity={updateQuantity}
+              onOpenProductModal={onOpenProductModal}
+            />
         )}
 
         {mode === 'editors' && (
@@ -112,27 +115,25 @@ export const SidebarStack = ({
         )}
       </div>
 
-      <div className="px-5 pb-5 pt-0 bg-slate-50/90 border-t border-slate-100 space-y-3 shrink-0">
-
-
-        <StackSummary
-          totalPrice={totalPrice}
-          selectedCount={selectedIds.length}
-          generateLink={generateLink}
-          analytics={analytics}
-          isSidebar={true}
-          onShare={onShare}
-        />
-
-        <div className="text-center -mt-6">
-          <button
-            onClick={onOpenDisclaimer}
-            className="text-[15px] text-green-700 hover:text-green-600 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline cursor-pointer"
-          >
-            Medical Disclaimer
-          </button>
-
+      {cart.length > 0 && (
+        <div className="px-5 pt-3 pb-0 bg-white border-t border-slate-100 shrink-0">
+          <StackSummary
+            totalPrice={totalPrice}
+            selectedCount={selectedIds.length}
+            generateLink={generateLink}
+            analytics={analytics}
+            isSidebar={true}
+            onShare={onShare}
+          />
         </div>
+      )}
+      <div className="px-5 py-3 bg-white border-t border-slate-100 shrink-0 text-center">
+        <button
+          onClick={onOpenDisclaimer}
+          className="text-[15px] text-green-700 hover:text-green-600 font-semibold tracking-wide uppercase transition-colors underline-offset-4 hover:underline cursor-pointer"
+        >
+          Medical Disclaimer
+        </button>
       </div>
 
 

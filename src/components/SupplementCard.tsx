@@ -58,7 +58,6 @@ export const SupplementCard = ({
                 src={item.imageFront}
                 alt={item.name}
                 fill
-                priority={isPriority}
                 loading={isPriority ? "eager" : "lazy"}
                 className="object-contain drop-shadow-md group-hover/main-card:drop-shadow-xl transition-all duration-500"
                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
