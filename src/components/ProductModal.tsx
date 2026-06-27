@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Supplement } from "@/constants/supplements";
-import { X, ExternalLink, ShieldCheck, Leaf, Sparkles, Box, Share2 } from "lucide-react";
+import { X, ExternalLink, ShieldCheck, Leaf, Sparkles, DollarSign, Share2 } from "lucide-react";
 import { formatPartnerLink } from "@/utils/links";
 
 interface Props {
@@ -88,7 +88,7 @@ export const ProductModal = ({ item, onClose, onShare }: Props) => {
                             <div className="flex items-center justify-between gap-2 mb-2 md:mb-4">
                                 <div className="flex items-center gap-1.5">
                                     <Leaf size={12} className="text-green-500" />
-                                    <span className="text-[10px] font-black uppercase tracking-wider text-green-600">
+                                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">
                                         {item.category}
                                     </span>
                                 </div>
@@ -104,9 +104,9 @@ export const ProductModal = ({ item, onClose, onShare }: Props) => {
 
                             {/* Цена и порции */}
                             <div className="mt-2 md:mt-4 flex items-center gap-3 border-b border-slate-100 pb-3 md:pb-5">
-                                <span className="text-2xl font-black text-slate-900">${item.price.toFixed(2)}</span>
+                                <span className="text-2xl font-black text-emerald-600">${item.price.toFixed(2)}</span>
                                 <div className="h-4 w-px bg-slate-200" />
-                                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-lg uppercase border border-emerald-100">
+                                <span className="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[12px] font-black rounded-lg uppercase border border-emerald-100">
                                     {item.servings} Servings
                                 </span>
                                 <button
@@ -114,7 +114,7 @@ export const ProductModal = ({ item, onClose, onShare }: Props) => {
                                         const rect = e.currentTarget.getBoundingClientRect();
                                         onShare(item.productUrl, item.name, rect);
                                     }}
-                                    className="ml-auto p-2 bg-slate-50 hover:bg-green-50 text-slate-500 hover:text-green-600 border border-slate-100 hover:border-green-200 rounded-xl transition-all duration-300 active:scale-95"
+                                    className="ml-auto p-2 bg-slate-50 hover:bg-green-50 text-slate-500 hover:text-emerald-600 border border-slate-100 hover:border-green-200 rounded-xl transition-all duration-300 active:scale-95"
                                     title="Share this product"
                                 >
                                     <Share2 size={22} />
@@ -126,12 +126,17 @@ export const ProductModal = ({ item, onClose, onShare }: Props) => {
 
                                 {/* Карточка: Pack Volume (Мягкий синий ховер) */}
                                 <div className="bg-slate-50/60 p-3 rounded-xl border border-slate-100 flex items-center gap-2.5 
-                    transition-all duration-300 ease-in-out cursor-default
-                    hover:bg-blue-50/60 hover:border-blue-200 group/volume">
-                                    <Box size={16} className="text-blue-400 flex-shrink-0 transition-transform duration-300 group-hover/volume:scale-110" />
-                                    <div className="text-[11px] leading-tight">
-                                        <p className="text-slate-500 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/volume:text-blue-400">Pack Volume</p>
-                                        <p className="font-extrabold text-slate-700 mt-0.5 transition-colors duration-300 group-hover/volume:text-blue-900">{item.servings} Portions</p>
+    transition-all duration-300 ease-in-out cursor-default
+    hover:bg-blue-50/60 hover:border-blue-200 group/volume">
+                                    <DollarSign size={16} className="text-blue-500 flex-shrink-0 transition-transform duration-300 group-hover/volume:scale-110" />
+                                    <div className="text-[14px] leading-tight">
+                                        <p className="text-slate-600 font-bold uppercase text-[10px] tracking-wider transition-colors duration-300 group-hover/volume:text-blue-400">Per Dose</p>
+                                        <p className="font-extrabold text-slate-700 mt-0.5 transition-colors duration-300 group-hover/volume:text-blue-900">${(item.price / item.servings).toFixed(2)}</p>
+                                        {item.suggestedDaily && item.suggestedDaily > 1 && (
+                                            <p className="text-[12px] text-blue-500 font-bold mt-0.5">
+                                                ${(item.price / item.servings * item.suggestedDaily).toFixed(2)} / day
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -139,9 +144,9 @@ export const ProductModal = ({ item, onClose, onShare }: Props) => {
                                 <div className="bg-slate-50/60 p-3 rounded-xl border border-slate-100 flex items-center gap-2.5 
                     transition-all duration-300 ease-in-out cursor-default
                     hover:bg-amber-50/60 hover:border-amber-200 group/supply">
-                                    <Sparkles size={16} className="text-amber-500 flex-shrink-0 transition-transform duration-300 group-hover/supply:scale-110 animate-pulse" />
-                                    <div className="text-[12px] leading-tight">
-                                        <p className="text-slate-600 font-bold uppercase text-[7px] tracking-wider transition-colors duration-300 group-hover/supply:text-amber-500">Est. Supply</p>
+                                    <Sparkles size={16} className="text-amber-500 flex-shrink-0 transition-transform duration-300 group-hover/supply:scale-110" />
+                                    <div className="text-[14px] leading-tight">
+                                        <p className="text-slate-600 font-bold uppercase text-[10px] tracking-wider transition-colors duration-300 group-hover/supply:text-amber-500">Est. Supply</p>
                                         <p className="font-extrabold text-slate-700 mt-0.5 transition-colors duration-300 group-hover/supply:text-amber-900">
                                             {duration ? `~${duration} Days` : 'Custom Take'}
                                         </p>
@@ -151,7 +156,7 @@ export const ProductModal = ({ item, onClose, onShare }: Props) => {
                             </div>
 
                             {/* Описание с интерактивным эффектом */}
-                            <p className="text-slate-600 text-xs leading-relaxed mb-2 md:mb-6 italic bg-slate-50/40 p-3 md:p-4 rounded-xl border border-dashed border-slate-200 
+                            <p className="text-slate-700 text-xs leading-relaxed mb-2 md:mb-6 italic bg-slate-50/40 p-3 md:p-4 rounded-xl border border-dashed border-slate-200 
               transition-all duration-300 ease-in-out
               hover:bg-green-50/50 hover:text-green-700 hover:border-green-300  cursor-default">
                                 {`"${item.description || "Premium quality supplement meticulously tested for purity and potency. Perfect addition to your daily biohacking stack."}"`}
@@ -169,7 +174,7 @@ export const ProductModal = ({ item, onClose, onShare }: Props) => {
                                 href={formatPartnerLink(item.productUrl)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-full py-3 bg-slate-900 hover:bg-green-600 text-white rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-200 hover:shadow-green-100 transition-all duration-300 active:scale-[0.99]"
+                                className="w-full py-3 bg-slate-900 hover:bg-emerald-600 text-white rounded-2xl flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-200 hover:shadow-green-100 transition-all duration-300 active:scale-[0.99]"
                             >
                                 Full Product Info on iHerb
                                 <ExternalLink size={10} />
