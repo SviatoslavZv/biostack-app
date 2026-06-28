@@ -79,7 +79,7 @@ export const StackTimeline = ({ cart, allSupplements }: StackTimelineProps) => {
                     const items = groups[slot];
 
                     return (
-                        <div key={slot} className="flex gap-3">
+                        <div key={slot} className="flex gap-3 animate-fade-in-up">
 
                             {/* Левая часть — иконка и название слота */}
                             <div className="flex flex-col items-center gap-1 w-14 shrink-0">

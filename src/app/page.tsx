@@ -219,15 +219,20 @@ function HomeContent({ builder }: { builder: StackBuilderHook }) {
 
           {/* Список товаров — скроллится независимо */}
           <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
-            {cart.length === 0
-              ? <EmptyStack />
-              : <CartItemsList
-                cart={cart}
-                allSupplements={allSupplements}
-                updateQuantity={updateQuantity}
-                onOpenProductModal={(product) => setSelectedProduct(product)}
-              />
-            }
+            <div
+              key={cart.length === 0 ? 'empty' : 'filled'}
+              className="animate-fade-in-up h-full"
+            >
+              {cart.length === 0
+                ? <EmptyStack />
+                : <CartItemsList
+                  cart={cart}
+                  allSupplements={allSupplements}
+                  updateQuantity={updateQuantity}
+                  onOpenProductModal={(product) => setSelectedProduct(product)}
+                />
+              }
+            </div>
           </div>
 
           {/* StackSummary — всегда прибит к низу, не скроллится */}

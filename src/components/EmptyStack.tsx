@@ -3,7 +3,7 @@ import { Layers, Tag, RotateCcw } from 'lucide-react';
 
 export const EmptyStack = () => {
     return (
-        <div className="flex flex-col items-center justify-center py-0.5 md:py-8 px-4 animate-in fade-in zoom-in duration-500">
+        <div className="flex flex-col items-center justify-center py-0.5 md:py-8 px-4 animate-fade-in-up">
 
             {/* Иконка */}
             <div className="w-16 h-16 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl flex items-center justify-center mb-3 md:mb-5 border border-green-100 shadow-inner">

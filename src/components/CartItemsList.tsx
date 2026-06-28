@@ -43,14 +43,15 @@ export const CartItemsList = ({
                 const product = allSupplements.find((s) => s.id === item.id);
                 if (!product) return null;
                 return (
-                    <CartProductCard
-                        key={item.id}
-                        id={item.id}
-                        count={item.count}
-                        product={product}
-                        updateQuantity={updateQuantity}
-                        onOpenProductModal={onOpenProductModal}
-                    />
+                    <div key={item.id} className="animate-fade-in-up">
+                        <CartProductCard
+                            id={item.id}
+                            count={item.count}
+                            product={product}
+                            updateQuantity={updateQuantity}
+                            onOpenProductModal={onOpenProductModal}
+                        />
+                    </div>
                 );
             })}
             <StackTimeline cart={cart} allSupplements={allSupplements} />

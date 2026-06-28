@@ -96,14 +96,20 @@ export const SidebarStack = ({
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-2 min-h-0 custom-scrollbar overscroll-contain">
 
         {mode === 'custom' && (
-          cart.length === 0
-            ? <EmptyStack />
-            : <CartItemsList
-              cart={cart}
-              allSupplements={allSupplements}
-              updateQuantity={updateQuantity}
-              onOpenProductModal={onOpenProductModal}
-            />
+          <div
+            key={cart.length === 0 ? 'empty' : 'filled'}
+            className="animate-fade-in-up"
+          >
+            {cart.length === 0
+              ? <EmptyStack />
+              : <CartItemsList
+                cart={cart}
+                allSupplements={allSupplements}
+                updateQuantity={updateQuantity}
+                onOpenProductModal={onOpenProductModal}
+              />
+            }
+          </div>
         )}
 
         {mode === 'editors' && (
@@ -116,7 +122,7 @@ export const SidebarStack = ({
       </div>
 
       {cart.length > 0 && (
-        <div className="px-5 pt-3 pb-0 bg-white border-t border-slate-100 shrink-0">
+        <div className="px-5 pt-3 pb-0 bg-white border-t border-slate-100 shrink-0 animate-fade-in-up">
           <StackSummary
             totalPrice={totalPrice}
             selectedCount={selectedIds.length}
