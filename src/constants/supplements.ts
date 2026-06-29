@@ -8,7 +8,7 @@ export interface Supplement {
   suggestedDaily: number;   // порций в день (обычно 1 или 2)
   productUrl: string; // Прямая ссылка на товар
   category: "Focus" | "Sleep" | "Energy" | "Longevity" | "Foundation" | "Immune" | "Antioxidants" | "Superfoods" | "Joint Health" | "Collagen" | "Men's Health";
-  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper' | 'nmn' | 'rutin' | 'spermidine'| 'serrapeptase'| 'urolithin' | 'pqq'| 'flower-pollen';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
+  subType: 'magnesium' | 'theanine' | 'curcumin' | 'vitamin-c' | 'multivitamin' | 'quercetin' | 'coq10' | 'omega-3' | 'caffeine' | 'vitamin-d3-k2' | 'zinc' | 'melatonin' | 'ashwagandha' | 'resveratrol' | 'nac' | 'astaxanthin' | 'iron' | 'noni' | 'acai' | 'mangosteen' | 'pine-bark' | 'bilberry' | 'elderberry' | 'tart-cherry' | 'cranberry' | 'grape-seed' | 'pomegranate' | 'blueberry' | 'maqui' | 'collagen-bovine' | 'collagen-marine' | 'glucosamine-chondroitin' | 'hyaluronic-acid' | 'msm' | 'prostate-support' | 'testo-boosters' | 'saw-palmetto' | 'berberine' | 'vitamin-b-complex' | 'magnesium-threonate' | 'vitamin-d3' | 'spermidine' | 'alpha-lipoic-acid' | 'fisetin' | 'lions-mane' | 'bacopa' | 'vitamin-a' | 'beta-glucan' | 'glycine' | 'copper' | 'nmn' | 'rutin' | 'spermidine'| 'serrapeptase'| 'urolithin' | 'pqq' | 'flower-pollen' | 'l-carnitine'| 'cordyceps';   // Конкретный тип вещества (например, 'magnesium', 'caffeine') — ЭТО КЛЮЧЕВОЕ ПОЛЕ ДЛЯ АЛЕРТОВ!  
   description: string;
   isAvailable: boolean;
   imageFront: string; // Фас
@@ -672,6 +672,102 @@ export const SUPPLEMENTS: Supplement[] = [
     isAvailable: true,
     imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/foa/foa66273/g/8.jpg",
     imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/foa/foa66273/l/14.jpg"
+  },
+  {
+    id: "NCS-67722",
+    name: "Acetyl L-Carnitine, 500 mg, 30 Capsules",
+    brand: "Nutricost",
+    price: 7.07,
+    servings: 30,
+    dosagePerServing: "500mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/nutricost-acetyl-l-carnitine-500-mg-30-capsules/145331",
+    category: 'Energy',
+    subType: 'l-carnitine',
+    description: "Acetyl-L-carnitine carries fatty acids into mitochondria for energy production and provides an acetyl group that may support neurotransmitter synthesis in the brain.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67722/g/8.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67722/l/13.jpg"
+  },
+  {
+    id: "NCS-67908",
+    name: "Acetyl L-Carnitine, 500 mg, 180 Capsules",
+    brand: "Nutricost",
+    price: 19.10,
+    servings: 180,
+    dosagePerServing: "500mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/nutricost-acetyl-l-carnitine-500-mg-180-capsules/139422",
+    category: 'Energy',
+    subType: 'l-carnitine',
+    description: "Acetyl-L-carnitine carries fatty acids into mitochondria for energy production and provides an acetyl group that may support neurotransmitter synthesis in the brain.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67908/g/25.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/ncs/ncs67908/l/30.jpg"
+  },
+  {
+    id: "SNS-00499",
+    name: "Acetyl L-Carnitine, 500 mg, 60 Tablets",
+    brand: "Source Naturals",
+    price: 16.68,
+    servings: 60,
+    dosagePerServing: "500mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/source-naturals-acetyl-l-carnitine-500-mg-60-tablets/1462",
+    category: 'Energy',
+    subType: 'l-carnitine',
+    description: "Acetyl-L-carnitine carries fatty acids into mitochondria for energy production and provides an acetyl group that may support neurotransmitter synthesis in the brain.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/sns/sns00499/g/35.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/sns/sns00499/l/40.jpg"
+  },
+  {
+    id: "SNS-00331",
+    name: "Acetyl L-Carnitine, 500 mg, 120 Tablets",
+    brand: "Source Naturals",
+    price: 26.59,
+    servings: 120,
+    dosagePerServing: "500mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/source-naturals-acetyl-l-carnitine-500-mg-120-tablets/19182",
+    category: 'Energy',
+    subType: 'l-carnitine',
+    description: "Acetyl-L-carnitine carries fatty acids into mitochondria for energy production and provides an acetyl group that may support neurotransmitter synthesis in the brain.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/sns/sns00331/g/43.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/sns/sns00331/l/48.jpg"
+  },
+  {
+    id: "DRB-00103",
+    name: "Ultra Cordyceps, 750 mg, 60 Veggie Caps",
+    brand: "Doctor's Best",
+    price: 15.36,
+    servings: 60,
+    dosagePerServing: "750mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/doctor-s-best-ultra-cordyceps-750-mg-60-veggie-caps/6",
+    category: 'Energy',
+    subType: 'cordyceps',
+    description: "Cordyceps compounds like cordycepic acid and adenosine are studied for supporting cellular energy production and a balanced stress response through effects on ATP-related pathways and antioxidant activity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00103/g/100.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/drb/drb00103/l/105.jpg"
+  },
+  {
+    id: "NOW-03005",
+    name: "Cordyceps, 90 Veg Capsules (750 mg per Capsule)",
+    brand: "NOW Foods",
+    price: 18.80,
+    servings: 90,
+    dosagePerServing: "750mg",
+    suggestedDaily: 1,
+    productUrl: "https://iherb.com/pr/now-foods-cordyceps-90-veg-capsules-750-mg-per-capsule/27019",
+    category: 'Energy',
+    subType: 'cordyceps',
+    description: "Cordyceps compounds like cordycepic acid and adenosine are studied for supporting cellular energy production and a balanced stress response through effects on ATP-related pathways and antioxidant activity.",
+    isAvailable: true,
+    imageFront: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03005/g/58.jpg",
+    imageBack: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now03005/l/63.jpg"
   },
   {
     id: "CGN-02333",

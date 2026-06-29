@@ -41,7 +41,7 @@ export const SupplementCard = ({
         : 'border-gray-50 hover:border-green-200 hover:shadow-xl hover:-translate-y-1 bg-white'
         }`}
     >
-      {/* 1. Изображение (ИСПРАВЛЕНО: добавили onClick, cursor-pointer и роли для доступности) */}
+      {/* 1. Изображение */}
       <div
         onClick={onOpenModal}
         role="button"

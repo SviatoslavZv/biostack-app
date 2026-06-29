@@ -53,9 +53,12 @@ export const TIMING_PRESETS: Record<string, TimingSlot> = {
   'bacopa':             'morning',
   'alpha-lipoic-acid':  'morning',
   'spermidine':         'morning',
-  'pqq':                'morning',
+  'pqq':                'morning',    
   'urolithin':          'morning',
   'serrapeptase':       'morning',
+  'l-carnitine':        'morning',
+  'cordyceps':          'morning',
+    
 
   // ☀️ ДЕНЬ — нутриенты с едой, иммунитет, антиоксиданты
   'omega-3':            'noon',
