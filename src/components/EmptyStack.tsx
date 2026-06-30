@@ -16,7 +16,7 @@ export const EmptyStack = () => {
             </h3>
 
             {/* Подзаголовок */}
-            <p className="text-slate-600 text-[11px] mb-3 md:mb-6 text-center font-medium md:font-semibold leading-relaxed max-w-[220px]">
+            <p className="text-slate-500 text-[11px] xl:text-sm mb-3 md:mb-6 text-center font-medium md:font-semibold leading-relaxed max-w-[220px]">
                 Browse the catalog and add supplements to build your personalized stack.
             </p>
 
@@ -46,6 +46,6 @@ export const EmptyStack = () => {
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 };

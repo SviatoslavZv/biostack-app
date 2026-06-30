@@ -48,7 +48,6 @@ export const metadata: Metadata = {
     description: "Free supplement stack calculator. Build your personalized vitamin routine, track daily costs and generate your iHerb cart instantly.",
     type: "website",
     url: baseUrl,
-    images: [{ url: `${baseUrl}/og-image.png`, width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
